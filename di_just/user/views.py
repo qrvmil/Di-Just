@@ -19,6 +19,8 @@ def profiles_list(request):
         # print(serializer.data)
         return JsonResponse(serializer.data, safe=False)
 
+    # TO DO: вынести POST запрос отдельно
+
     elif request.method == 'POST':
         data = JSONParser().parse(request)
         serializer = ProfileSerializer(data=data)
