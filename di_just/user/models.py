@@ -16,7 +16,5 @@ class Profile(models.Model):
                                      blank=True)
     created_timestamp = models.DateTimeField(auto_now_add=True)
 
-    # NB by default email field in AbstractUser is not unique, check this in POST request.
-
     def __str__(self):
         return f'{self.user.username}'

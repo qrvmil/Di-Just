@@ -9,23 +9,15 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from user.models import Profile
 from django.contrib.auth.models import User
-from user.serializers import ProfileSerializer, UserRegisterSerializer
+from user.serializers import ProfileSerializer, RegisterSerializer
+from rest_framework.permissions import AllowAny
+
+from rest_framework import generics
 
 
-class RegisterUserView(CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserRegisterSerializer
-    # permission_classes = [AllowAny]
-
-    def post(self, request, *args, **kwargs):
-        serializer = UserRegisterSerializer(data=request.data)
-        data = {}
-        if serializer.is_valid():
-            serializer.save()
-            return Response(data, status=status.HTTP_200_OK)
-        else:
-            data = serializer.errors
-            return Response(data)
+class RegisterUserAPIView(generics.CreateAPIView):
+    permission_classes = (AllowAny,)
+    serializer_class = RegisterSerializer
 
 #
 # @csrf_exempt
