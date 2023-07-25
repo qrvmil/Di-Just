@@ -40,6 +40,44 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 
 
+class UserUpdateSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(
+        validators=[UniqueValidator(queryset=User.objects.all())]
+    )
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'first_name', 'last_name')
+
+    def update(self, instance, validated_data):
+        instance.username = validated_data.get("username", instance.username)
+        instance.email = validated_data.get("email", instance.email)
+        instance.first_name = validated_data.get("first_name", )
+        instance.last_name = validated_data.get("last_name")
+        instance.save()
+        return instance
+
+
+class PasswordUpdateSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(
+        write_only=True, required=True)
+    password2 = serializers.CharField(write_only=True, required=True)
+
+    class Meta:
+        model = User
+        fields = ('password', 'password2')
+
+    def validate(self, attrs):
+        if attrs['password'] != attrs['password2']:
+            raise serializers.ValidationError(
+                {"password": "Password fields didn't match."})
+        return attrs
+
+    def update(self, instance, validated_data):
+        instance.password = validated_data.get("password")
+        return instance
+
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
