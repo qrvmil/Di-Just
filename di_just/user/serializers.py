@@ -5,6 +5,27 @@ from digest.serializers import ImageDigestSerializer, LinkDigestSerializer
 from django.contrib.auth.models import User
 
 
+class UserRegisterSerializer(serializers.ModelSerializer):
+    password2 = serializers.CharField()
+
+    class Meta:
+        model = User
+        fields = ['email', 'username', 'password', 'password2']
+
+    def save(self, *args, **kwargs):
+        user = User(
+            username=self.validated_data['username'],
+            email=self.validated_data['email'],
+        )
+        password = self.validated_data['password']
+        password2 = self.validated_data['password2']
+        if password != password2:
+            raise serializers.ValidationError({password: "Different passwords"})
+        user.set_password(password)
+        user.save()
+        return user
+
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
