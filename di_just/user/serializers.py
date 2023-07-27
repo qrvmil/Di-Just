@@ -1,3 +1,4 @@
+from django.contrib.auth import authenticate
 from rest_framework import serializers
 from user.models import Profile
 from django.contrib.auth.models import User
@@ -22,16 +23,28 @@ class RegisterSerializer(serializers.ModelSerializer):
             'last_name': {'required': True}
         }
 
-    def create(self, validated_data):
-        user = User.objects.create(
-            username=validated_data['username'],
-            email=validated_data['email'],
-            first_name=validated_data['first_name'],
-            last_name=validated_data['last_name']
-        )
-        user.set_password(validated_data['password'])
-        user.save()
-        return user
+    # def create(self, validated_data):
+    #     user = User.objects.create(
+    #         username=validated_data['username'],
+    #         email=validated_data['email'],
+    #         first_name=validated_data['first_name'],
+    #         last_name=validated_data['last_name']
+    #     )
+    #     user.set_password(validated_data['password'])
+    #     user.save()
+    #     return user
+
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+
+    def validate(self, data):
+        user = authenticate(**data)
+        if not user:
+            raise serializers.ValidationError("username or password Incorrect")
+
+        return data
 
 
 # update user info

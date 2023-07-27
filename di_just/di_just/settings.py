@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'digest',
     'user',
+    'knox',
 ]
 
 MIDDLEWARE = [
@@ -126,5 +127,8 @@ REST_FRAMEWORK = {
     'DATE_INPUT_FORMATS': [
         '%d.%m.%Y',  # '25.10.2021'
         '%d.%m.%y',  # '25.10.21'
-    ]
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'knox.auth.TokenAuthentication', 'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',),
 }
