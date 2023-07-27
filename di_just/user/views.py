@@ -1,10 +1,12 @@
 from django.shortcuts import render
 
-# Create your views here.
-from user.serializers import RegisterSerializer, UserUpdateSerializer, PasswordUpdateSerializer
+
+from user.serializers import RegisterSerializer, UserUpdateSerializer, PasswordUpdateSerializer, \
+    ProfileUpdateSerializer, ProfileSerializer, UserSerializer
 from rest_framework.permissions import AllowAny
 from django.contrib.auth.models import User
 from rest_framework import generics
+from user.models import Profile
 
 
 class RegisterUser(generics.CreateAPIView):
@@ -22,3 +24,16 @@ class PasswordUpdate(generics.UpdateAPIView):
     serializer_class = PasswordUpdateSerializer
 
 
+class ProfileUpdate(generics.UpdateAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileUpdateSerializer
+
+
+class ProfileInfo(generics.RetrieveDestroyAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+
+
+class UserInfo(generics.RetrieveDestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer

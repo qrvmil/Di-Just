@@ -21,12 +21,6 @@ class RegisterSerializer(serializers.ModelSerializer):
             'last_name': {'required': True}
         }
 
-    # def validate(self, attrs):
-    #     if attrs['password'] != attrs['password2']:
-    #         raise serializers.ValidationError(
-    #             {"password": "Password fields didn't match."})
-    #     return attrs
-
     def create(self, validated_data):
         user = User.objects.create(
             username=validated_data['username'],
@@ -51,8 +45,8 @@ class UserUpdateSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.username = validated_data.get("username", instance.username)
         instance.email = validated_data.get("email", instance.email)
-        instance.first_name = validated_data.get("first_name", )
-        instance.last_name = validated_data.get("last_name")
+        instance.first_name = validated_data.get("first_name", instance.first_name)
+        instance.last_name = validated_data.get("last_name", instance.last_name)
         instance.save()
         return instance
 
@@ -73,20 +67,20 @@ class PasswordUpdateSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email']
+        fields = ['id', 'username', 'first_name', 'last_name', 'email']
+
+
+class ProfileUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ['picture', 'bio', 'age', 'follows']
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    # created_img_digest = ImageDigestSerializer(many=True, read_only=True)
-    # created_link_digest = LinkDigestSerializer(many=True, read_only=True)
-    # saved_img_digest = ImageDigestSerializer(many=True, read_only=True)
-    # saved_link_digest = LinkDigestSerializer(many=True, read_only=True)
-    # user = UserSerializer(many=False)
+    user = UserSerializer(many=False, read_only=True)
 
     class Meta:
         model = Profile
-        fields = ['id', 'user', 'picture', 'bio', 'age', 'follows', 'created_timestamp']
+        fields = ['id', 'user', 'picture', 'bio', 'age', 'follows', 'followed_by']
 
-    def validate(self, attrs):
-        print(attrs)
-        return attrs
+
