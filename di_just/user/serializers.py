@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 
 
+# TO DO: разобраться с тем, где правильнее прописывать get и create (serializer/view)
 # register user
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
@@ -35,6 +36,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     #     return user
 
 
+# login user
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField()

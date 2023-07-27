@@ -11,6 +11,8 @@ from user.models import Profile
 from knox.models import AuthToken
 
 
+# TO DO: прописать кастомные permissions
+# TO DO: продумать логику сортировщика
 class RegisterUser(generics.CreateAPIView):
     permission_classes = (AllowAny,)
     serializer_class = RegisterSerializer
