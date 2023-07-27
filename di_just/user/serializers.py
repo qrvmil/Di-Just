@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 
 
+# register user
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
         required=True,
@@ -33,6 +34,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 
 
+# update user info
 class UserUpdateSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
         validators=[UniqueValidator(queryset=User.objects.all())]
@@ -51,6 +53,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         return instance
 
 
+# update user password
 class PasswordUpdateSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         write_only=True, required=True)
@@ -64,18 +67,21 @@ class PasswordUpdateSerializer(serializers.ModelSerializer):
         return instance
 
 
+# shows authenticated user his/her user info (delete user)
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'first_name', 'last_name', 'email']
 
 
+# update profile
 class ProfileUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ['picture', 'bio', 'age', 'follows']
 
 
+# retrieve and delete profile
 class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer(many=False, read_only=True)
 
@@ -84,3 +90,14 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = ['id', 'user', 'picture', 'bio', 'age', 'follows', 'followed_by']
 
 
+# list all profiles
+class ProfileListSerializer(serializers.ModelSerializer):
+    user = serializers.SlugRelatedField(
+        many=False,
+        read_only=True,
+        slug_field='username'
+    )
+
+    class Meta:
+        model = Profile
+        fields = ['id', 'user', 'picture', 'bio', 'follows', 'followed_by']

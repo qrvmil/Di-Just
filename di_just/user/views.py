@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 
 from user.serializers import RegisterSerializer, UserUpdateSerializer, PasswordUpdateSerializer, \
-    ProfileUpdateSerializer, ProfileSerializer, UserSerializer
+    ProfileUpdateSerializer, ProfileSerializer, UserSerializer, ProfileListSerializer
 from rest_framework.permissions import AllowAny
 from django.contrib.auth.models import User
 from rest_framework import generics
@@ -37,3 +37,8 @@ class ProfileInfo(generics.RetrieveDestroyAPIView):
 class UserInfo(generics.RetrieveDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+class ProfileList(generics.ListAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileListSerializer

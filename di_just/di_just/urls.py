@@ -16,7 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from user.views import RegisterUser, UserUpdate, PasswordUpdate, ProfileUpdate, ProfileInfo, UserInfo
+from user.views import RegisterUser, UserUpdate, PasswordUpdate, ProfileUpdate, ProfileInfo, UserInfo, ProfileList
+
+# TO DO: make url patterns with the usage of include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,5 +29,6 @@ urlpatterns = [
     path('users/user/<int:pk>', UserInfo.as_view(), name='user-info-delete'),
     path('users/update/password/<int:pk>/', PasswordUpdate.as_view(), name='password-update'),
     path('users/profile/update/<int:pk>/', ProfileUpdate.as_view(), name='profile-update'),
-    path('users/profile/<int:pk>/', ProfileInfo.as_view(), name='profile-info-delete')
+    path('users/profile/<int:pk>/', ProfileInfo.as_view(), name='profile-info-delete'),
+    path('users/profiles/', ProfileList.as_view(), name='profiles')
 ]
