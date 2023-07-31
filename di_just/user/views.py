@@ -8,7 +8,7 @@ from rest_framework.permissions import AllowAny
 from django.contrib.auth.models import User
 from rest_framework import generics
 from user.models import Profile
-from user.custom_permissions import IsOwner
+from user.custom_permissions import IsOwner, IsSameUser
 from knox.models import AuthToken
 
 
@@ -45,13 +45,13 @@ class LoginAPI(generics.GenericAPIView):
 
 
 class UserUpdate(generics.UpdateAPIView):
-    permission_classes = [IsOwner]
+    permission_classes = [IsSameUser]
     queryset = User.objects.all()
     serializer_class = UserUpdateSerializer
 
 
 class PasswordUpdate(generics.UpdateAPIView):
-    permission_classes = [IsOwner]
+    permission_classes = [IsSameUser]
     queryset = User.objects.all()
     serializer_class = PasswordUpdateSerializer
 

@@ -10,4 +10,11 @@ class IsOwner(permissions.BasePermission):
     message = "Allowed only for owner"
 
     def has_object_permission(self, request, view, obj):
-        return obj.user == request.user
+        return obj.owner == request.user
+
+
+class IsSameUser(permissions.BasePermission):
+    message = "Only allowed for the owner of account"
+
+    def has_object_permission(self, request, view, obj):
+        return obj == request.user

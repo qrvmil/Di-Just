@@ -75,7 +75,7 @@ class PasswordUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('password',)
+        fields = ('password', 'username')
 
     def update(self, instance, validated_data):
         instance.password = validated_data.get("password")
@@ -97,7 +97,15 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
 
 
 class ProfilePictureUpdateSerializer(serializers.ModelSerializer):
-    pass
+    class Meta:
+        model = Profile
+        fields = ['picture']
+
+    def update(self, instance, validated_data):
+        storage, path = instance.picture.storage, instance.picture.path
+        storage.delete(path)
+        instance.picture = validated_data["picture"]
+        return instance
 
 
 # retrieve and delete profile
