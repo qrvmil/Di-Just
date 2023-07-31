@@ -78,7 +78,8 @@ class PasswordUpdateSerializer(serializers.ModelSerializer):
         fields = ('password', 'username')
 
     def update(self, instance, validated_data):
-        instance.password = validated_data.get("password")
+        instance.set_password(validated_data["password"])
+        instance.save()
         return instance
 
 
@@ -97,14 +98,21 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
 
 
 class ProfilePictureUpdateSerializer(serializers.ModelSerializer):
+    user = serializers.SlugRelatedField(
+        many=False,
+        read_only=True,
+        slug_field='username'
+    )
+
     class Meta:
         model = Profile
-        fields = ['picture']
+        fields = ['picture', 'user']
 
     def update(self, instance, validated_data):
         storage, path = instance.picture.storage, instance.picture.path
         storage.delete(path)
         instance.picture = validated_data["picture"]
+        instance.save()
         return instance
 
 

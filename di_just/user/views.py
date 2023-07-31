@@ -23,6 +23,15 @@ class RegisterUser(generics.CreateAPIView):
         user_serializer.is_valid(raise_exception=True)
         user = user_serializer.save()
 
+        User.objects.create(
+            username=user_serializer.validated_data['username'],
+            email=user_serializer.validated_data['email'],
+            first_name=user_serializer.validated_data['first_name'],
+            last_name=user_serializer.validated_data['last_name']
+        )
+        user.set_password(user_serializer.validated_data['password'])
+        user.save()
+
         return Response({
             'user': RegisterSerializer(user).data,
             'token': AuthToken.objects.create(user)[1]
