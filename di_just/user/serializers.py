@@ -93,7 +93,11 @@ class UserSerializer(serializers.ModelSerializer):
 class ProfileUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ['picture', 'bio', 'age', 'follows']
+        fields = ['bio', 'age', 'follows']
+
+
+class ProfilePictureUpdateSerializer(serializers.ModelSerializer):
+    pass
 
 
 # retrieve and delete profile

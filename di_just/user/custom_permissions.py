@@ -10,4 +10,4 @@ class IsOwner(permissions.BasePermission):
     message = "Allowed only for owner"
 
     def has_object_permission(self, request, view, obj):
-        return obj.owner == request.user
+        return obj.user == request.user

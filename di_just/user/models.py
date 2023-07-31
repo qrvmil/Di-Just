@@ -13,5 +13,10 @@ class Profile(models.Model):
                                      blank=True)
     created_timestamp = models.DateTimeField(auto_now_add=True)
 
+    def delete(self, using=None, keep_parents=False):
+        storage, path = self.picture.storage, self.picture.path
+        super(Profile, self).delete()
+        storage.delete(path)
+
     def __str__(self):
         return f'{self.user.username}'

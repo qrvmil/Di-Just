@@ -2,7 +2,8 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from user.serializers import RegisterSerializer, UserUpdateSerializer, PasswordUpdateSerializer, \
-    ProfileUpdateSerializer, ProfileSerializer, UserSerializer, ProfileListSerializer, LoginSerializer
+    ProfileUpdateSerializer, ProfileSerializer, UserSerializer, ProfileListSerializer, LoginSerializer, \
+    ProfilePictureUpdateSerializer
 from rest_framework.permissions import AllowAny
 from django.contrib.auth.models import User
 from rest_framework import generics
@@ -11,7 +12,6 @@ from user.custom_permissions import IsOwner
 from knox.models import AuthToken
 
 
-# TO DO: прописать кастомные permissions
 # TO DO: продумать логику сортировщика
 class RegisterUser(generics.CreateAPIView):
     permission_classes = [AllowAny]
@@ -60,6 +60,12 @@ class ProfileUpdate(generics.UpdateAPIView):
     permission_classes = [IsOwner]
     queryset = Profile.objects.all()
     serializer_class = ProfileUpdateSerializer
+
+
+class ProfilePictureUpdate(generics.UpdateAPIView):
+    permission_classes = [IsOwner]
+    queryset = Profile.objects.all()
+    serializer_class = ProfilePictureUpdateSerializer
 
 
 class ProfileInfo(generics.RetrieveDestroyAPIView):
