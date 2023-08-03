@@ -61,6 +61,11 @@ class DigestImages(models.Model):
     picture = models.ImageField(upload_to="digest_images", blank=True)
     description = models.TextField()
 
+    def delete(self, using=None, keep_parents=False):
+        storage, path = self.picture.storage, self.picture.path
+        super(DigestImages, self).delete()
+        storage.delete(path)
+
     def __str__(self):
         return f'relate to [{self.digest.name}]'
 
@@ -71,7 +76,7 @@ class DigestLinks(models.Model):
     description = models.TextField()
 
     def __str__(self):
-        return f'relate to [{self.digest.name}]'
+        return f'relates to [{self.digest.name}]'
 
 
 class Comments(models.Model):

@@ -2,12 +2,31 @@ from rest_framework import serializers
 from digest.models import ImageDigest, LinkDigest, Topics, DigestLinks, DigestImages, Comments
 
 
-class DigestImageSerializer(serializers.ModelSerializer):
+# TO DO: дайджесты + правильное сохранение картинок
+
+
+class DigestImageUpdateSerializer(serializers.ModelSerializer):
+    # вызывается непосредственно при обновлении дайджеста, поэтому в сериализаторе дайджест не прописывается
     class Meta:
         model = DigestImages
-        fields = ['digest', 'picture', 'description']
+        fields = ['picture', 'description']
+
+    def update(self, instance, validated_data):
+        storage, path = instance.picture.storage, instance.picture.path
+        storage.delete(path)
+        instance.picture = validated_data["picture"]
+        instance.description = validated_data["description"]
+        instance.save()
+        return instance
 
 
+class DigestImageCRDSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DigestImages
+        fields = ['id', 'digest', 'picture', 'description']
+
+
+'''
 class DigestLinkSerializer(serializers.ModelSerializer):
     class Meta:
         model = DigestLinks
@@ -58,4 +77,4 @@ class LinkDigestSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         pass
-
+'''

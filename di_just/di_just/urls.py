@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from user.views import RegisterUser, UserUpdate, PasswordUpdate, ProfileUpdate, ProfileInfo, UserInfo, ProfileList, \
     LoginAPI, ProfilePictureUpdate
+from digest.views import DigestImagesUpdateAPI, DigestImagesRetrieveDeleteAPI, DigestImageCreateAPI
 from knox.urls import views as knoxviews
 
 # TO DO: make url patterns with the usage of include
@@ -26,6 +27,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # path('', include('user.urls')),
     # path('', include('digest.urls')),
+
+
     path('register/', RegisterUser.as_view(), name='register'),
     path('users/update/<int:pk>/', UserUpdate.as_view(), name='user-update'),
     path('users/user/<int:pk>/', UserInfo.as_view(), name='user-info-delete'),
@@ -36,4 +39,8 @@ urlpatterns = [
     path('users/profiles/', ProfileList.as_view(), name='profiles'),
     path('users/login/', LoginAPI.as_view(), name='login'),
     path('users/logout/', knoxviews.LogoutView.as_view(), name='logout'),
+
+    path('digest/update/<int:pk>', DigestImagesUpdateAPI.as_view(), name='update-digest'),
+    path('digest/<int:pk>', DigestImagesRetrieveDeleteAPI.as_view(), name='retrieve-delete-digest'),
+    path('digest/create', DigestImageCreateAPI.as_view(), name='create-digest')
 ]

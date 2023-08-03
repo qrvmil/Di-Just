@@ -4,45 +4,35 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
-from digest.models import ImageDigest, LinkDigest
-from digest.serializers import ImageDigestSerializer, LinkDigestSerializer
+from digest.models import ImageDigest, LinkDigest, DigestImages
+from digest.serializers import DigestImageUpdateSerializer, \
+    DigestImageCRDSerializer
+from rest_framework import generics
 
 
-@csrf_exempt
-def img_digest_list(request):
-    """
-    List all code profiles, or create a new profile.
-    """
-    if request.method == 'GET':
-        profiles = ImageDigest.objects.all()
-        serializer = ImageDigestSerializer(profiles, many=True)
-        # print(serializer.data)
-        return JsonResponse(serializer.data, safe=False)
-
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = ImageDigestSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+# TO DO: прописать permission на private дайджесты (разобраться как)
+# сделать в начале класса проверку на поле is_privat и если true, то вставить кастомный IsOwner
 
 
-@csrf_exempt
-def link_digest_list(request):
-    """
-    List all code profiles, or create a new profile.
-    """
-    if request.method == 'GET':
-        profiles = LinkDigest.objects.all()
-        serializer = LinkDigestSerializer(profiles, many=True)
-        # print(serializer.data)
-        return JsonResponse(serializer.data, safe=False)
+class DigestImagesUpdateAPI(generics.UpdateAPIView):
+    # TO DO прописать апдейт (через сериализатор) и delete (через сериализатор) для картинок
+    queryset = DigestImages
+    serializer_class = DigestImageUpdateSerializer
 
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = LinkDigestSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+
+class DigestImagesRetrieveDeleteAPI(generics.RetrieveDestroyAPIView):
+    queryset = DigestImages
+    serializer_class = DigestImageCRDSerializer
+
+
+class DigestImageCreateAPI(generics.CreateAPIView):
+    queryset = DigestImages
+    serializer_class = DigestImageCRDSerializer
+
+
+class LinkDigestAPI():
+    pass
+
+
+class TopicAPI():
+    pass
