@@ -52,12 +52,18 @@ class LoginSerializer(serializers.Serializer):
 # update user info
 class UserUpdateSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
-        validators=[UniqueValidator(queryset=User.objects.all())]
+        validators=[UniqueValidator(queryset=User.objects.all())], required=False
     )
 
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name', 'last_name')
+
+        extra_kwargs = {
+            'first_name': {'required': False},
+            'last_name': {'required': False},
+            'username': {'required': False},
+        }
 
     def update(self, instance, validated_data):
         instance.username = validated_data.get("username", instance.username)
@@ -75,7 +81,7 @@ class PasswordUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('password', 'username')
+        fields = ('password')
 
     def update(self, instance, validated_data):
         instance.set_password(validated_data["password"])

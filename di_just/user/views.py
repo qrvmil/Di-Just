@@ -13,7 +13,6 @@ from knox.models import AuthToken
 
 
 # TO DO: продумать логику сортировщика
-# TO DO: пофиксить что при ошибке создается новый юзер
 class RegisterUser(generics.CreateAPIView):
     permission_classes = [AllowAny]
     serializer_class = RegisterSerializer
