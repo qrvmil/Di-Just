@@ -13,17 +13,17 @@ from knox.models import AuthToken
 
 
 # TO DO: продумать логику сортировщика
+# TO DO: пофиксить что при ошибке создается новый юзер
 class RegisterUser(generics.CreateAPIView):
     permission_classes = [AllowAny]
     serializer_class = RegisterSerializer
 
-    # NB А куда девать create в сериализаторе...
     def post(self, request, *args, **kwargs):
         user_serializer = self.get_serializer(data=request.data)
         user_serializer.is_valid(raise_exception=True)
-        user = user_serializer.save()
+        # user = user_serializer.save()
 
-        User.objects.create(
+        user = User.objects.create(
             username=user_serializer.validated_data['username'],
             email=user_serializer.validated_data['email'],
             first_name=user_serializer.validated_data['first_name'],
