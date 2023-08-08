@@ -40,7 +40,7 @@ urlpatterns = [
     path('users/login/', LoginAPI.as_view(), name='login'),
     path('users/logout/', knoxviews.LogoutView.as_view(), name='logout'),
 
-    path('digest/update/<int:pk>', DigestImagesUpdateAPI.as_view(), name='update-digest'),
-    path('digest/<int:pk>', DigestImagesRetrieveDeleteAPI.as_view(), name='retrieve-delete-digest'),
-    path('digest/create', DigestImageCreateAPI.as_view(), name='create-digest')
+    path('digest/update/<int:pk>/', DigestImagesUpdateAPI.as_view(), name='update-digest'),
+    path('digest/<int:pk>/', DigestImagesRetrieveDeleteAPI.as_view(), name='retrieve-delete-digest'),
+    path('digest/create/', DigestImageCreateAPI.as_view(), name='create-digest')
 ]

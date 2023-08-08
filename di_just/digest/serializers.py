@@ -11,11 +11,18 @@ class DigestImageUpdateSerializer(serializers.ModelSerializer):
         model = DigestImages
         fields = ['picture', 'description']
 
+        extra_kwargs = {
+            'picture': {'required': False},
+            'description': {'required': False},
+        }
+
     def update(self, instance, validated_data):
-        storage, path = instance.picture.storage, instance.picture.path
-        storage.delete(path)
-        instance.picture = validated_data["picture"]
-        instance.description = validated_data["description"]
+        if 'picture' in validated_data and instance.picture != validated_data["picture"]:
+            storage, path = instance.picture.storage, instance.picture.path
+            storage.delete(path)
+            instance.picture = validated_data.get("picture", instance.picture)
+
+        instance.description = validated_data.get("description", instance.description)
         instance.save()
         return instance
 
@@ -24,6 +31,9 @@ class DigestImageCRDSerializer(serializers.ModelSerializer):
     class Meta:
         model = DigestImages
         fields = ['id', 'digest', 'picture', 'description']
+
+
+
 
 
 '''
