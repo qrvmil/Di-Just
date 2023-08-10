@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from digest.models import ImageDigest, LinkDigest, Topics, DigestLinks, DigestImages, Comments
+from user.models import Profile
 
 
 # TO DO: дайджесты + правильное сохранение картинок
@@ -12,7 +13,7 @@ class DigestImageUpdateSerializer(serializers.ModelSerializer):
         fields = ['picture', 'description']
 
         extra_kwargs = {
-            'picture': {'required': False},
+            'picture': {'required': True},
             'description': {'required': False},
         }
 
@@ -33,7 +34,48 @@ class DigestImageCRDSerializer(serializers.ModelSerializer):
         fields = ['id', 'digest', 'picture', 'description']
 
 
+# class PictureForDigestSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = DigestImages
+#         fields = ['picture', 'description']
 
+
+class TopicSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Topics
+        fields = ["topic_name"]
+
+
+class DigestImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DigestImages
+        fields = ["id", "digest", "picture"]
+
+
+class ImageDigestCreateSerializer(serializers.ModelSerializer):
+    pictures = serializers.ListField(
+        child=serializers.ImageField(allow_empty_file=True), write_only=True
+    )
+    descriptions = serializers.ListField(
+        child=serializers.CharField(), write_only=True
+    )
+
+    # topic = serializers.PrimaryKeyRelatedField(many=True, required=False)
+    # TO DO: разобраться с topic
+    class Meta:
+        model = ImageDigest
+        fields = ['owner', 'introduction', 'name', 'conclusion', 'saves', 'public', 'pictures', 'descriptions']
+
+    def create(self, validated_data):
+        pictures = validated_data.pop("pictures")
+        descriptions = validated_data.pop("descriptions")
+        saves = validated_data.pop("saves")
+        digest = ImageDigest.objects.create(**validated_data)
+        for picture, description in zip(pictures, descriptions):
+            DigestImages.objects.create(digest=digest, picture=picture, description=description)
+        for person in saves:
+            digest.saves.add(person)
+        return digest
 
 
 '''
@@ -60,7 +102,7 @@ class ImageDigestSerializer(serializers.ModelSerializer):
     comments = CommentsSerializer(many=True)
     topic = serializers.StringRelatedField(many=True)
 
-    class Meta:
+    class Meta:ы 
         model = ImageDigest
         fields = ['owner', 'introduction', 'name', 'conclusion', 'saves', 'public', 'created_timestamp',
                   'images', 'topic', 'comments']

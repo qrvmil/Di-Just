@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from digest.models import ImageDigest, LinkDigest, DigestImages
 from digest.serializers import DigestImageUpdateSerializer, \
-    DigestImageCRDSerializer
+    DigestImageCRDSerializer, ImageDigestCreateSerializer
 from rest_framework import generics
 
 
@@ -16,18 +16,23 @@ from rest_framework import generics
 
 class DigestImagesUpdateAPI(generics.UpdateAPIView):
     # TO DO прописать апдейт (через сериализатор) и delete (через сериализатор) для картинок
-    queryset = DigestImages
+    queryset = DigestImages.objects.all()
     serializer_class = DigestImageUpdateSerializer
 
 
 class DigestImagesRetrieveDeleteAPI(generics.RetrieveDestroyAPIView):
-    queryset = DigestImages
+    queryset = DigestImages.objects.all()
     serializer_class = DigestImageCRDSerializer
 
 
 class DigestImageCreateAPI(generics.CreateAPIView):
-    queryset = DigestImages
+    queryset = DigestImages.objects.all()
     serializer_class = DigestImageCRDSerializer
+
+
+class ImageDigestCreateAPI(generics.CreateAPIView):
+    queryset = ImageDigest.objects.all()
+    serializer_class = ImageDigestCreateSerializer
 
 
 class LinkDigestAPI():

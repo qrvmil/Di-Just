@@ -31,7 +31,7 @@ class ImageDigest(models.Model):
                               related_name='created_img_digest')
     introduction = models.TextField(blank=True)
     name = models.CharField(max_length=50)
-    topic = models.ManyToManyField(Topics, blank=True)
+    topic = models.ManyToManyField(Topics, blank=True, related_name='image_digest')
     conclusion = models.TextField(blank=True)
     saves = models.ManyToManyField('user.Profile', blank=True, null=True, related_name='saved_img_digest')
     public = models.BooleanField(default=True)
