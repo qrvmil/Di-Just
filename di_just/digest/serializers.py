@@ -34,12 +34,6 @@ class DigestImageCRDSerializer(serializers.ModelSerializer):
         fields = ['id', 'digest', 'picture', 'description']
 
 
-# class PictureForDigestSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = DigestImages
-#         fields = ['picture', 'description']
-
-
 class TopicSerializer(serializers.ModelSerializer):
     class Meta:
         model = Topics
@@ -59,23 +53,69 @@ class ImageDigestCreateSerializer(serializers.ModelSerializer):
     descriptions = serializers.ListField(
         child=serializers.CharField(), write_only=True
     )
+    public = serializers.BooleanField(default=True)
 
     # topic = serializers.PrimaryKeyRelatedField(many=True, required=False)
     # TO DO: разобраться с topic
     class Meta:
         model = ImageDigest
-        fields = ['owner', 'introduction', 'name', 'conclusion', 'saves', 'public', 'pictures', 'descriptions']
+        fields = ['id', 'owner', 'introduction', 'name', 'conclusion', 'public', 'pictures', 'descriptions']
+
+        extra_kwargs = {
+            'pictures': {'required': True},
+            'owner': {'required': False},
+            'name': {'required': False},
+            'introduction': {'required': False},
+            'conclusion': {'required': False},
+            'descriptions': {'required': False},
+            'public': {'required': False}
+        }
 
     def create(self, validated_data):
         pictures = validated_data.pop("pictures")
         descriptions = validated_data.pop("descriptions")
-        saves = validated_data.pop("saves")
+
         digest = ImageDigest.objects.create(**validated_data)
         for picture, description in zip(pictures, descriptions):
             DigestImages.objects.create(digest=digest, picture=picture, description=description)
-        for person in saves:
-            digest.saves.add(person)
+
         return digest
+
+
+class ImageDigestUpdateSerializer(serializers.ModelSerializer):
+    pictures = serializers.ListField(
+        child=serializers.ImageField(allow_empty_file=True), write_only=True, required=False
+    )
+    descriptions = serializers.ListField(
+        child=serializers.CharField(), write_only=True, required=False
+    )
+    public = serializers.BooleanField(default=True, required=False)
+
+    class Meta:
+        model = ImageDigest
+        fields = ['id', 'owner', 'introduction', 'name', 'conclusion', 'public', 'pictures', 'descriptions']
+
+        extra_kwargs = {
+            'owner': {'required': False},
+            'name': {'required': False},
+            'introduction': {'required': False},
+            'conclusion': {'required': False},
+            'descriptions': {'required': False},
+            'public': {'required': False}
+        }
+
+    # NB из формы в запрос возвращаем все данные из pictures и descriptions, а не только измененные
+    def update(self, instance, validated_data):
+
+
+
+
+        instance.introduction = validated_data.get("introduction", instance.introduction)
+        instance.name = validated_data.get("name", instance.name)
+        instance.conclusion = validated_data.get("conclusion", instance.conclusion)
+        instance.public = validated_data.get("public", instance.public)
+        instance.save()
+        return instance
 
 
 '''

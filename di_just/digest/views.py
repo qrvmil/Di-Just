@@ -5,8 +5,7 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from digest.models import ImageDigest, LinkDigest, DigestImages
-from digest.serializers import DigestImageUpdateSerializer, \
-    DigestImageCRDSerializer, ImageDigestCreateSerializer
+from digest.serializers import *
 from rest_framework import generics
 
 
@@ -33,6 +32,11 @@ class DigestImageCreateAPI(generics.CreateAPIView):
 class ImageDigestCreateAPI(generics.CreateAPIView):
     queryset = ImageDigest.objects.all()
     serializer_class = ImageDigestCreateSerializer
+
+
+class ImageDigestUpdateAPI(generics.UpdateAPIView):
+    queryset = ImageDigest.objects.all()
+    serializer_class = ImageDigestUpdateSerializer
 
 
 class LinkDigestAPI():
