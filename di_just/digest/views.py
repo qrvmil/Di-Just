@@ -4,6 +4,8 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
+from rest_framework.views import APIView
+
 from digest.models import ImageDigest, LinkDigest, DigestImages
 from digest.serializers import *
 from rest_framework import generics
@@ -34,9 +36,20 @@ class ImageDigestCreateAPI(generics.CreateAPIView):
     serializer_class = ImageDigestCreateSerializer
 
 
-class ImageDigestUpdateAPI(generics.UpdateAPIView):
-    queryset = ImageDigest.objects.all()
-    serializer_class = ImageDigestUpdateSerializer
+class ImageDigestUpdateAPI(APIView):
+
+    def put(self, request, pk):
+        data = request.data
+        updates = data.pop("updates")
+        pictures = data.pop("pictures")
+        for elem in updates:  # добавить проверку вводимых данных
+            instance = DigestImages.objects.get(pk=elem["pk"])
+            if elem["type"] == "picture":
+                storage, path = instance.picture.storage, instance.picture.path
+                storage.delete(path)
+                instance.picture = pictures[elem["picture"]]
+            else:
+                instance.description = elem['description']
 
 
 class LinkDigestAPI():
