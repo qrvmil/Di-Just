@@ -41,22 +41,28 @@ class ImageDigestCreateAPI(generics.CreateAPIView):
 
 class ImageDigestUpdateAPI(APIView):
     # TO DO make subscription
+    # TO DO make validation
     def put(self, request, pk):
         data = request.data
+
         if "updates" in data.keys():
             updates = json.loads(data["updates"])["updates"]
+
             if "pictures" in data.keys():
                 pictures = data.pop("pictures")
             else:
                 pictures = []
+
             for elem in updates:  # TO DO: добавить проверку вводимых данных
                 try:
                     instance = DigestImages.objects.get(pk=elem["pk"])
-                except:
+                except:  # TO DO: посмотреть какая конкретно ошибка
                     return Response({"error": "invalid pk"})
+
                 if elem["type"] == "picture":
                     storage, path = instance.picture.storage, instance.picture.path
                     storage.delete(path)
+
                     try:
                         instance.picture = pictures[elem["picture"]]
                     except KeyError:
@@ -64,13 +70,14 @@ class ImageDigestUpdateAPI(APIView):
                     except IndexError:
                         return Response({"error": "invalid index for picture in picture array"})
                     instance.save()
+
                 else:
                     instance.description = elem['description']
                     instance.save()
 
         try:
             digest = ImageDigest.objects.get(pk=pk)
-        except: # TO DO посмотреть какая тут конкретно возвращается ошибка
+        except:  # TO DO посмотреть какая тут конкретно возвращается ошибка
             return
         digest["name"] = data.get("name", digest["name"])
         digest["introduction"] = data.get("introduction", digest["introduction"])
@@ -78,7 +85,12 @@ class ImageDigestUpdateAPI(APIView):
 
         digest.save()
 
-        return Response({"status": "success"})
+        return Response({"status": "successfully updated"})
+
+
+class ImageDigestRetrieveDeleteAPI(generics.RetrieveDestroyAPIView):
+    queryset = ImageDigest.objects.all()
+    serializer_class = ImageDigestRetrieveDeleteSerializer
 
 
 class LinkDigestAPI():

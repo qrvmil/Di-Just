@@ -82,40 +82,10 @@ class ImageDigestCreateSerializer(serializers.ModelSerializer):
         return digest
 
 
-class UpdatesPictureSerializer(serializers.Serializer):
-    pk = serializers.IntegerField()
-    picture = serializers.ImageField()
-
-
-
-class UpdatesDescriptionSerializer(serializers.Serializer):
-    pk = serializers.IntegerField()
-    description = serializers.CharField()
-
-
-class ImageDigestUpdateSerializer(serializers.ModelSerializer):
-    public = serializers.BooleanField(default=True, required=False)
-
+class ImageDigestRetrieveDeleteSerializer(serializers.ModelSerializer):
     class Meta:
         model = ImageDigest
-        fields = ['introduction', 'name', 'conclusion', 'public', 'updates']
-
-        extra_kwargs = {
-            'name': {'required': False},
-            'introduction': {'required': False},
-            'conclusion': {'required': False},
-            'descriptions': {'required': False},
-            'public': {'required': False}
-        }
-
-    # NB из формы в запрос возвращаем все данные из pictures и descriptions, а не только измененные
-    def update(self, instance, validated_data):
-        instance.introduction = validated_data.get("introduction", instance.introduction)
-        instance.name = validated_data.get("name", instance.name)
-        instance.conclusion = validated_data.get("conclusion", instance.conclusion)
-        instance.public = validated_data.get("public", instance.public)
-        instance.save()
-        return instance
+        fields = ['__all__']
 
 
 '''
