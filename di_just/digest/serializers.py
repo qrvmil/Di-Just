@@ -3,7 +3,8 @@ from digest.models import ImageDigest, LinkDigest, Topics, DigestLinks, DigestIm
 from user.models import Profile
 
 
-# TO DO: дайджесты + правильное сохранение картинок
+# TODO: прописать кастомные permissions
+# TODO: + прописать get для отображения картинок дайджеста
 
 
 class DigestImageUpdateSerializer(serializers.ModelSerializer):
@@ -56,7 +57,7 @@ class ImageDigestCreateSerializer(serializers.ModelSerializer):
     public = serializers.BooleanField(default=True)
 
     # topic = serializers.PrimaryKeyRelatedField(many=True, required=False)
-    # TO DO: разобраться с topic
+    # TODO: разобраться с topic
     class Meta:
         model = ImageDigest
         fields = ['id', 'owner', 'introduction', 'name', 'conclusion', 'public', 'pictures', 'descriptions']
@@ -85,7 +86,7 @@ class ImageDigestCreateSerializer(serializers.ModelSerializer):
 class ImageDigestRetrieveDeleteSerializer(serializers.ModelSerializer):
     class Meta:
         model = ImageDigest
-        fields = ['__all__']
+        fields = ['owner', 'introduction', 'name', 'topic', 'conclusion', 'saves', 'public', 'created_timestamp']
 
 
 '''

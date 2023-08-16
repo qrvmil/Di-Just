@@ -9,17 +9,16 @@ from rest_framework.views import APIView
 
 from digest.models import ImageDigest, LinkDigest, DigestImages
 from digest.serializers import *
-from rest_framework import generics
+from rest_framework import generics, status
 import json
 import digest.models
 
 
-# TO DO: прописать permission на private дайджесты (разобраться как)
-# сделать в начале класса проверку на поле is_privat и если true, то вставить кастомный IsOwner
+# TODO: прописать permission на private дайджесты (разобраться как)
+# TODO: сделать в начале класса проверку на поле is_privat и если true, то вставить кастомный IsOwner
 
 
 class DigestImagesUpdateAPI(generics.UpdateAPIView):
-    # TO DO прописать апдейт (через сериализатор) и delete (через сериализатор) для картинок
     queryset = DigestImages.objects.all()
     serializer_class = DigestImageUpdateSerializer
 
@@ -40,8 +39,8 @@ class ImageDigestCreateAPI(generics.CreateAPIView):
 
 
 class ImageDigestUpdateAPI(APIView):
-    # TO DO make subscription
-    # TO DO make validation
+    # TODO make subscription
+    # TODO make validation
     def put(self, request, pk):
         data = request.data
 
@@ -53,7 +52,7 @@ class ImageDigestUpdateAPI(APIView):
             else:
                 pictures = []
 
-            for elem in updates:  # TO DO: добавить проверку вводимых данных
+            for elem in updates:  # TODO: добавить проверку вводимых данных
                 try:
                     instance = DigestImages.objects.get(pk=elem["pk"])
                 except:  # TO DO: посмотреть какая конкретно ошибка
@@ -77,8 +76,8 @@ class ImageDigestUpdateAPI(APIView):
 
         try:
             digest = ImageDigest.objects.get(pk=pk)
-        except:  # TO DO посмотреть какая тут конкретно возвращается ошибка
-            return
+        except:
+            return Response({"error": "invalid pk"})
         digest["name"] = data.get("name", digest["name"])
         digest["introduction"] = data.get("introduction", digest["introduction"])
         digest["conclusion"] = data.get("conclusion", digest["conclusion"])
@@ -88,9 +87,24 @@ class ImageDigestUpdateAPI(APIView):
         return Response({"status": "successfully updated"})
 
 
-class ImageDigestRetrieveDeleteAPI(generics.RetrieveDestroyAPIView):
-    queryset = ImageDigest.objects.all()
-    serializer_class = ImageDigestRetrieveDeleteSerializer
+class ImageDigestRetrieveDeleteAPI(APIView):
+
+    def get(self, request, pk):
+        try:
+            digest = ImageDigest.objects.get(pk=pk)
+        except:
+            return Response({"error": "invalid pk"})
+        images = DigestImages.objects.filter(digest=digest)
+        images = DigestImageCRDSerializer(data=images, many=True)
+        images.is_valid()
+        digest = ImageDigestRetrieveDeleteSerializer(digest)
+
+        return Response({"general info": digest.data, "digest images": images.data})
+
+    def delete(self, request, pk):
+        digest = ImageDigest.objects.get(pk=pk)
+        digest.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class LinkDigestAPI():
