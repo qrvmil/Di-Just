@@ -47,13 +47,19 @@ class DigestImageSerializer(serializers.ModelSerializer):
 
 
 class ImageDigestCreateSerializer(serializers.ModelSerializer):
+    pictures = serializers.ListField(
+        child=serializers.ImageField(allow_empty_file=True), write_only=True
+    )
+    descriptions = serializers.ListField(
+        child=serializers.CharField(), write_only=True
+    )
     public = serializers.BooleanField(default=True)
 
     # topic = serializers.PrimaryKeyRelatedField(many=True, required=False)
     # TO DO: разобраться с topic
     class Meta:
         model = ImageDigest
-        fields = ['id', 'owner', 'introduction', 'name', 'conclusion', 'public']
+        fields = ['id', 'owner', 'introduction', 'name', 'conclusion', 'public', 'pictures', 'descriptions']
 
         extra_kwargs = {
             'pictures': {'required': True},
@@ -65,10 +71,21 @@ class ImageDigestCreateSerializer(serializers.ModelSerializer):
             'public': {'required': False}
         }
 
+    def create(self, validated_data):
+        pictures = validated_data.pop("pictures")
+        descriptions = validated_data.pop("descriptions")
+
+        digest = ImageDigest.objects.create(**validated_data)
+        for picture, description in zip(pictures, descriptions):
+            DigestImages.objects.create(digest=digest, picture=picture, description=description)
+
+        return digest
+
 
 class UpdatesPictureSerializer(serializers.Serializer):
     pk = serializers.IntegerField()
     picture = serializers.ImageField()
+
 
 
 class UpdatesDescriptionSerializer(serializers.Serializer):
