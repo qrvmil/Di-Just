@@ -49,10 +49,10 @@ class DigestImageSerializer(serializers.ModelSerializer):
 
 class ImageDigestCreateSerializer(serializers.ModelSerializer):
     pictures = serializers.ListField(
-        child=serializers.ImageField(allow_empty_file=True), write_only=True
+        child=serializers.ImageField(allow_empty_file=True), write_only=True, required=False
     )
     descriptions = serializers.ListField(
-        child=serializers.CharField(), write_only=True
+        child=serializers.CharField(), write_only=True, required=False
     )
     public = serializers.BooleanField(default=True)
 
@@ -63,22 +63,25 @@ class ImageDigestCreateSerializer(serializers.ModelSerializer):
         fields = ['id', 'owner', 'introduction', 'name', 'conclusion', 'public', 'pictures', 'descriptions']
 
         extra_kwargs = {
-            'pictures': {'required': True},
             'owner': {'required': False},
             'name': {'required': False},
             'introduction': {'required': False},
             'conclusion': {'required': False},
-            'descriptions': {'required': False},
             'public': {'required': False}
         }
 
     def create(self, validated_data):
-        pictures = validated_data.pop("pictures")
-        descriptions = validated_data.pop("descriptions")
+        # TODO: сделать эту проверку на наличие pictures and dexcriptions нормально
+        # (рассмотреть все случаи наличия/отсутсвия обоих полей)
+        if "pictures" in validated_data.keys() and "descriptions" in validated_data.keys():
+            pictures = validated_data.pop("pictures")
+            descriptions = validated_data.pop("descriptions")
 
-        digest = ImageDigest.objects.create(**validated_data)
-        for picture, description in zip(pictures, descriptions):
-            DigestImages.objects.create(digest=digest, picture=picture, description=description)
+            digest = ImageDigest.objects.create(**validated_data)
+            for picture, description in zip(pictures, descriptions):
+                DigestImages.objects.create(digest=digest, picture=picture, description=description)
+        else:
+            digest = ImageDigest.objects.create(**validated_data)
 
         return digest
 

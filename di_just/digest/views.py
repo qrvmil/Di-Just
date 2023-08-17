@@ -6,19 +6,20 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from digest.custom_permissions import *
 from digest.models import ImageDigest, LinkDigest, DigestImages
 from digest.serializers import *
 from rest_framework import generics, status
 import json
-import digest.models
+from rest_framework.permissions import IsAuthenticated
 
 
 # TODO: прописать permission на private дайджесты (разобраться как)
-# TODO: сделать в начале класса проверку на поле is_privat и если true, то вставить кастомный IsOwner
+# TODO: сделать в начале класса проверку на поле public и если true, то вставить кастомный IsOwner
 
 
 class DigestImagesUpdateAPI(generics.UpdateAPIView):
+    permission_classes = [IsOwner]
     queryset = DigestImages.objects.all()
     serializer_class = DigestImageUpdateSerializer
 
@@ -29,16 +30,20 @@ class DigestImagesRetrieveDeleteAPI(generics.RetrieveDestroyAPIView):
 
 
 class DigestImageCreateAPI(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = DigestImages.objects.all()
     serializer_class = DigestImageCRDSerializer
 
 
 class ImageDigestCreateAPI(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = ImageDigest.objects.all()
     serializer_class = ImageDigestCreateSerializer
 
 
 class ImageDigestUpdateAPI(APIView):
+    permission_classes = [IsOwner]
+
     # TODO make subscription
     # TODO make validation
     def put(self, request, pk):
@@ -87,19 +92,27 @@ class ImageDigestUpdateAPI(APIView):
         return Response({"status": "successfully updated"})
 
 
-class ImageDigestRetrieveDeleteAPI(APIView):
+class ImageDigestRetrieveAPI(APIView):
 
     def get(self, request, pk):
         try:
             digest = ImageDigest.objects.get(pk=pk)
         except:
             return Response({"error": "invalid pk"})
+
+        if not digest.public and (request.user != digest.owner.user):
+            return Response({"error": "this digest is private"})
+
         images = DigestImages.objects.filter(digest=digest)
         images = DigestImageCRDSerializer(data=images, many=True)
         images.is_valid()
         digest = ImageDigestRetrieveDeleteSerializer(digest)
 
         return Response({"general info": digest.data, "digest images": images.data})
+
+
+class ImageDigestDeleteAPI(APIView):
+    permission_classes = [IsOwner]
 
     def delete(self, request, pk):
         digest = ImageDigest.objects.get(pk=pk)

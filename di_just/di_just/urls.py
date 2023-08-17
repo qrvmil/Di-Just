@@ -16,8 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from user.views import RegisterUser, UserUpdate, PasswordUpdate, ProfileUpdate, ProfileInfo, UserInfo, ProfileList, \
-    LoginAPI, ProfilePictureUpdate
+from user.views import *
 from digest.views import *
 from knox.urls import views as knoxviews
 
@@ -44,5 +43,7 @@ urlpatterns = [
     path('digest/image/create/', DigestImageCreateAPI.as_view(), name='create-img'),
     path('digest/create/', ImageDigestCreateAPI.as_view(), name='create-digest'),
     path('digest/update/<int:pk>/', ImageDigestUpdateAPI.as_view(), name='update-digest'),
-    path('digest/<int:pk>/', ImageDigestRetrieveDeleteAPI.as_view(), name='retrieve-delete-digest')
+    path('digest/get/<int:pk>/', ImageDigestRetrieveAPI.as_view(), name='retrieve-digest'),
+    path('digest/delete/<int:pk>/', ImageDigestDeleteAPI.as_view(), name='delete-digest')
+
 ]
