@@ -3,12 +3,7 @@ from digest.models import ImageDigest, LinkDigest, Topics, DigestLinks, DigestIm
 from user.models import Profile
 
 
-# TODO: прописать кастомные permissions
-# TODO: + прописать get для отображения картинок дайджеста
-
-
 class DigestImageUpdateSerializer(serializers.ModelSerializer):
-    # вызывается непосредственно при обновлении дайджеста, поэтому в сериализаторе дайджест не прописывается
     class Meta:
         model = DigestImages
         fields = ['picture', 'description']
@@ -71,7 +66,7 @@ class ImageDigestCreateSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        # TODO: сделать эту проверку на наличие pictures and dexcriptions нормально
+        # TODO: сделать эту проверку на наличие pictures and descriptions нормально
         # (рассмотреть все случаи наличия/отсутсвия обоих полей)
         if "pictures" in validated_data.keys() and "descriptions" in validated_data.keys():
             pictures = validated_data.pop("pictures")
