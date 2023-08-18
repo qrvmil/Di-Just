@@ -14,10 +14,6 @@ import json
 from rest_framework.permissions import IsAuthenticated
 
 
-# TODO: прописать permission на private дайджесты (разобраться как)
-# TODO: сделать в начале класса проверку на поле public и если true, то вставить кастомный IsOwner
-
-
 class DigestImagesUpdateAPI(generics.UpdateAPIView):
     permission_classes = [IsOwner]
     queryset = DigestImages.objects.all()

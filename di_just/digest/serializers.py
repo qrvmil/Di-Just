@@ -2,6 +2,11 @@ from rest_framework import serializers
 from digest.models import ImageDigest, LinkDigest, Topics, DigestLinks, DigestImages, Comments
 from user.models import Profile
 
+# TODO: получение всех сохраненных юзером дайджестов
+# TODO: получение дайджестов по топикам
+# TODO: добавить топики
+# TODO: добавить комментарии
+
 
 class DigestImageUpdateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -65,9 +70,9 @@ class ImageDigestCreateSerializer(serializers.ModelSerializer):
             'public': {'required': False}
         }
 
+    # в api всегда должны передаваться оба параметра pictures и descriptions, причем одинакового размера
     def create(self, validated_data):
-        # TODO: сделать эту проверку на наличие pictures and descriptions нормально
-        # (рассмотреть все случаи наличия/отсутсвия обоих полей)
+
         if "pictures" in validated_data.keys() and "descriptions" in validated_data.keys():
             pictures = validated_data.pop("pictures")
             descriptions = validated_data.pop("descriptions")
@@ -85,57 +90,3 @@ class ImageDigestRetrieveDeleteSerializer(serializers.ModelSerializer):
     class Meta:
         model = ImageDigest
         fields = ['owner', 'introduction', 'name', 'topic', 'conclusion', 'saves', 'public', 'created_timestamp']
-
-
-'''
-class DigestLinkSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = DigestLinks
-        fields = ['digest', 'link', 'description']
-
-
-class CommentsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Comments
-        fields = ['user', 'text', 'created_timestamp']
-
-
-class TopicSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Topics
-        fields = ['topic_name']
-
-
-class ImageDigestSerializer(serializers.ModelSerializer):
-    images = DigestImageSerializer(many=True)
-    comments = CommentsSerializer(many=True)
-    topic = serializers.StringRelatedField(many=True)
-
-    class Meta:ы 
-        model = ImageDigest
-        fields = ['owner', 'introduction', 'name', 'conclusion', 'saves', 'public', 'created_timestamp',
-                  'images', 'topic', 'comments']
-
-    def create(self, validated_data):
-        pass
-
-    def update(self, instance, validated_data):
-        pass
-
-
-class LinkDigestSerializer(serializers.ModelSerializer):
-    links = DigestLinkSerializer(many=True)
-    comments = CommentsSerializer(many=True)
-    topics = serializers.StringRelatedField(many=True)
-
-    class Meta:
-        model = LinkDigest
-        fields = ['owner', 'introduction', 'name', 'conclusion', 'saves', 'public', 'created_timestamp',
-                  'links', 'topics', 'comments']
-
-    def create(self, validated_data):
-        pass
-
-    def update(self, instance, validated_data):
-        pass
-'''
