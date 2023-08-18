@@ -90,3 +90,9 @@ class ImageDigestRetrieveDeleteSerializer(serializers.ModelSerializer):
     class Meta:
         model = ImageDigest
         fields = ['owner', 'introduction', 'name', 'topic', 'conclusion', 'saves', 'public', 'created_timestamp']
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comments
+        fields = ['user', 'text', 'created_timestamp', 'link_digest', 'img_digest']

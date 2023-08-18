@@ -14,6 +14,9 @@ import json
 from rest_framework.permissions import IsAuthenticated
 
 
+# TODO: передавать ли нам user в комментариях и owner в дайджестах при создании или лучше брать из user из request?
+
+
 class DigestImagesUpdateAPI(generics.UpdateAPIView):
     permission_classes = [IsOwner]
     queryset = DigestImages.objects.all()
@@ -114,6 +117,30 @@ class ImageDigestDeleteAPI(APIView):
         digest = ImageDigest.objects.get(pk=pk)
         digest.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class CommentCreateAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        data = request.data
+        if "link_digest" in data.keys() and "img_digest" in data.keys():
+            return Response({"error": "you can add comment only to one digest"})
+        if not ("link_digest" in data.keys()) and not ("img_digest" in data.keys()):
+            return Response({"error": "digest field is required"})
+        serializer = CommentSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response({"post": serializer.data})
+
+
+class CommentUpdateAPI(APIView):
+    permission_classes = [IsOwner]
+
+    def put(self, request, pk):
+        comment = Comments.objects.get(pk=pk)
+        comment["text"] = request.data.get("text", comment["text"])
 
 
 class LinkDigestAPI():
