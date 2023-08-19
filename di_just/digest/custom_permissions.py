@@ -11,3 +11,11 @@ class IsOwner(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         return obj == request.user
+
+
+class IsCommenter(permissions.BasePermission):
+
+    message = "Allowed only for owner"
+
+    def has_object_permission(self, request, view, obj):
+        return obj.user == request.user.profile

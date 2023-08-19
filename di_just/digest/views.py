@@ -140,7 +140,15 @@ class CommentUpdateAPI(APIView):
 
     def put(self, request, pk):
         comment = Comments.objects.get(pk=pk)
-        comment["text"] = request.data.get("text", comment["text"])
+        comment.text = request.data.get("text", comment.text)
+        serializer = CommentSerializer(instance=comment)
+        return Response({"updated": serializer.data})
+
+
+class CommentDeleteAPI(generics.DestroyAPIView):
+    permission_classes = [IsCommenter]
+    queryset = Comments
+    serializer_class = CommentSerializer
 
 
 class LinkDigestAPI():

@@ -46,6 +46,7 @@ urlpatterns = [
     path('digest/get/<int:pk>/', ImageDigestRetrieveAPI.as_view(), name='retrieve-digest'),
     path('digest/delete/<int:pk>/', ImageDigestDeleteAPI.as_view(), name='delete-digest'),
     path('digest/comment/create/', CommentCreateAPI.as_view(), name='comment-create'),
-    path('digest/comment/update/<int:pk>/', CommentUpdateAPI.as_view(), name='comment-update')
+    path('digest/comment/update/<int:pk>/', CommentUpdateAPI.as_view(), name='comment-update'),
+    path('digest/comment/delete/<int:pk>/', CommentDeleteAPI.as_view(), name='comment-delete')
 
 ]
