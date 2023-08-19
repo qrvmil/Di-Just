@@ -42,12 +42,6 @@ class TopicSerializer(serializers.ModelSerializer):
         fields = ["topic_name"]
 
 
-class DigestImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = DigestImages
-        fields = ["id", "digest", "picture"]
-
-
 class ImageDigestCreateSerializer(serializers.ModelSerializer):
     pictures = serializers.ListField(
         child=serializers.ImageField(allow_empty_file=True), write_only=True, required=False
@@ -99,6 +93,12 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = ['user', 'text', 'created_timestamp', 'link_digest', 'img_digest']
 
 
+class DigestLinksSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DigestImages
+        fields = ['id', 'digest', 'link', 'description']
+
+
 class LinkDigestCreateSerializer(serializers.ModelSerializer):
     links = serializers.ListField(
         child=serializers.CharField(), write_only=True, required=False
@@ -128,6 +128,4 @@ class LinkDigestCreateSerializer(serializers.ModelSerializer):
         return digest
 
 
-
-
-
+class ListDigestSerializer

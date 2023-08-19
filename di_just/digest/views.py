@@ -193,8 +193,6 @@ class LinkDigestUpdateAPI(APIView):
 
                 link.save()
 
-
-
         try:
             digest = LinkDigest.objects.get(pk=pk)
         except:
@@ -212,6 +210,23 @@ class LinkDigestUpdateAPI(APIView):
         return Response({"status": "successfully updated"})
 
 
+class LinkDigestRetrieveAPI(APIView):
+
+    def get(self, request, pk):
+        try:
+            digest = LinkDigest.objects.get(pk=pk)
+        except:
+            return Response({"error": "invalid pk"})
+
+        if not digest.public and (request.user != digest.owner.user):
+            return Response({"error": "this digest is private"})
+
+        links = DigestLinks.objects.filter(digest=digest)
+        links = DigestLinksSerializer(data=links, many=True)
+        links.is_valid()
+        digest = (digest)
+
+        return Response({"general info": digest.data, "digest link": links.data})
 
 
 class TopicAPI():
