@@ -24,6 +24,7 @@ from rest_framework.permissions import IsAuthenticated
 # TODO: add comments to digest.get
 # TODO: add pagination
 # TODO: test API
+# TODO: протестировать LinkDigest retrieve + delete
 
 
 class DigestImagesUpdateAPI(generics.UpdateAPIView):
@@ -224,9 +225,15 @@ class LinkDigestRetrieveAPI(APIView):
         links = DigestLinks.objects.filter(digest=digest)
         links = DigestLinksSerializer(data=links, many=True)
         links.is_valid()
-        digest = (digest)
+        digest = LinkDigestRetrieveDeleteSerializer(digest)
 
         return Response({"general info": digest.data, "digest link": links.data})
+
+
+class LinkDigestDeleteAPI(generics.DestroyAPIView):
+    permission_classes = [IsOwner]
+    queryset = LinkDigest
+    serializer_class = LinkDigestRetrieveDeleteSerializer
 
 
 class TopicAPI():

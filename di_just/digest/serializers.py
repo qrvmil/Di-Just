@@ -128,4 +128,8 @@ class LinkDigestCreateSerializer(serializers.ModelSerializer):
         return digest
 
 
-class ListDigestSerializer
+class LinkDigestRetrieveDeleteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ImageDigest
+        fields = ['owner', 'introduction', 'name', 'topic', 'conclusion', 'saves', 'public', 'created_timestamp']
+
