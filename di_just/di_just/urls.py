@@ -38,15 +38,19 @@ urlpatterns = [
     path('users/login/', LoginAPI.as_view(), name='login'),
     path('users/logout/', knoxviews.LogoutView.as_view(), name='logout'),
 
-    path('digest/image/update/<int:pk>/', DigestImagesUpdateAPI.as_view(), name='update-img'),
-    path('digest/image/<int:pk>/', DigestImagesRetrieveDeleteAPI.as_view(), name='retrieve-delete-img'),
-    path('digest/image/create/', DigestImageCreateAPI.as_view(), name='create-img'),
-    path('digest/create/', ImageDigestCreateAPI.as_view(), name='create-digest'),
-    path('digest/update/<int:pk>/', ImageDigestUpdateAPI.as_view(), name='update-digest'),
-    path('digest/get/<int:pk>/', ImageDigestRetrieveAPI.as_view(), name='retrieve-digest'),
-    path('digest/delete/<int:pk>/', ImageDigestDeleteAPI.as_view(), name='delete-digest'),
+    path('img-digest/image/update/<int:pk>/', DigestImagesUpdateAPI.as_view(), name='update-img'),
+    path('img-digest/image/<int:pk>/', DigestImagesRetrieveDeleteAPI.as_view(), name='retrieve-delete-img'),
+    path('img-digest/image/create/', DigestImageCreateAPI.as_view(), name='create-img'),
+    path('img-digest/create/', ImageDigestCreateAPI.as_view(), name='create-img-digest'),
+    path('img-digest/update/<int:pk>/', ImageDigestUpdateAPI.as_view(), name='update-img-digest'),
+    path('img-digest/get/<int:pk>/', ImageDigestRetrieveAPI.as_view(), name='retrieve-img-digest'),
+    path('img-digest/delete/<int:pk>/', ImageDigestDeleteAPI.as_view(), name='delete-img-digest'),
+
     path('digest/comment/create/', CommentCreateAPI.as_view(), name='comment-create'),
     path('digest/comment/update/<int:pk>/', CommentUpdateAPI.as_view(), name='comment-update'),
-    path('digest/comment/delete/<int:pk>/', CommentDeleteAPI.as_view(), name='comment-delete')
+    path('digest/comment/delete/<int:pk>/', CommentDeleteAPI.as_view(), name='comment-delete'),
+
+    path('link-digest/create/', LinkDigestCreateAPI.as_view(), name='create-link-digest'),
+    path('link-digest/update/<int:pk>/', LinkDigestUpdateAPI.as_view(), name='update-link-digest')
 
 ]

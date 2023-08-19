@@ -14,7 +14,16 @@ import json
 from rest_framework.permissions import IsAuthenticated
 
 
-# TODO: передавать ли нам user в комментариях и owner в дайджестах при создании или лучше брать из user из request?
+# TODO: topics
+# TODO: subscription
+# TODO: get digest comments
+# TODO: list of digests
+# TODO: sorter
+# TODO: list of profiles
+# TODO: get users' digests
+# TODO: add comments to digest.get
+# TODO: add pagination
+# TODO: test API
 
 
 class DigestImagesUpdateAPI(generics.UpdateAPIView):
@@ -44,7 +53,6 @@ class ImageDigestUpdateAPI(APIView):
     permission_classes = [IsOwner]
 
     # TODO make subscription
-    # TODO make validation
     def put(self, request, pk):
         data = request.data
 
@@ -56,11 +64,14 @@ class ImageDigestUpdateAPI(APIView):
             else:
                 pictures = []
 
-            for elem in updates:  # TODO: добавить проверку вводимых данных
+            for elem in updates:
                 try:
                     instance = DigestImages.objects.get(pk=elem["pk"])
-                except:  # TO DO: посмотреть какая конкретно ошибка
+                except:
                     return Response({"error": "invalid pk"})
+
+                if instance.owner != request.user.profile:  # IsOwner check
+                    return Response({"Allowed only for owners"})
 
                 if elem["type"] == "picture":
                     storage, path = instance.picture.storage, instance.picture.path
@@ -82,9 +93,13 @@ class ImageDigestUpdateAPI(APIView):
             digest = ImageDigest.objects.get(pk=pk)
         except:
             return Response({"error": "invalid pk"})
-        digest["name"] = data.get("name", digest["name"])
-        digest["introduction"] = data.get("introduction", digest["introduction"])
-        digest["conclusion"] = data.get("conclusion", digest["conclusion"])
+
+        if digest.owner != request.user.profile:  # IsOwner check
+            return Response({"Allowed only for owners"})
+
+        digest.name = data.get("name", digest.name)
+        digest.introduction = data.get("introduction", digest.introduction)
+        digest.conclusion = data.get("conclusion", digest.conclusion)
 
         digest.save()
 
@@ -111,10 +126,11 @@ class ImageDigestRetrieveAPI(APIView):
 
 
 class ImageDigestDeleteAPI(APIView):
-    permission_classes = [IsOwner]
 
     def delete(self, request, pk):
         digest = ImageDigest.objects.get(pk=pk)
+        if digest.user != request.user.profile:  # IsOwner check
+            return Response({"Allowed only for owners"})
         digest.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -136,10 +152,13 @@ class CommentCreateAPI(APIView):
 
 
 class CommentUpdateAPI(APIView):
-    permission_classes = [IsOwner]
+    permission_classes = [IsCommenter]
 
     def put(self, request, pk):
         comment = Comments.objects.get(pk=pk)
+        if comment.user != request.user.profile:
+            return Response({"allowed only for owner"})
+
         comment.text = request.data.get("text", comment.text)
         serializer = CommentSerializer(instance=comment)
         return Response({"updated": serializer.data})
@@ -151,8 +170,48 @@ class CommentDeleteAPI(generics.DestroyAPIView):
     serializer_class = CommentSerializer
 
 
-class LinkDigestAPI():
-    pass
+class LinkDigestCreateAPI(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = LinkDigest
+    serializer_class = LinkDigestCreateSerializer
+
+
+class LinkDigestUpdateAPI(APIView):
+
+    def put(self, request, pk):
+        data = request.data
+        if "updates" in request.data:
+            updates = json.loads(data["updates"])["updates"]
+            for update in updates:
+                try:
+                    link = DigestLinks.objects.get(pk=update["pk"])
+                except:
+                    return Response({"error": "Invalid pk"})
+
+                link.link = update.get("link", link.link)
+                link.description = update.get("description", link.description)
+
+                link.save()
+
+
+
+        try:
+            digest = LinkDigest.objects.get(pk=pk)
+        except:
+            return Response({"error": "invalid pk"})
+
+        if digest.owner != request.user.profile:  # IsOwner check
+            return Response({"Allowed only for owners"})
+
+        digest.name = data.get("name", digest.name)
+        digest.introduction = data.get("introduction", digest.introduction)
+        digest.conclusion = data.get("conclusion", digest.conclusion)
+
+        digest.save()
+
+        return Response({"status": "successfully updated"})
+
+
 
 
 class TopicAPI():

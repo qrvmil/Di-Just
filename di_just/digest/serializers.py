@@ -2,6 +2,7 @@ from rest_framework import serializers
 from digest.models import ImageDigest, LinkDigest, Topics, DigestLinks, DigestImages, Comments
 from user.models import Profile
 
+
 # TODO: получение всех сохраненных юзером дайджестов
 # TODO: получение дайджестов по топикам
 # TODO: добавить топики
@@ -96,3 +97,37 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comments
         fields = ['user', 'text', 'created_timestamp', 'link_digest', 'img_digest']
+
+
+class LinkDigestCreateSerializer(serializers.ModelSerializer):
+    links = serializers.ListField(
+        child=serializers.CharField(), write_only=True, required=False
+    )
+    descriptions = serializers.ListField(
+        child=serializers.CharField(), write_only=True, required=False
+    )
+    public = serializers.BooleanField(default=True, required=False)
+
+    class Meta:
+        model = LinkDigest
+        fields = ['owner', 'introduction', 'name', 'topic', 'conclusion', 'saves', 'public', 'created_timestamp',
+                  'links', 'descriptions']
+
+    def create(self, validated_data):
+
+        if "links" in validated_data.keys() and "descriptions" in validated_data.keys():
+            links = validated_data.pop("links")
+            descriptions = validated_data.pop("descriptions")
+
+            digest = LinkDigest.objects.create(**validated_data)
+            for link, description in zip(links, descriptions):
+                DigestLinks.objects.create(digest=digest, link=link, description=description)
+        else:
+            digest = LinkDigest.objects.create(**validated_data)
+
+        return digest
+
+
+
+
+
