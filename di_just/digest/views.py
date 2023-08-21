@@ -14,7 +14,6 @@ import json
 from rest_framework.permissions import IsAuthenticated
 
 
-# TODO: subscription
 # TODO: list of digests by topic
 # TODO: sorter
 # TODO: list of followers
@@ -302,3 +301,20 @@ class DigestSaveAPI(APIView):
         digest.saves.add(request.user.profile)
 
         return Response({"successfully saved"})
+
+
+class SavedDigestsAPI(APIView):
+    permission_classes = [IsOwner]
+
+    def get(self, request):
+        user = request.user.profile
+        saved_link_digest = user.saved_link_digest.all()
+        saved_img_digest = user.saved_img_digest.all()
+
+        saved_img_digest = UserImageDigestRetrieveSerializer(data=saved_img_digest, many=True)
+        saved_link_digest = UserLinkDigestRetrieveSerializer(data=saved_link_digest, many=True)
+
+        saved_link_digest.is_valid()
+        saved_img_digest.is_valid()
+
+        return Response({"saved img digests": saved_img_digest.data, "saved link digests": saved_link_digest.data})
