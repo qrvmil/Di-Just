@@ -161,3 +161,21 @@ class LinkDigestRetrieveDeleteSerializer(serializers.ModelSerializer):
     class Meta:
         model = LinkDigest
         fields = ['owner', 'introduction', 'name', 'topic', 'conclusion', 'saves', 'public', 'created_timestamp']
+
+
+class UserImageDigestRetrieveSerializer(serializers.ModelSerializer):
+    images = DigestImageCRDSerializer(many=True)
+
+    class Meta:
+        model = ImageDigest
+        fields = ['owner', 'introduction', 'name', 'topic', 'conclusion', 'saves', 'public', 'created_timestamp',
+                  'images']
+
+
+class UserLinkDigestRetrieveSerializer(serializers.ModelSerializer):
+    images = DigestLinksSerializer(many=True)
+
+    class Meta:
+        model = ImageDigest
+        fields = ['owner', 'introduction', 'name', 'topic', 'conclusion', 'saves', 'public', 'created_timestamp',
+                  'links']

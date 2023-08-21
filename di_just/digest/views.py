@@ -15,15 +15,14 @@ from rest_framework.permissions import IsAuthenticated
 
 
 # TODO: subscription
-# TODO: get digest comments
-# TODO: list of digests
+# TODO: list of digests by topic
 # TODO: sorter
-# TODO: list of profiles
+# TODO: list of followers
 # TODO: get users' digests
-# TODO: get digest comments
 # TODO: add pagination
 # TODO: test API
 # TODO: восстановление папроля
+# TODO: digest save class
 
 class DigestImagesUpdateAPI(generics.UpdateAPIView):
     permission_classes = [IsOwner]
@@ -268,3 +267,23 @@ class DigestCommentsRetrieveAPI(APIView):
         comments.is_valid()
 
         return Response({"Comments": comments.data})
+
+
+class UserDigestRetrieve(APIView):
+
+    def get(self, request, pk):
+        user = Profile.objects.get(pk=pk)
+        if request.user.profile != user:
+            img_digests = user.created_img_digest.filter(public=True)
+            link_digests = user.created_link_digest.filter(public=True)
+        else:
+            img_digests = user.created_img_digest.all()
+            link_digests = user.created_link_digest.all()
+
+        img_digests = UserImageDigestRetrieveSerializer(data=img_digests, many=True)
+        link_digests = UserLinkDigestRetrieveSerializer(data=link_digests, many=True)
+
+        img_digests.is_valid()
+        link_digests.is_valid()
+
+        return Response({"image digests": img_digests.data, "link digests": link_digests.data})
