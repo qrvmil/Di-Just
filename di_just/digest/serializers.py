@@ -95,7 +95,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
 class DigestLinksSerializer(serializers.ModelSerializer):
     class Meta:
-        model = DigestImages
+        model = DigestLinks
         fields = ['id', 'digest', 'link', 'description']
 
 
@@ -130,6 +130,6 @@ class LinkDigestCreateSerializer(serializers.ModelSerializer):
 
 class LinkDigestRetrieveDeleteSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ImageDigest
+        model = LinkDigest
         fields = ['owner', 'introduction', 'name', 'topic', 'conclusion', 'saves', 'public', 'created_timestamp']
 

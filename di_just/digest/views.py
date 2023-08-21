@@ -227,7 +227,7 @@ class LinkDigestRetrieveAPI(APIView):
         links.is_valid()
         digest = LinkDigestRetrieveDeleteSerializer(digest)
 
-        return Response({"general info": digest.data, "digest link": links.data})
+        return Response({"general info": digest.data, "digest links": links.data})
 
 
 class LinkDigestDeleteAPI(generics.DestroyAPIView):
