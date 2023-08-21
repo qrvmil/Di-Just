@@ -6,21 +6,21 @@ from django.contrib.auth.models import User
 
 class Topics(models.Model):
     AVAILABLE = [
-        ("AR", "Art"),
-        ("SP", "Sport"),
-        ("CS", "Computer Science"),
-        ("MTH", "Math"),
-        ("NW", "News"),
-        ("ED", "Education"),
-        ("FD", "Food"),
-        ("TRV", "Travelling"),
-        ("AN", "Animals"),
-        ("MS", "Memes"),
-        ("TCH", "Technologies"),
-        ("MSC", "Music"),
-        ("CN", "Cinema"),
+        ("Art", "AR"),
+        ("Sport", "SP"),
+        ("Computer Science", "CS"),
+        ("Math", "MTH"),
+        ("News", "NW"),
+        ("Education", "ED"),
+        ("Food", "FD"),
+        ("Travelling", "TRV"),
+        ("Animals", "AN"),
+        ("Memes", "MS"),
+        ("Technologies", "TCH"),
+        ("Music", "MSC"),
+        ("Cinema", "CN"),
     ]
-    topic_name = models.CharField(max_length=30, choices=AVAILABLE)
+    topic_name = models.CharField(max_length=30, choices=AVAILABLE, unique=True)
 
     def __str__(self):
         return f'{self.topic_name}'

@@ -21,10 +21,9 @@ from rest_framework.permissions import IsAuthenticated
 # TODO: sorter
 # TODO: list of profiles
 # TODO: get users' digests
-# TODO: add comments to digest.get
+# TODO: get digest comments
 # TODO: add pagination
 # TODO: test API
-# TODO: протестировать LinkDigest retrieve + delete
 
 
 class DigestImagesUpdateAPI(generics.UpdateAPIView):
@@ -56,6 +55,9 @@ class ImageDigestUpdateAPI(APIView):
     # TODO make subscription
     def put(self, request, pk):
         data = request.data
+        topics = []
+        if "topic" in data.keys():
+            topics = data.pop("topic")
 
         if "updates" in data.keys():
             updates = json.loads(data["updates"])["updates"]
@@ -102,6 +104,12 @@ class ImageDigestUpdateAPI(APIView):
         digest.introduction = data.get("introduction", digest.introduction)
         digest.conclusion = data.get("conclusion", digest.conclusion)
 
+        if topics:
+            for topic in digest.topic.all():
+                digest.topic.remove(topic)
+            for topic in topics:
+                digest.topic.add(topic)
+
         digest.save()
 
         return Response({"status": "successfully updated"})
@@ -130,10 +138,86 @@ class ImageDigestDeleteAPI(APIView):
 
     def delete(self, request, pk):
         digest = ImageDigest.objects.get(pk=pk)
-        if digest.user != request.user.profile:  # IsOwner check
+        if digest.owner != request.user.profile:  # IsOwner check
             return Response({"Allowed only for owners"})
         digest.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class LinkDigestCreateAPI(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = LinkDigest
+    serializer_class = LinkDigestCreateSerializer
+
+
+class LinkDigestUpdateAPI(APIView):
+
+    def put(self, request, pk):
+        data = request.data
+
+        topics = []
+        if "topic" in data.keys():
+            topics = data.pop("topic")
+
+        if "updates" in request.data:
+            updates = json.loads(data["updates"])["updates"]
+            for update in updates:
+                try:
+                    link = DigestLinks.objects.get(pk=update["pk"])
+                except:
+                    return Response({"error": "Invalid pk"})
+
+                link.link = update.get("link", link.link)
+                link.description = update.get("description", link.description)
+
+                link.save()
+
+        try:
+            digest = LinkDigest.objects.get(pk=pk)
+        except:
+            return Response({"error": "invalid pk"})
+
+        if digest.owner != request.user.profile:  # IsOwner check
+            return Response({"Allowed only for owners"})
+
+        digest.name = data.get("name", digest.name)
+        digest.introduction = data.get("introduction", digest.introduction)
+        digest.conclusion = data.get("conclusion", digest.conclusion)
+
+        if topics:
+            for topic in digest.topic.all():
+                digest.topic.remove(topic)
+            for topic in topics:
+                digest.topic.add(topic)
+
+        digest.save()
+
+        return Response({"status": "successfully updated"})
+
+
+class LinkDigestRetrieveAPI(APIView):
+
+    def get(self, request, pk):
+        try:
+            digest = LinkDigest.objects.get(pk=pk)
+        except:
+            return Response({"error": "invalid pk"})
+
+        if not digest.public and (request.user != digest.owner.user):
+            return Response({"error": "this digest is private"})
+
+        links = DigestLinks.objects.filter(digest=digest)
+        links = DigestLinksSerializer(data=links, many=True)
+        links.is_valid()
+        digest = LinkDigestRetrieveDeleteSerializer(digest)
+
+        return Response({"general info": digest.data, "digest links": links.data})
+
+
+class LinkDigestDeleteAPI(generics.DestroyAPIView):
+    permission_classes = [IsOwner]
+    queryset = LinkDigest
+    serializer_class = LinkDigestRetrieveDeleteSerializer
 
 
 class CommentCreateAPI(APIView):
@@ -169,72 +253,3 @@ class CommentDeleteAPI(generics.DestroyAPIView):
     permission_classes = [IsCommenter]
     queryset = Comments
     serializer_class = CommentSerializer
-
-
-class LinkDigestCreateAPI(generics.CreateAPIView):
-    permission_classes = [IsAuthenticated]
-    queryset = LinkDigest
-    serializer_class = LinkDigestCreateSerializer
-
-
-class LinkDigestUpdateAPI(APIView):
-
-    def put(self, request, pk):
-        data = request.data
-        if "updates" in request.data:
-            updates = json.loads(data["updates"])["updates"]
-            for update in updates:
-                try:
-                    link = DigestLinks.objects.get(pk=update["pk"])
-                except:
-                    return Response({"error": "Invalid pk"})
-
-                link.link = update.get("link", link.link)
-                link.description = update.get("description", link.description)
-
-                link.save()
-
-        try:
-            digest = LinkDigest.objects.get(pk=pk)
-        except:
-            return Response({"error": "invalid pk"})
-
-        if digest.owner != request.user.profile:  # IsOwner check
-            return Response({"Allowed only for owners"})
-
-        digest.name = data.get("name", digest.name)
-        digest.introduction = data.get("introduction", digest.introduction)
-        digest.conclusion = data.get("conclusion", digest.conclusion)
-
-        digest.save()
-
-        return Response({"status": "successfully updated"})
-
-
-class LinkDigestRetrieveAPI(APIView):
-
-    def get(self, request, pk):
-        try:
-            digest = LinkDigest.objects.get(pk=pk)
-        except:
-            return Response({"error": "invalid pk"})
-
-        if not digest.public and (request.user != digest.owner.user):
-            return Response({"error": "this digest is private"})
-
-        links = DigestLinks.objects.filter(digest=digest)
-        links = DigestLinksSerializer(data=links, many=True)
-        links.is_valid()
-        digest = LinkDigestRetrieveDeleteSerializer(digest)
-
-        return Response({"general info": digest.data, "digest links": links.data})
-
-
-class LinkDigestDeleteAPI(generics.DestroyAPIView):
-    permission_classes = [IsOwner]
-    queryset = LinkDigest
-    serializer_class = LinkDigestRetrieveDeleteSerializer
-
-
-class TopicAPI():
-    pass

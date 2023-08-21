@@ -51,11 +51,9 @@ class ImageDigestCreateSerializer(serializers.ModelSerializer):
     )
     public = serializers.BooleanField(default=True)
 
-    # topic = serializers.PrimaryKeyRelatedField(many=True, required=False)
-    # TODO: разобраться с topic
     class Meta:
         model = ImageDigest
-        fields = ['id', 'owner', 'introduction', 'name', 'conclusion', 'public', 'pictures', 'descriptions']
+        fields = ['id', 'owner', 'introduction', 'name', 'conclusion', 'public', 'pictures', 'descriptions', 'topic']
 
         extra_kwargs = {
             'owner': {'required': False},
@@ -67,6 +65,9 @@ class ImageDigestCreateSerializer(serializers.ModelSerializer):
 
     # в api всегда должны передаваться оба параметра pictures и descriptions, причем одинакового размера
     def create(self, validated_data):
+        topics = []
+        if "topic" in validated_data.keys():
+            topics = validated_data.pop("topic")
 
         if "pictures" in validated_data.keys() and "descriptions" in validated_data.keys():
             pictures = validated_data.pop("pictures")
@@ -78,10 +79,19 @@ class ImageDigestCreateSerializer(serializers.ModelSerializer):
         else:
             digest = ImageDigest.objects.create(**validated_data)
 
+        for topic in topics:
+            digest.topic.add(topic)
+
         return digest
 
 
 class ImageDigestRetrieveDeleteSerializer(serializers.ModelSerializer):
+    topic = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='topic_name'
+    )
+
     class Meta:
         model = ImageDigest
         fields = ['owner', 'introduction', 'name', 'topic', 'conclusion', 'saves', 'public', 'created_timestamp']
@@ -115,6 +125,10 @@ class LinkDigestCreateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
 
+        topics = []
+        if "topic" in validated_data.keys():
+            topics = validated_data.pop("topic")
+
         if "links" in validated_data.keys() and "descriptions" in validated_data.keys():
             links = validated_data.pop("links")
             descriptions = validated_data.pop("descriptions")
@@ -125,6 +139,9 @@ class LinkDigestCreateSerializer(serializers.ModelSerializer):
         else:
             digest = LinkDigest.objects.create(**validated_data)
 
+        for topic in topics:
+            digest.topic.add(topic)
+
         return digest
 
 
@@ -132,4 +149,3 @@ class LinkDigestRetrieveDeleteSerializer(serializers.ModelSerializer):
     class Meta:
         model = LinkDigest
         fields = ['owner', 'introduction', 'name', 'topic', 'conclusion', 'saves', 'public', 'created_timestamp']
-
