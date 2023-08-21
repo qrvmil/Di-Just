@@ -37,6 +37,7 @@ urlpatterns = [
     path('users/profiles/', ProfileList.as_view(), name='profiles'),
     path('users/login/', LoginAPI.as_view(), name='login'),
     path('users/logout/', knoxviews.LogoutView.as_view(), name='logout'),
+    path('users/follow/<int:pk>', FollowUser.as_view(), name='follow'),
 
     path('img-digest/image/update/<int:pk>/', DigestImagesUpdateAPI.as_view(), name='update-img'),
     path('img-digest/image/<int:pk>/', DigestImagesRetrieveDeleteAPI.as_view(), name='retrieve-delete-img'),

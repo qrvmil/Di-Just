@@ -7,12 +7,12 @@ from user.serializers import RegisterSerializer, UserUpdateSerializer, PasswordU
 from rest_framework.permissions import AllowAny
 from django.contrib.auth.models import User
 from rest_framework import generics
+from rest_framework.views import APIView
 from user.models import Profile
 from user.custom_permissions import IsOwner, IsSameUser
 from knox.models import AuthToken
 
 
-# TO DO: продумать логику сортировщика
 class RegisterUser(generics.CreateAPIView):
     permission_classes = [AllowAny]
     serializer_class = RegisterSerializer
@@ -91,3 +91,14 @@ class UserInfo(generics.RetrieveDestroyAPIView):
 class ProfileList(generics.ListAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileListSerializer
+
+
+class FollowUser(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, pk):
+        follow = Profile.objects.get(pk=pk)
+        request.user.profile.follows.add(follow)
+
+        return Response({f"Now you follow {follow.user.username}"})
