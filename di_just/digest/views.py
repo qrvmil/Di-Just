@@ -14,7 +14,6 @@ import json
 from rest_framework.permissions import IsAuthenticated
 
 
-# TODO: topics
 # TODO: subscription
 # TODO: get digest comments
 # TODO: list of digests
@@ -71,7 +70,7 @@ class ImageDigestUpdateAPI(APIView):
                 try:
                     instance = DigestImages.objects.get(pk=elem["pk"])
                 except:
-                    return Response({"error": "invalid pk"})
+                    return Response({"error": "invalid image pk"})
 
                 if instance.owner != request.user.profile:  # IsOwner check
                     return Response({"Allowed only for owners"})
@@ -95,7 +94,7 @@ class ImageDigestUpdateAPI(APIView):
         try:
             digest = ImageDigest.objects.get(pk=pk)
         except:
-            return Response({"error": "invalid pk"})
+            return Response({"error": "invalid digest pk"})
 
         if digest.owner != request.user.profile:  # IsOwner check
             return Response({"Allowed only for owners"})
@@ -141,7 +140,7 @@ class ImageDigestDeleteAPI(APIView):
         if digest.owner != request.user.profile:  # IsOwner check
             return Response({"Allowed only for owners"})
         digest.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({"successfully deleted"})
 
 
 class LinkDigestCreateAPI(generics.CreateAPIView):
@@ -165,7 +164,7 @@ class LinkDigestUpdateAPI(APIView):
                 try:
                     link = DigestLinks.objects.get(pk=update["pk"])
                 except:
-                    return Response({"error": "Invalid pk"})
+                    return Response({"error": "Invalid link pk"})
 
                 link.link = update.get("link", link.link)
                 link.description = update.get("description", link.description)
@@ -175,7 +174,7 @@ class LinkDigestUpdateAPI(APIView):
         try:
             digest = LinkDigest.objects.get(pk=pk)
         except:
-            return Response({"error": "invalid pk"})
+            return Response({"error": "invalid digest pk"})
 
         if digest.owner != request.user.profile:  # IsOwner check
             return Response({"Allowed only for owners"})

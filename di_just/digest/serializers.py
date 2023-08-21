@@ -9,6 +9,18 @@ from user.models import Profile
 # TODO: добавить комментарии
 
 
+class TopicSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Topics
+        fields = ["topic_name"]
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comments
+        fields = ['user', 'text', 'created_timestamp', 'link_digest', 'img_digest']
+
+
 class DigestImageUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = DigestImages
@@ -34,12 +46,6 @@ class DigestImageCRDSerializer(serializers.ModelSerializer):
     class Meta:
         model = DigestImages
         fields = ['id', 'digest', 'picture', 'description']
-
-
-class TopicSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Topics
-        fields = ["topic_name"]
 
 
 class ImageDigestCreateSerializer(serializers.ModelSerializer):
@@ -97,12 +103,6 @@ class ImageDigestRetrieveDeleteSerializer(serializers.ModelSerializer):
         fields = ['owner', 'introduction', 'name', 'topic', 'conclusion', 'saves', 'public', 'created_timestamp']
 
 
-class CommentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Comments
-        fields = ['user', 'text', 'created_timestamp', 'link_digest', 'img_digest']
-
-
 class DigestLinksSerializer(serializers.ModelSerializer):
     class Meta:
         model = DigestLinks
@@ -146,6 +146,12 @@ class LinkDigestCreateSerializer(serializers.ModelSerializer):
 
 
 class LinkDigestRetrieveDeleteSerializer(serializers.ModelSerializer):
+    topic = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='topic_name'
+    )
+
     class Meta:
         model = LinkDigest
         fields = ['owner', 'introduction', 'name', 'topic', 'conclusion', 'saves', 'public', 'created_timestamp']

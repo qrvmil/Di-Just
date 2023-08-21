@@ -89,6 +89,5 @@ class UserInfo(generics.RetrieveDestroyAPIView):
 
 
 class ProfileList(generics.ListAPIView):
-    # TO DO: NB!! когда будешь прописывать сортировщика продумать как правильно отдавать queryset
     queryset = Profile.objects.all()
     serializer_class = ProfileListSerializer
