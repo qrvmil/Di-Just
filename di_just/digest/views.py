@@ -23,7 +23,7 @@ from rest_framework.permissions import IsAuthenticated
 # TODO: get digest comments
 # TODO: add pagination
 # TODO: test API
-
+# TODO: восстановление папроля
 
 class DigestImagesUpdateAPI(generics.UpdateAPIView):
     permission_classes = [IsOwner]
@@ -252,3 +252,19 @@ class CommentDeleteAPI(generics.DestroyAPIView):
     permission_classes = [IsCommenter]
     queryset = Comments
     serializer_class = CommentSerializer
+
+
+# NB ссылка вида http://127.0.0.1:8000/digest/comments/?pk=9&digest-type=img-digest
+class DigestCommentsRetrieveAPI(APIView):
+
+    def get(self, request):
+        data = request.query_params
+        if data["digest-type"] == "img-digest":
+            comments = ImageDigest.objects.get(pk=int(data["pk"])).comments.all()
+        else:
+            comments = LinkDigest.ojects.get(pk=int(data["pk"])).comments.all()
+
+        comments = CommentListSerializer(data=comments, many=True)
+        comments.is_valid()
+
+        return Response({"Comments": comments.data})

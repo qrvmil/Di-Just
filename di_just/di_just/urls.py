@@ -49,10 +49,12 @@ urlpatterns = [
     path('digest/comment/create/', CommentCreateAPI.as_view(), name='comment-create'),
     path('digest/comment/update/<int:pk>/', CommentUpdateAPI.as_view(), name='comment-update'),
     path('digest/comment/delete/<int:pk>/', CommentDeleteAPI.as_view(), name='comment-delete'),
+    path('digest/comments/', DigestCommentsRetrieveAPI.as_view(), name='digest-comments'),
 
     path('link-digest/create/', LinkDigestCreateAPI.as_view(), name='create-link-digest'),
     path('link-digest/update/<int:pk>/', LinkDigestUpdateAPI.as_view(), name='update-link-digest'),
     path('link-digest/get/<int:pk>/', LinkDigestRetrieveAPI.as_view(), name='get-link-digest'),
-    path('link-digest/delete/<int:pk>/', LinkDigestDeleteAPI.as_view(), name='delete-link-digest')
+    path('link-digest/delete/<int:pk>/', LinkDigestDeleteAPI.as_view(), name='delete-link-digest'),
+
 
 ]

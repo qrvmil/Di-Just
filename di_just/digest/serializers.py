@@ -21,6 +21,12 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = ['user', 'text', 'created_timestamp', 'link_digest', 'img_digest']
 
 
+class CommentListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comments
+        fields = ['user', 'text', 'created_timestamp']
+
+
 class DigestImageUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = DigestImages
