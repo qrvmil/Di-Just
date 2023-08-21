@@ -18,11 +18,10 @@ from rest_framework.permissions import IsAuthenticated
 # TODO: list of digests by topic
 # TODO: sorter
 # TODO: list of followers
-# TODO: get users' digests
 # TODO: add pagination
 # TODO: test API
-# TODO: восстановление папроля
-# TODO: digest save class
+# TODO: восстановление пароля
+# TODO: get digests saved by user
 
 class DigestImagesUpdateAPI(generics.UpdateAPIView):
     permission_classes = [IsOwner]
@@ -269,7 +268,7 @@ class DigestCommentsRetrieveAPI(APIView):
         return Response({"Comments": comments.data})
 
 
-class UserDigestRetrieve(APIView):
+class UserDigestRetrieveAPI(APIView):
 
     def get(self, request, pk):
         user = Profile.objects.get(pk=pk)
@@ -287,3 +286,19 @@ class UserDigestRetrieve(APIView):
         link_digests.is_valid()
 
         return Response({"image digests": img_digests.data, "link digests": link_digests.data})
+
+
+class DigestSaveAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        pk = request.data["pk"]
+        digest_type = request.data["digest-type"]
+        if digest_type == 'img-digest':
+            digest = ImageDigest.objects.get(pk=pk)
+        else:
+            digest = LinkDigest.objects.get(pk=pk)
+
+        digest.saves.add(request.user.profile)
+
+        return Response({"successfully saved"})
