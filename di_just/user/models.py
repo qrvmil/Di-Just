@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     picture = models.ImageField(upload_to="users_images", blank=True)
+    is_verified = models.BooleanField(default=False)
     bio = models.TextField(max_length=500, blank=True)
     age = models.IntegerField(default=0, blank=True)
     follows = models.ManyToManyField("self",

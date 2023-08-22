@@ -39,6 +39,8 @@ urlpatterns = [
     path('users/logout/', knoxviews.LogoutView.as_view(), name='logout'),
     path('users/follow/<int:pk>/', FollowUser.as_view(), name='follow'),
     path('users/saved-digests/', SavedDigestsAPI.as_view(), name='saved-digests'),
+    path('activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/', ActivateAPI.as_view(),
+         name='activate'),
 
     path('img-digest/image/update/<int:pk>/', DigestImagesUpdateAPI.as_view(), name='update-img'),
     path('img-digest/image/<int:pk>/', DigestImagesRetrieveDeleteAPI.as_view(), name='retrieve-delete-img'),
@@ -54,11 +56,11 @@ urlpatterns = [
     path('digest/comments/', DigestCommentsRetrieveAPI.as_view(), name='digest-comments'),
     path('digest/user/<int:pk>/', UserDigestRetrieveAPI.as_view(), name='get-user-digest'),
     path('digest/save/', DigestSaveAPI.as_view(), name='save-digest'),
+    # path('digest/by-topic/', DigestByTopicOrAPI.as_view(), name='digest-by-topic'),
 
     path('link-digest/create/', LinkDigestCreateAPI.as_view(), name='create-link-digest'),
     path('link-digest/update/<int:pk>/', LinkDigestUpdateAPI.as_view(), name='update-link-digest'),
     path('link-digest/get/<int:pk>/', LinkDigestRetrieveAPI.as_view(), name='get-link-digest'),
     path('link-digest/delete/<int:pk>/', LinkDigestDeleteAPI.as_view(), name='delete-link-digest'),
-
 
 ]

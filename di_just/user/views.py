@@ -1,4 +1,9 @@
+from django.contrib.sites.shortcuts import get_current_site
+from django.http import HttpResponse
 from django.shortcuts import render
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from user.serializers import RegisterSerializer, UserUpdateSerializer, PasswordUpdateSerializer, \
@@ -11,6 +16,9 @@ from rest_framework.views import APIView
 from user.models import Profile
 from user.custom_permissions import IsOwner, IsSameUser
 from knox.models import AuthToken
+from django.core.mail import EmailMessage, send_mail
+from django.utils.encoding import force_str
+from user.token import account_activation_token
 
 
 class RegisterUser(generics.CreateAPIView):
@@ -31,10 +39,41 @@ class RegisterUser(generics.CreateAPIView):
         user.set_password(user_serializer.validated_data['password'])
         user.save()
 
-        return Response({
-            'user': RegisterSerializer(user).data,
-            'token': AuthToken.objects.create(user)[1]
+        current_site = get_current_site(request)
+        mail_subject = 'Activation link has been sent to your email id'
+        message = render_to_string('acc_active_email.html', {
+            'user': user,
+            'domain': current_site.domain,
+            'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+            'token': account_activation_token.make_token(user),
         })
+        to_email = user.email
+        email = EmailMessage(
+            mail_subject, message, to=[to_email]
+        )
+        email.send()
+
+        # return Response({
+        #     'user': RegisterSerializer(user).data,
+        #     'token': AuthToken.objects.create(user)[1]
+        # })
+
+        return Response({"email has been sent"})
+
+
+class ActivateAPI(APIView):
+
+    def put(self, request, uidb64, token):
+        try:
+            uid = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+        except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+        if user is not None and account_activation_token.check_token(user, token):
+            user.is_verified = True
+            return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
+        else:
+            return HttpResponse('Activation link is invalid!')
 
 
 class LoginAPI(generics.GenericAPIView):
@@ -46,10 +85,15 @@ class LoginAPI(generics.GenericAPIView):
         username = serializer.validated_data['username']
         user = User.objects.get(username=username)
 
-        return Response({
-            'user': UserSerializer(user).data,
-            'token': AuthToken.objects.create(user)[1]
-        })
+        if user.profile.is_verified:
+
+            return Response({
+                'user': UserSerializer(user).data,
+                'token': AuthToken.objects.create(user)[1]
+            })
+
+        else:
+            return Response({"error": "your profile is not verified"})
 
 
 class UserUpdate(generics.UpdateAPIView):
@@ -94,7 +138,6 @@ class ProfileList(generics.ListAPIView):
 
 
 class FollowUser(APIView):
-
     permission_classes = [IsAuthenticated]
 
     def put(self, request, pk):

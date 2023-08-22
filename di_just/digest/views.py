@@ -15,12 +15,9 @@ from rest_framework.permissions import IsAuthenticated
 
 
 # TODO: list of digests by topic
-# TODO: sorter
-# TODO: list of followers
 # TODO: add pagination
-# TODO: test API
 # TODO: восстановление пароля
-# TODO: get digests saved by user
+
 
 class DigestImagesUpdateAPI(generics.UpdateAPIView):
     permission_classes = [IsOwner]
@@ -318,3 +315,25 @@ class SavedDigestsAPI(APIView):
         saved_img_digest.is_valid()
 
         return Response({"saved img digests": saved_img_digest.data, "saved link digests": saved_link_digest.data})
+
+#
+# # достает дайджесты, в которых есть хотя бы одно совпадение по топикам
+# class DigestByTopicOrAPI(APIView):
+#
+#     def get(self, request):
+#         topics = request.data["topic"]
+#         topics_objects = []
+#         for topic in topics:
+#             topics_objects.append(Topics.objects.get(topic_name=topic))
+#         img_digests = set()
+#         link_digests = set()
+#         for topic in topics_objects:
+#             img_digests.add(set(list(topic.image_digest.filter(public=True))))
+#             link_digests.add(topic.objects.filter(link_digest__public=True))
+#
+#
+# # TODO: заменить название класса на нормальное
+# class DigestByTopicAndAPI(APIView):
+#
+#     def get(self, request):
+#         pass
