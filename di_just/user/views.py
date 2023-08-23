@@ -48,10 +48,11 @@ class RegisterUser(generics.CreateAPIView):
             'token': account_activation_token.make_token(user),
         })
         to_email = user.email
-        email = EmailMessage(
-            mail_subject, message, to=[to_email]
-        )
-        email.send()
+        # email = EmailMessage(
+        #     mail_subject, message, to=[to_email]
+        # )
+        # email.send()
+        send_mail(mail_subject, message, 'di-just-info@yandex.ru', [to_email], fail_silently=False)
 
         # return Response({
         #     'user': RegisterSerializer(user).data,
@@ -70,7 +71,8 @@ class ActivateAPI(APIView):
         except(TypeError, ValueError, OverflowError, User.DoesNotExist):
             user = None
         if user is not None and account_activation_token.check_token(user, token):
-            user.is_verified = True
+            user.profile.is_verified = True
+            user.profile.save()
             return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
         else:
             return HttpResponse('Activation link is invalid!')
@@ -102,10 +104,49 @@ class UserUpdate(generics.UpdateAPIView):
     serializer_class = UserUpdateSerializer
 
 
-class PasswordUpdate(generics.UpdateAPIView):
+class PasswordUpdateAPI(generics.UpdateAPIView):
     permission_classes = [IsSameUser]
     queryset = User.objects.all()
     serializer_class = PasswordUpdateSerializer
+
+
+class ProfileRestoreEmailAPI(APIView):
+    permission_classes = [IsSameUser]
+    queryset = User.objects.all()
+    serializer_class = PasswordUpdateSerializer
+
+    def put(self, request):
+        email = request.data["email"]
+        user = User.objects.get(email=email)
+        current_site = get_current_site(request)
+        mail_subject = 'Please follow the link to reset the password for your account'
+        message = render_to_string('pass_reset_email.html', {
+            'user': user,
+            'domain': current_site.domain,
+            'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+            'token': account_activation_token.make_token(user),
+        })
+        to_email = user.email
+        send_mail(mail_subject, message, 'di-just-info@yandex.ru', [to_email], fail_silently=False)
+
+        return Response({"email has been sent"})
+
+
+class ProfileRestoreAPI(APIView):
+
+    def put(self, request, uidb64, token):
+        try:
+            uid = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+        except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+        if user is not None and account_activation_token.check_token(user, token):
+            password = request.data["password"]
+            user.set_password(password)
+            user.save()
+            return HttpResponse('Your password is successfully updated')
+        else:
+            return HttpResponse('Activation link is invalid!')
 
 
 class ProfileUpdate(generics.UpdateAPIView):
