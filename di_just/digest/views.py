@@ -12,11 +12,11 @@ from digest.serializers import *
 from rest_framework import generics, status
 import json
 from rest_framework.permissions import IsAuthenticated
+from django.db import connection
 
 
-# TODO: list of digests by topic
+# TODO: list of digests
 # TODO: add pagination
-# TODO: восстановление пароля
 
 
 class DigestImagesUpdateAPI(generics.UpdateAPIView):
@@ -316,24 +316,38 @@ class SavedDigestsAPI(APIView):
 
         return Response({"saved img digests": saved_img_digest.data, "saved link digests": saved_link_digest.data})
 
-#
-# # достает дайджесты, в которых есть хотя бы одно совпадение по топикам
-# class DigestByTopicOrAPI(APIView):
-#
-#     def get(self, request):
-#         topics = request.data["topic"]
-#         topics_objects = []
-#         for topic in topics:
-#             topics_objects.append(Topics.objects.get(topic_name=topic))
-#         img_digests = set()
-#         link_digests = set()
-#         for topic in topics_objects:
-#             img_digests.add(set(list(topic.image_digest.filter(public=True))))
-#             link_digests.add(topic.objects.filter(link_digest__public=True))
-#
-#
-# # TODO: заменить название класса на нормальное
-# class DigestByTopicAndAPI(APIView):
-#
-#     def get(self, request):
-#         pass
+
+class DigestListAPI(APIView):
+
+    def get(self, request):
+        data = request.data
+        if "topics" in data.keys():
+            topics = tuple(data["topics"])
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    f"SELECT DISTINCT imagedigest_id FROM digest_imagedigest_topic WHERE topics_id IN {topics}")
+                row = [i[0] for i in cursor.fetchall()]
+                img_digests = ImageDigest.objects.filter(id__in=row, public=True)
+                cursor.execute(
+                    f"SELECT DISTINCT linkdigest_id FROM digest_linkdigest_topic WHERE topics_id IN {topics}")
+                row = [i[0] for i in cursor.fetchall()]  # возвращается список кортежей
+                link_digests = LinkDigest.objects.filter(id__in=row, public=True)
+
+        if "owner" in data.keys():
+            owner = data["owner"]
+            img_digests = ImageDigest.objects.filter(owner__user__username=owner, public=True)
+            link_digests = LinkDigest.objects.filter(owner__user__username=owner, public=True)
+
+        if "time" in data.keys():
+            if data["time"] == "new":
+                img_digests = ImageDigest.objects.filter(public=True).order_by('-created_timestamp').all()
+                link_digests = LinkDigest.objects.filter(public=True).order_by('-created_timestamp').all()
+            elif data["time"] == "old":
+                img_digests = ImageDigest.objects.filter(public=True).order_by('created_timestamp').all()
+                link_digests = LinkDigest.objects.filter(public=True).order_by('created_timestamp').all()
+
+        img_digests = ImageDigestListSerializer(img_digests, many=True)
+        link_digests = LinkDigestListSerializer(link_digests, many=True)
+
+        return Response({"image digests": img_digests.data, "link digests": link_digests.data})

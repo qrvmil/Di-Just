@@ -109,6 +109,20 @@ class ImageDigestRetrieveDeleteSerializer(serializers.ModelSerializer):
         fields = ['owner', 'introduction', 'name', 'topic', 'conclusion', 'saves', 'public', 'created_timestamp']
 
 
+class ImageDigestListSerializer(serializers.ModelSerializer):
+    topic = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='topic_name'
+    )
+    images = DigestImageCRDSerializer(many=True)
+
+    class Meta:
+        model = ImageDigest
+        fields = ['owner', 'introduction', 'name', 'topic', 'conclusion', 'saves', 'public', 'created_timestamp',
+                  'images']
+
+
 class DigestLinksSerializer(serializers.ModelSerializer):
     class Meta:
         model = DigestLinks
@@ -163,6 +177,20 @@ class LinkDigestRetrieveDeleteSerializer(serializers.ModelSerializer):
         fields = ['owner', 'introduction', 'name', 'topic', 'conclusion', 'saves', 'public', 'created_timestamp']
 
 
+class LinkDigestListSerializer(serializers.ModelSerializer):
+    topic = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='topic_name'
+    )
+    links = DigestLinksSerializer(many=True)
+
+    class Meta:
+        model = LinkDigest
+        fields = ['owner', 'introduction', 'name', 'topic', 'conclusion', 'saves', 'public', 'created_timestamp',
+                  'links']
+
+
 class UserImageDigestRetrieveSerializer(serializers.ModelSerializer):
     images = DigestImageCRDSerializer(many=True)
 
@@ -173,7 +201,7 @@ class UserImageDigestRetrieveSerializer(serializers.ModelSerializer):
 
 
 class UserLinkDigestRetrieveSerializer(serializers.ModelSerializer):
-    images = DigestLinksSerializer(many=True)
+    links = DigestLinksSerializer(many=True)
 
     class Meta:
         model = ImageDigest
