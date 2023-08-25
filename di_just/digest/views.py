@@ -255,15 +255,18 @@ class DigestCommentsRetrieveAPI(APIView):
 
     def get(self, request):
         data = request.query_params
+        paginator = CustomPagination()
         if data["digest-type"] == "img-digest":
             comments = ImageDigest.objects.get(pk=int(data["pk"])).comments.all()
         else:
             comments = LinkDigest.ojects.get(pk=int(data["pk"])).comments.all()
-
-        comments = CommentListSerializer(data=comments, many=True)
+        result_page = paginator.paginate_queryset(comments, request)
+        comments = CommentListSerializer(data=result_page, many=True)
         comments.is_valid()
+        all = comments.data
 
-        return Response({"Comments": comments.data})
+        response = CustomPagination.get_paginated_response(paginator, all)
+        return response
 
 
 class UserDigestRetrieveAPI(APIView, PageNumberPagination):
