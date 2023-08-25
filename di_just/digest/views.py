@@ -302,21 +302,36 @@ class DigestSaveAPI(APIView):
         return Response({"successfully saved"})
 
 
-class SavedDigestsAPI(APIView):
+class SavedImageDigestsAPI(APIView):
     permission_classes = [IsOwner]
 
     def get(self, request):
+        paginator = CustomPagination()
+        user = request.user.profile
+        saved_img_digests = user.saved_img_digest.all()
+        result_page = paginator.paginate_queryset(saved_img_digests, request)
+        saved_img_digest = UserImageDigestRetrieveSerializer(data=result_page, many=True)
+        saved_img_digest.is_valid()
+        all = saved_img_digest.data
+
+        response = CustomPagination.get_paginated_response(paginator, all)
+        return response
+
+
+class SavedLinkDigestsAPI(APIView):
+    permission_classes = [IsOwner]
+
+    def get(self, request):
+        paginator = CustomPagination()
         user = request.user.profile
         saved_link_digest = user.saved_link_digest.all()
-        saved_img_digest = user.saved_img_digest.all()
-
-        saved_img_digest = UserImageDigestRetrieveSerializer(data=saved_img_digest, many=True)
-        saved_link_digest = UserLinkDigestRetrieveSerializer(data=saved_link_digest, many=True)
-
+        result_page = paginator.paginate_queryset(saved_link_digest, request)
+        saved_link_digest = UserLinkDigestRetrieveSerializer(data=result_page, many=True)
         saved_link_digest.is_valid()
-        saved_img_digest.is_valid()
 
-        return Response({"saved img digests": saved_img_digest.data, "saved link digests": saved_link_digest.data})
+        all = saved_link_digest.data
+        response = CustomPagination.get_paginated_response(paginator, all)
+        return response
 
 
 class ImageDigestListAPI(APIView):

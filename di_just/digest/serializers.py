@@ -3,12 +3,6 @@ from digest.models import ImageDigest, LinkDigest, Topics, DigestLinks, DigestIm
 from user.models import Profile
 
 
-# TODO: получение всех сохраненных юзером дайджестов
-# TODO: получение дайджестов по топикам
-# TODO: добавить топики
-# TODO: добавить комментарии
-
-
 class TopicSerializer(serializers.ModelSerializer):
     class Meta:
         model = Topics

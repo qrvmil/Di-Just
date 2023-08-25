@@ -48,17 +48,7 @@ class RegisterUser(generics.CreateAPIView):
             'token': account_activation_token.make_token(user),
         })
         to_email = user.email
-        # email = EmailMessage(
-        #     mail_subject, message, to=[to_email]
-        # )
-        # email.send()
         send_mail(mail_subject, message, 'di-just-info@yandex.ru', [to_email], fail_silently=False)
-
-        # return Response({
-        #     'user': RegisterSerializer(user).data,
-        #     'token': AuthToken.objects.create(user)[1]
-        # })
-
         return Response({"email has been sent"})
 
 
@@ -87,15 +77,20 @@ class LoginAPI(generics.GenericAPIView):
         username = serializer.validated_data['username']
         user = User.objects.get(username=username)
 
-        if user.profile.is_verified:
+        # if user.profile.is_verified:
+        #
+        #     return Response({
+        #         'user': UserSerializer(user).data,
+        #         'token': AuthToken.objects.create(user)[1]
+        #     })
+        #
+        # else:
+        #     return Response({"error": "your profile is not verified"})
 
-            return Response({
-                'user': UserSerializer(user).data,
-                'token': AuthToken.objects.create(user)[1]
-            })
-
-        else:
-            return Response({"error": "your profile is not verified"})
+        return Response({
+            'user': UserSerializer(user).data,
+            'token': AuthToken.objects.create(user)[1]
+        })
 
 
 class UserUpdate(generics.UpdateAPIView):

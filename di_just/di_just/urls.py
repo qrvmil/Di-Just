@@ -41,7 +41,8 @@ urlpatterns = [
     path('users/login/', LoginAPI.as_view(), name='login'),
     path('users/logout/', knoxviews.LogoutView.as_view(), name='logout'),
     path('users/follow/<int:pk>/', FollowUser.as_view(), name='follow'),
-    path('users/saved-digests/', SavedDigestsAPI.as_view(), name='saved-digests'),
+    path('users/saved-img-digests/', SavedImageDigestsAPI.as_view(), name='saved-img-digests'),
+    path('users/saved-link-digests/', SavedLinkDigestsAPI.as_view(), name='saved-link-digests'),
     path('activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/', ActivateAPI.as_view(),
          name='activate'),
 
