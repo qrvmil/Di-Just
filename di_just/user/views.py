@@ -19,6 +19,7 @@ from knox.models import AuthToken
 from django.core.mail import EmailMessage, send_mail
 from django.utils.encoding import force_str
 from user.token import account_activation_token
+from user.pagination import CustomPagination
 
 
 class RegisterUser(generics.CreateAPIView):
@@ -77,20 +78,16 @@ class LoginAPI(generics.GenericAPIView):
         username = serializer.validated_data['username']
         user = User.objects.get(username=username)
 
-        # if user.profile.is_verified:
-        #
-        #     return Response({
-        #         'user': UserSerializer(user).data,
-        #         'token': AuthToken.objects.create(user)[1]
-        #     })
-        #
-        # else:
-        #     return Response({"error": "your profile is not verified"})
+        if user.profile.is_verified:
 
-        return Response({
-            'user': UserSerializer(user).data,
-            'token': AuthToken.objects.create(user)[1]
-        })
+            return Response({
+                'user': UserSerializer(user).data,
+                'token': AuthToken.objects.create(user)[1]
+            })
+
+        else:
+            return Response({"error": "your profile is not verified"})
+
 
 
 class UserUpdate(generics.UpdateAPIView):
@@ -171,6 +168,7 @@ class UserInfo(generics.RetrieveDestroyAPIView):
 class ProfileList(generics.ListAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileListSerializer
+    pagination_class = CustomPagination
 
 
 class FollowUser(APIView):

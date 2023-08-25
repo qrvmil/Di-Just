@@ -269,24 +269,40 @@ class DigestCommentsRetrieveAPI(APIView):
         return response
 
 
-class UserDigestRetrieveAPI(APIView, PageNumberPagination):
+class UserImageDigestRetrieveAPI(APIView, PageNumberPagination):
 
     def get(self, request, pk):
         user = Profile.objects.get(pk=pk)
+        paginator = CustomPagination()
         if request.user.profile != user:
             img_digests = user.created_img_digest.filter(public=True)
-            link_digests = user.created_link_digest.filter(public=True)
         else:
             img_digests = user.created_img_digest.all()
-            link_digests = user.created_link_digest.all()
-
-        img_digests = UserImageDigestRetrieveSerializer(data=img_digests, many=True)
-        link_digests = UserLinkDigestRetrieveSerializer(data=link_digests, many=True)
+        result_page = paginator.paginate_queryset(img_digests, request)
+        img_digests = UserImageDigestRetrieveSerializer(data=result_page, many=True)
 
         img_digests.is_valid()
-        link_digests.is_valid()
+        all = img_digests.data
+        response = CustomPagination.get_paginated_response(paginator, all)
+        return response
 
-        return Response({"image digests": img_digests.data, "link digests": link_digests.data})
+
+class UserLinkDigestRetrieveAPI(APIView, PageNumberPagination):
+
+    def get(self, request, pk):
+        user = Profile.objects.get(pk=pk)
+        paginator = CustomPagination()
+        if request.user.profile != user:
+            link_digests = user.created_link_digest.filter(public=True)
+        else:
+            link_digests = user.created_link_digest.all()
+        result_page = paginator.paginate_queryset(link_digests, request)
+        link_digests = UserLinkDigestRetrieveSerializer(data=result_page, many=True)
+
+        link_digests.is_valid()
+        all = link_digests.data
+        response = CustomPagination.get_paginated_response(paginator, all)
+        return response
 
 
 class DigestSaveAPI(APIView):
