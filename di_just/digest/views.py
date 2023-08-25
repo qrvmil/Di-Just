@@ -13,6 +13,8 @@ from rest_framework import generics, status
 import json
 from rest_framework.permissions import IsAuthenticated
 from django.db import connection
+from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
+from digest.pagination import CustomPagination
 
 
 # TODO: list of digests
@@ -264,7 +266,7 @@ class DigestCommentsRetrieveAPI(APIView):
         return Response({"Comments": comments.data})
 
 
-class UserDigestRetrieveAPI(APIView):
+class UserDigestRetrieveAPI(APIView, PageNumberPagination):
 
     def get(self, request, pk):
         user = Profile.objects.get(pk=pk)
@@ -317,10 +319,11 @@ class SavedDigestsAPI(APIView):
         return Response({"saved img digests": saved_img_digest.data, "saved link digests": saved_link_digest.data})
 
 
-class DigestListAPI(APIView):
+class ImageDigestListAPI(APIView):
 
     def get(self, request):
         data = request.data
+        paginator = CustomPagination()
         if "topics" in data.keys():
             topics = tuple(data["topics"])
 
@@ -329,25 +332,52 @@ class DigestListAPI(APIView):
                     f"SELECT DISTINCT imagedigest_id FROM digest_imagedigest_topic WHERE topics_id IN {topics}")
                 row = [i[0] for i in cursor.fetchall()]
                 img_digests = ImageDigest.objects.filter(id__in=row, public=True)
-                cursor.execute(
-                    f"SELECT DISTINCT linkdigest_id FROM digest_linkdigest_topic WHERE topics_id IN {topics}")
-                row = [i[0] for i in cursor.fetchall()]  # возвращается список кортежей
-                link_digests = LinkDigest.objects.filter(id__in=row, public=True)
 
-        if "owner" in data.keys():
+        elif "owner" in data.keys():
             owner = data["owner"]
             img_digests = ImageDigest.objects.filter(owner__user__username=owner, public=True)
-            link_digests = LinkDigest.objects.filter(owner__user__username=owner, public=True)
 
-        if "time" in data.keys():
+        elif "time" in data.keys():
             if data["time"] == "new":
                 img_digests = ImageDigest.objects.filter(public=True).order_by('-created_timestamp').all()
-                link_digests = LinkDigest.objects.filter(public=True).order_by('-created_timestamp').all()
             elif data["time"] == "old":
                 img_digests = ImageDigest.objects.filter(public=True).order_by('created_timestamp').all()
+
+        result_page_1 = paginator.paginate_queryset(img_digests, request)
+        img_digests = ImageDigestListSerializer(result_page_1, many=True)
+        all = img_digests.data
+
+        response = CustomPagination.get_paginated_response(paginator, all)
+        return response
+
+
+class LinkDigestListAPI(APIView):
+
+    def get(self, request):
+        data = request.data
+        paginator = CustomPagination()
+        if "topics" in data.keys():
+            topics = tuple(data["topics"])
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    f"SELECT DISTINCT linkdigest_id FROM digest_linkdigest_topic WHERE topics_id IN {topics}")
+                row = [i[0] for i in cursor.fetchall()]
+                link_digests = LinkDigest.objects.filter(id__in=row, public=True)
+
+        elif "owner" in data.keys():
+            owner = data["owner"]
+            link_digests = LinkDigest.objects.filter(owner__user__username=owner, public=True)
+
+        elif "time" in data.keys():
+            if data["time"] == "new":
+                link_digests = LinkDigest.objects.filter(public=True).order_by('-created_timestamp').all()
+            elif data["time"] == "old":
                 link_digests = LinkDigest.objects.filter(public=True).order_by('created_timestamp').all()
 
-        img_digests = ImageDigestListSerializer(img_digests, many=True)
-        link_digests = LinkDigestListSerializer(link_digests, many=True)
+        result_page_1 = paginator.paginate_queryset(link_digests, request)
+        link_digests = ImageDigestListSerializer(result_page_1, many=True)
+        all = link_digests.data
 
-        return Response({"image digests": img_digests.data, "link digests": link_digests.data})
+        response = CustomPagination.get_paginated_response(paginator, all)
+        return response

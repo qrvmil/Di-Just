@@ -66,6 +66,7 @@ urlpatterns = [
     path('link-digest/get/<int:pk>/', LinkDigestRetrieveAPI.as_view(), name='get-link-digest'),
     path('link-digest/delete/<int:pk>/', LinkDigestDeleteAPI.as_view(), name='delete-link-digest'),
 
-    path('all/', DigestListAPI.as_view(), name='mail-page')
+    path('img-all/', ImageDigestListAPI.as_view(), name='img-sorter'),
+    path('link-all/', LinkDigestListAPI.as_view(), name='link-sorter')
 
 ]
