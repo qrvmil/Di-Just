@@ -22,7 +22,7 @@ from user.token import account_activation_token
 from user.pagination import CustomPagination
 
 
-class RegisterUser(generics.CreateAPIView):
+class RegisterUserAPI(generics.CreateAPIView):
     permission_classes = [AllowAny]
     serializer_class = RegisterSerializer
 
@@ -90,7 +90,7 @@ class LoginAPI(generics.GenericAPIView):
 
 
 
-class UserUpdate(generics.UpdateAPIView):
+class UserUpdateAPI(generics.UpdateAPIView):
     permission_classes = [IsSameUser]
     queryset = User.objects.all()
     serializer_class = UserUpdateSerializer
@@ -141,37 +141,37 @@ class ProfileRestoreAPI(APIView):
             return HttpResponse('Activation link is invalid!')
 
 
-class ProfileUpdate(generics.UpdateAPIView):
+class ProfileUpdateAPI(generics.UpdateAPIView):
     permission_classes = [IsOwner]
     queryset = Profile.objects.all()
     serializer_class = ProfileUpdateSerializer
 
 
-class ProfilePictureUpdate(generics.UpdateAPIView):
+class ProfilePictureUpdateAPI(generics.UpdateAPIView):
     permission_classes = [IsOwner]
     queryset = Profile.objects.all()
     serializer_class = ProfilePictureUpdateSerializer
 
 
-class ProfileInfo(generics.RetrieveDestroyAPIView):
+class ProfileInfoAPI(generics.RetrieveDestroyAPIView):
     permission_classes = [IsOwner]
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
 
 
-class UserInfo(generics.RetrieveDestroyAPIView):
+class UserInfoAPI(generics.RetrieveDestroyAPIView):
     permission_classes = [IsOwner]
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
 
-class ProfileList(generics.ListAPIView):
+class ProfileListAPI(generics.ListAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileListSerializer
     pagination_class = CustomPagination
 
 
-class FollowUser(APIView):
+class FollowUserAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     def put(self, request, pk):
@@ -179,3 +179,17 @@ class FollowUser(APIView):
         request.user.profile.follows.add(follow)
 
         return Response({f"Now you follow {follow.user.username}"})
+
+
+class UnfollowUserAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, pk):
+        unfollow = Profile.objects.get(pk=pk)
+        request.user.profile.follows.remove(unfollow)
+
+        return Response({f"You unfollowed {unfollow.user.username}"})
+
+
+
+
