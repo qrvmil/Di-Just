@@ -17,9 +17,6 @@ from rest_framework.pagination import PageNumberPagination, LimitOffsetPaginatio
 from digest.pagination import CustomPagination
 
 
-# TODO: list of digests
-# TODO: add pagination
-
 
 class DigestImagesUpdateAPI(generics.UpdateAPIView):
     permission_classes = [IsOwner]
@@ -68,7 +65,7 @@ class ImageDigestUpdateAPI(APIView):
                 except:
                     return Response({"error": "invalid image pk"})
 
-                if instance.owner != request.user.profile:  # IsOwner check
+                if instance.digest.owner != request.user.profile:  # IsOwner check
                     return Response({"Allowed only for owners"})
 
                 if elem["type"] == "picture":
@@ -98,6 +95,7 @@ class ImageDigestUpdateAPI(APIView):
         digest.name = data.get("name", digest.name)
         digest.introduction = data.get("introduction", digest.introduction)
         digest.conclusion = data.get("conclusion", digest.conclusion)
+        digest.public = data.get("public", digest.public)
 
         if topics:
             for topic in digest.topic.all():
@@ -178,6 +176,7 @@ class LinkDigestUpdateAPI(APIView):
         digest.name = data.get("name", digest.name)
         digest.introduction = data.get("introduction", digest.introduction)
         digest.conclusion = data.get("conclusion", digest.conclusion)
+        digest.public = data.get("public", digest.public)
 
         if topics:
             for topic in digest.topic.all():
@@ -401,7 +400,7 @@ class LinkDigestListAPI(APIView):
 
         elif "owner" in data.keys():
             owner = data["owner"]
-            link_digests = LinkDigest.objects.filter(owner__user__username=owner, public=True)
+            link_digests = LinkDigest.objects.filter(owner=owner, public=True)
 
         elif "time" in data.keys():
             if data["time"] == "new":
@@ -410,7 +409,7 @@ class LinkDigestListAPI(APIView):
                 link_digests = LinkDigest.objects.filter(public=True).order_by('created_timestamp').all()
 
         result_page_1 = paginator.paginate_queryset(link_digests, request)
-        link_digests = ImageDigestListSerializer(result_page_1, many=True)
+        link_digests = LinkDigestListSerializer(result_page_1, many=True)
         all = link_digests.data
 
         response = CustomPagination.get_paginated_response(paginator, all)

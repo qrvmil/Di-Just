@@ -3,7 +3,7 @@ from digest import views
 from digest.views import *
 
 urlpatterns = [
-path('img-digest/image/update/<int:pk>/', DigestImagesUpdateAPI.as_view(), name='update-img'),
+    path('img-digest/image/update/<int:pk>/', DigestImagesUpdateAPI.as_view(), name='update-img'),
     path('img-digest/image/<int:pk>/', DigestImagesRetrieveDeleteAPI.as_view(), name='retrieve-delete-img'),
     path('img-digest/image/create/', DigestImageCreateAPI.as_view(), name='create-img'),
     path('img-digest/create/', ImageDigestCreateAPI.as_view(), name='create-img-digest'),

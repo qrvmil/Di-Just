@@ -80,14 +80,19 @@ class ImageDigestCreateSerializer(serializers.ModelSerializer):
             descriptions = validated_data.pop("descriptions")
 
             digest = ImageDigest.objects.create(**validated_data)
+            user = self.context['request'].user.profile
+            digest.owner = user
+
             for picture, description in zip(pictures, descriptions):
                 DigestImages.objects.create(digest=digest, picture=picture, description=description)
         else:
             digest = ImageDigest.objects.create(**validated_data)
+            user = self.context['request'].user.profile
+            digest.owner = user
 
         for topic in topics:
             digest.topic.add(topic)
-
+        digest.save()
         return digest
 
 
@@ -148,13 +153,20 @@ class LinkDigestCreateSerializer(serializers.ModelSerializer):
             descriptions = validated_data.pop("descriptions")
 
             digest = LinkDigest.objects.create(**validated_data)
+            user = self.context['request'].user.profile
+            digest.owner = user
             for link, description in zip(links, descriptions):
                 DigestLinks.objects.create(digest=digest, link=link, description=description)
         else:
             digest = LinkDigest.objects.create(**validated_data)
+            user = self.context['request'].user.profile
+            digest.owner = user
 
         for topic in topics:
             digest.topic.add(topic)
+
+
+        digest.save()
 
         return digest
 

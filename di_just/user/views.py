@@ -40,11 +40,11 @@ class RegisterUserAPI(generics.CreateAPIView):
         user.set_password(user_serializer.validated_data['password'])
         user.save()
 
-        current_site = get_current_site(request)
+        current_site = 'http://localhost:3000' # get_current_site(request)
         mail_subject = 'Activation link has been sent to your email id'
         message = render_to_string('acc_active_email.html', {
             'user': user,
-            'domain': current_site.domain,
+            'domain': current_site[7:], # current_site.domain,
             'uid': urlsafe_base64_encode(force_bytes(user.pk)),
             'token': account_activation_token.make_token(user),
         })
@@ -103,7 +103,7 @@ class PasswordUpdateAPI(generics.UpdateAPIView):
 
 
 class ProfileRestoreEmailAPI(APIView):
-    permission_classes = [IsSameUser]
+    permission_classes = [AllowAny] # [IsSameUser]
     queryset = User.objects.all()
     serializer_class = PasswordUpdateSerializer
 
@@ -118,7 +118,7 @@ class ProfileRestoreEmailAPI(APIView):
             'uid': urlsafe_base64_encode(force_bytes(user.pk)),
             'token': account_activation_token.make_token(user),
         })
-        to_email = user.email
+        to_email = email # user.email
         send_mail(mail_subject, message, 'di-just-info@yandex.ru', [to_email], fail_silently=False)
 
         return Response({"email has been sent"})
