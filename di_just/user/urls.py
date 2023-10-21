@@ -23,7 +23,7 @@ urlpatterns = [
     path('users/unfollow/<int:pk>/', UnfollowUserAPI.as_view(), name='unfollow'),
     path('users/saved-img-digests/', SavedImageDigestsAPI.as_view(), name='saved-img-digests'),
     path('users/saved-link-digests/', SavedLinkDigestsAPI.as_view(), name='saved-link-digests'),
-    path('activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/', ActivateAPI.as_view(),
+    path('activate/<int:uid>/<str:token>', ActivateAPI.as_view(),
          name='activate'),
 
 ]

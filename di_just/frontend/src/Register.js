@@ -6,7 +6,7 @@ function Register() {
   const { register, handleSubmit, formState: { errors } } = useForm();
 
   const onSubmit = (data) => {
-    await axios.post("http://127.0.0.1:8000/register/", {
+    axios.post("http://127.0.0.1:8000/register/", {
     username: data.username,
     email: data.email,
     password: data.password,

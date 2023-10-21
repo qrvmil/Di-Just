@@ -45,7 +45,7 @@ class RegisterUserAPI(generics.CreateAPIView):
         message = render_to_string('acc_active_email.html', {
             'user': user,
             'domain': current_site[7:], # current_site.domain,
-            'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+            'uid': user.pk,
             'token': account_activation_token.make_token(user),
         })
         to_email = user.email
@@ -55,9 +55,9 @@ class RegisterUserAPI(generics.CreateAPIView):
 
 class ActivateAPI(APIView):
 
-    def put(self, request, uidb64, token):
+    def put(self, request, uid, token):
         try:
-            uid = force_str(urlsafe_base64_decode(uidb64))
+            # uid = force_str(urlsafe_base64_decode(uidb64))
             user = User.objects.get(pk=uid)
         except(TypeError, ValueError, OverflowError, User.DoesNotExist):
             user = None
