@@ -10,7 +10,7 @@ urlpatterns = [
     path('users/update/<int:pk>/', UserUpdateAPI.as_view(), name='user-update'),
     path('users/user/<int:pk>/', UserInfoAPI.as_view(), name='user-info-delete'),
     path('users/profile/restore/email/', ProfileRestoreEmailAPI.as_view(), name='send-email'),
-    path('restore/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/',
+    path('restore/<int:uid>/<str:token>',
          ProfileRestoreAPI.as_view(), name='restore'),
     path('users/profile/update/<int:pk>/', ProfileUpdateAPI.as_view(), name='profile-update'),
     path('users/profile/update/picture/<int:pk>/', ProfilePictureUpdateAPI.as_view(), name='profile-picture-update'),

@@ -110,12 +110,12 @@ class ProfileRestoreEmailAPI(APIView):
     def put(self, request):
         email = request.data["email"]
         user = User.objects.get(email=email)
-        current_site = get_current_site(request)
+        current_site = 'http://localhost:3000' # get_current_site(request)
         mail_subject = 'Please follow the link to reset the password for your account'
         message = render_to_string('pass_reset_email.html', {
             'user': user,
-            'domain': current_site.domain,
-            'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+            'domain': current_site[7:], # current_site.domain,
+            'uid': user.pk, # urlsafe_base64_encode(force_bytes(user.pk)),
             'token': account_activation_token.make_token(user),
         })
         to_email = email # user.email
@@ -126,9 +126,9 @@ class ProfileRestoreEmailAPI(APIView):
 
 class ProfileRestoreAPI(APIView):
 
-    def put(self, request, uidb64, token):
+    def put(self, request, uid, token):
         try:
-            uid = force_str(urlsafe_base64_decode(uidb64))
+            # uid = force_str(urlsafe_base64_decode(uidb64))
             user = User.objects.get(pk=uid)
         except(TypeError, ValueError, OverflowError, User.DoesNotExist):
             user = None
@@ -136,7 +136,7 @@ class ProfileRestoreAPI(APIView):
             password = request.data["password"]
             user.set_password(password)
             user.save()
-            return HttpResponse('Your password is successfully updated')
+            return HttpResponse('OK')
         else:
             return HttpResponse('Activation link is invalid!')
 
