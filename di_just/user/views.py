@@ -81,7 +81,7 @@ class LoginAPI(generics.GenericAPIView):
         if user.profile.is_verified:
 
             return Response({
-                'user': UserSerializer(user).data,
+                #'user': UserSerializer(user).data,
                 'token': AuthToken.objects.create(user)[1]
             })
 
