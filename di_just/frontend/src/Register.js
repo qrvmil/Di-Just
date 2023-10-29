@@ -1,5 +1,6 @@
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
+import Form from 'react-bootstrap/Form';
 
 
 function Register() {
@@ -25,6 +26,7 @@ function Register() {
 
 
   return (
+    <Form>
     <form onSubmit={handleSubmit(onSubmit)}>
       <label>Username</label>
       <input type="username" {...register("username", { required: true })} />
@@ -38,9 +40,13 @@ function Register() {
       <input type="last_name" {...register("last_name", { required: true })} />
       {errors.username && <p>Username is required</p>}
 
-      <label>Email</label>
-      <input type="email" {...register("email", { required: true, pattern: /^\S+@\S+$/i })} />
+      <div class="row mb-3">
+      <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
+      <div class="col-sm-10">
+        <input type="email" {...register("email", { required: true, pattern: /^\S+@\S+$/i })} class="form-control" id="inputEmail3"/>
+      </div>
       {errors.email && <p>Email is required and must be valid</p>}
+      </div>
 
       <label>Password</label>
       <input type="password" {...register("password", { required: true })} />
@@ -48,6 +54,7 @@ function Register() {
 
       <button type="submit">Submit</button>
     </form>
+    </Form>
   );
 }
 

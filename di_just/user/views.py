@@ -81,7 +81,7 @@ class LoginAPI(generics.GenericAPIView):
         if user.profile.is_verified:
 
             return Response({
-                #'user': UserSerializer(user).data,
+                'user': user.id, # UserSerializer(user).data,
                 'token': AuthToken.objects.create(user)[1]
             })
 
@@ -160,7 +160,7 @@ class ProfileInfoAPI(generics.RetrieveDestroyAPIView):
 
 
 class UserInfoAPI(generics.RetrieveDestroyAPIView):
-    permission_classes = [IsOwner]
+    permission_classes = [IsSameUser]
     queryset = User.objects.all()
     serializer_class = UserSerializer
 

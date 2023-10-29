@@ -53,11 +53,45 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware'
 ]
 
-CORS_ORIGIN_ALLOW_ALL = False
+# CORS_ORIGIN_ALLOW_ALL = False
+#
+#
+# CORS_ORIGIN_WHITELIST = (
+#     'http://localhost:3000',
+#     'http://127.0.0.1:3000',
+#     'http://127.0.0.1:8000',
+#     'http://localhost:8000'
+# )
+#
+# CORS_ALLOWED_ORIGINS = [
+#     'http://localhost:3000',
+#     'http://127.0.0.1:3000',
+#     'http://127.0.0.1:8000',
+#     'http://localhost:8000'
+# ]
 
-CORS_ORIGIN_WHITELIST = (
-       'http://localhost:3000',
-)
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOW_CREDENTIALS = True
+
+ALLOWED_HOSTS = ['*']
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
+CORS_ALLOW_HEADERS = ["*"]
+
+# CORS_ALLOWED_ORIGINS = [
+#     'http://localhost:3000',
+# ]
+#
+# CSRF_TRUSTED_ORIGINS = [
+#     'http://localhost:3000',
+# ]
 
 ROOT_URLCONF = 'di_just.urls'
 

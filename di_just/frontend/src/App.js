@@ -6,22 +6,26 @@ import Reset from "./Reset.js";
 import NewPassword from "./NewPassword";
 import Login from "./Login.js";
 import Test from "./Test.js";
-import useToken from './useToken';
+import Profile from "./Profile.js";
 import Header from './Header.js';
+import useToken from './useToken';
+
 
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 
 
 
 function setToken(userToken) {
-    sessionStorage.setItem('token', JSON.stringify(userToken));
+    localStorage.setItem('token', JSON.stringify(userToken));
 }
 
 function getToken() {
-    const tokenString = sessionStorage.getItem('token');
+    const tokenString = localStorage.getItem('token');
     const userToken = JSON.parse(tokenString);
     return userToken?.token
 }
+
+
 
 
 function App() {
@@ -32,6 +36,8 @@ function App() {
     if(!token) {
         return <Login setToken={setToken} />
     }
+
+	console.log(getToken());
 
     return (
     <>
@@ -47,6 +53,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/restore/:uid/:token" element={<NewPassword />} />
         <Route path="/test" element={<Test />} />
+        <Route path="/profile/:uid" element={<Profile />} />
+       
 
       </Routes>
 
@@ -62,6 +70,9 @@ function App() {
       <li>
         <Link to="/login">Login</Link>
       </li>
+	  <li>
+	  	<Link to="/profile/:uid">Profile</Link>
+	  </li>
 
     </BrowserRouter>
     </>
