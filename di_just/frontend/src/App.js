@@ -53,7 +53,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/restore/:uid/:token" element={<NewPassword />} />
         <Route path="/test" element={<Test />} />
-        <Route path="/profile/:uid" element={<Profile />} />
+        <Route path="/profile/" element={<Profile />} />
        
 
       </Routes>
@@ -71,7 +71,7 @@ function App() {
         <Link to="/login">Login</Link>
       </li>
 	  <li>
-	  	<Link to="/profile/:uid">Profile</Link>
+	  	<Link to="/profile/">Profile</Link>
 	  </li>
 
     </BrowserRouter>
