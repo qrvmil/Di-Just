@@ -8,14 +8,14 @@ import Offcanvas from 'react-bootstrap/Offcanvas';
 import Col from 'react-bootstrap/Col';
 import Image from 'react-bootstrap/Image';
 import Button from 'react-bootstrap/Button';
+import {Routes, Route, useNavigate} from 'react-router-dom';
 import Followers from './Followers.js';
 
 
 const API_URL = 'http://localhost:8000';
 
 // TODO: user+profile update
-// TODO: followers/follows lists
-// TODO: images
+// TODO: follows lists + unfollow button;
 
 // axios.defaults.withCredentials = true;
 
@@ -58,6 +58,13 @@ function Profile() {
     const [profileInfo, setProfileInfo] = useState(null);
     const [followers, setFollowers] = useState([]);
     const [flag, setFlag] = useState(false);
+    const navigate = useNavigate();
+
+    const editProfile = () => {
+        // 👇️ navigate to /profile-edit
+        navigate('/profile-edit');
+    };
+
    
 
     useEffect(() => {
@@ -137,6 +144,7 @@ function Profile() {
         <Col xs={6} md={4}>
           <Image src={profileInfo != null ? profileInfo.picture: ""} rounded />
         </Col>
+        <Button variant="info" onClick={editProfile}>Edit</Button>
     </>
     )
 

@@ -10,6 +10,7 @@ import Profile from "./Profile.js";
 import Header from './Header.js';
 import useToken from './useToken';
 import ProfileClose from './ProfileClose.js';
+import ProfileEdit from "./ProfileEdit.js";
 
 
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
@@ -55,6 +56,7 @@ function App() {
         <Route path="/restore/:uid/:token" element={<NewPassword />} />
         <Route path="/test" element={<Test />} />
         <Route path="/profile/" element={<Profile />} />
+		<Route path="/profile-edit/" element={<ProfileEdit />} />
 		<Route path="/profile/:uid" element={<ProfileClose />} />
        
 
