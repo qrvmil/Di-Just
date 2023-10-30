@@ -4,6 +4,9 @@ import { useState } from "react";
 import { useEffect } from 'react';
 import Alert from 'react-bootstrap/Alert';
 import { ListGroup } from 'react-bootstrap';
+import Offcanvas from 'react-bootstrap/Offcanvas'
+import Followers from './Followers.js';
+
 
 const API_URL = 'http://localhost:8000';
 
@@ -65,18 +68,18 @@ function Profile() {
    
     return (
     <>
-
-        <Alert variant={"info"}> Personal information</Alert>
+        <Followers key={0} placement={"end"} name={"followers"} />
+        <Alert variant={"info"} className="d-none d-lg-block"> Personal information</Alert>
         <ListGroup>
-            <ListGroup.Item variant="dark">username: {userInfo != null ? userInfo.username: "Anonym"}</ListGroup.Item>
-            <ListGroup.Item variant="dark">email: {userInfo != null ? userInfo.email: "Anonym"}</ListGroup.Item>
-            <ListGroup.Item variant="dark">first name: {userInfo != null ? userInfo.first_name: "Anonym"}</ListGroup.Item>
-            <ListGroup.Item variant="dark">last name: {userInfo != null ? userInfo.last_name: "Anonym"}</ListGroup.Item>
+            <ListGroup.Item variant="dark">username: {userInfo != null ? userInfo.username: ""}</ListGroup.Item>
+            <ListGroup.Item variant="dark">email: {userInfo != null ? userInfo.email: ""}</ListGroup.Item>
+            <ListGroup.Item variant="dark">first name: {userInfo != null ? userInfo.first_name: ""}</ListGroup.Item>
+            <ListGroup.Item variant="dark">last name: {userInfo != null ? userInfo.last_name: ""}</ListGroup.Item>
         </ListGroup>
-        <Alert variant={"info"}>Profile information</Alert>
+        <Alert variant={"info"} className="d-none d-lg-block">Profile information</Alert>
         <text>
-            <p>age: {profileInfo != null ? profileInfo.age: "Anonym"}</p>
-            <p>bio: {profileInfo != null ? profileInfo.bio: "Anonym"}</p>
+            <p>age: {profileInfo != null ? profileInfo.age: ""}</p>
+            <p>bio: {profileInfo != null ? profileInfo.bio: ""}</p>
             
         </text>
     </>

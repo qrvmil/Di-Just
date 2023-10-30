@@ -11,12 +11,13 @@ export default function Header() {
     <>
       <Navbar bg="dark" data-bs-theme="dark">
         <Container>
-          <Navbar.Brand href="#home">Navbar</Navbar.Brand>
+          <Navbar.Brand href="#home">Di-just</Navbar.Brand>
           <Nav className="me-auto">
 
             <Nav.Link href="/home">Home</Nav.Link>
             <Nav.Link href="/register">Register</Nav.Link>
             <Nav.Link href="/login">Login</Nav.Link>
+            <Nav.Link href="/profile">Profile</Nav.Link>
           </Nav>
         </Container>
       </Navbar>
