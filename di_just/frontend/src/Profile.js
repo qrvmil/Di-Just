@@ -44,8 +44,10 @@ function Profile() {
     const [userInfo, setUserInfo] = useState(null);
     const [userId, setUserId] = useState(null);
     const [profileInfo, setProfileInfo] = useState(null);
+    const [followers, setFollowers] = useState([]);
 
     useEffect(() => {
+        
         
         const userId = getUserId();
         const url1 = `${API_URL}/users/user/${userId}/`;
@@ -56,20 +58,48 @@ function Profile() {
         axios.get(url1, {
             headers: {
                 "Authorization" : "Token " + token}}).then(response => {setUserInfo(response.data)});
-        const profileId = getUserProfileId();
         axios.get(url2, {
             headers: {
                 "Authorization" : "Token " + token}}).then(response => {setProfileInfo(response.data)});
-        
+        console.log(1);
         //console.log(userInfo);
     }, [])
-    console.log(userInfo);
-    console.log(profileInfo);
+
+    //console.log(profileInfo);
+
+    useEffect(() => {
+        if (profileInfo === null) {
+            return;
+        }
+        console.log(2);
+        console.log(profileInfo);
+
+
+        const followersID = profileInfo.followed_by;
+
+        followersID.map(function(fid) {
+            let follower = {};
+            follower["id"] = fid;
+            follower["link"] = `http://localhost:3000/profile${fid}`;
+            const followerInfo = axios.get(`http://127.0.0.1:8000/users/profile-info/${fid}/`).then(response => {return response.data});
+            console.log(followerInfo);
+            follower["picture"] = followerInfo.picture;
+            follower["username"] = followerInfo.user.username;
+            setFollowers((prevFollowers) => [
+                ...prevFollowers,
+                follower,
+            ]);
+            
+        })
+
+    }, [profileInfo])
+    
+    
+    //console.log(followers);
    
     return (
     <>
-        <Followers key={0} placement={"end"} name={"followers"} />
-        <Alert variant={"info"} className="d-none d-lg-block"> Personal information</Alert>
+        <Alert variant={"info"} className="d-none d-lg-block">Personal information</Alert>
         <ListGroup>
             <ListGroup.Item variant="dark">username: {userInfo != null ? userInfo.username: ""}</ListGroup.Item>
             <ListGroup.Item variant="dark">email: {userInfo != null ? userInfo.email: ""}</ListGroup.Item>
@@ -77,11 +107,12 @@ function Profile() {
             <ListGroup.Item variant="dark">last name: {userInfo != null ? userInfo.last_name: ""}</ListGroup.Item>
         </ListGroup>
         <Alert variant={"info"} className="d-none d-lg-block">Profile information</Alert>
-        <text>
-            <p>age: {profileInfo != null ? profileInfo.age: ""}</p>
-            <p>bio: {profileInfo != null ? profileInfo.bio: ""}</p>
-            
-        </text>
+        <Followers placement={"end"} name={"followers"} />
+        <ListGroup>
+            <ListGroup.Item variant="dark">age: {profileInfo != null ? profileInfo.age: ""}</ListGroup.Item>
+            <ListGroup.Item variant="dark">bio: {profileInfo != null ? profileInfo.bio: ""}</ListGroup.Item>
+            <ListGroup.Item variant="dark">image: {userInfo != null ? userInfo.picture: ""}</ListGroup.Item>
+        </ListGroup>
     </>
     )
 

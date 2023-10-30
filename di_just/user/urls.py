@@ -16,6 +16,7 @@ urlpatterns = [
     path('users/profile/update/picture/<int:pk>/', ProfilePictureUpdateAPI.as_view(), name='profile-picture-update'),
     path('users/profile/update/password/<int:pk>/', PasswordUpdateAPI.as_view(), name='password-update'),
     path('users/profile/<int:pk>/', ProfileInfoAPI.as_view(), name='profile-info-delete'),
+    path('users/profile-info/<int:pk>/', ProfileGetInfo.as_view(), name='get-profile-info'),
     path('users/profiles/', ProfileListAPI.as_view(), name='profiles'),
     path('users/login/', LoginAPI.as_view(), name='login'),
     path('users/logout/', knoxviews.LogoutView.as_view(), name='logout'),

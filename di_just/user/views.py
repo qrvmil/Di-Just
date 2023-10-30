@@ -158,6 +158,11 @@ class ProfileInfoAPI(generics.RetrieveDestroyAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
 
+class ProfileGetInfo(generics.RetrieveAPIView):
+    permission_classes = [AllowAny]
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+
 
 class UserInfoAPI(generics.RetrieveDestroyAPIView):
     permission_classes = [IsSameUser]
