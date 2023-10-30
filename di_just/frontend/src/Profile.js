@@ -4,7 +4,10 @@ import { useState } from "react";
 import { useEffect } from 'react';
 import Alert from 'react-bootstrap/Alert';
 import { ListGroup } from 'react-bootstrap';
-import Offcanvas from 'react-bootstrap/Offcanvas'
+import Offcanvas from 'react-bootstrap/Offcanvas';
+import Col from 'react-bootstrap/Col';
+import Image from 'react-bootstrap/Image';
+import Button from 'react-bootstrap/Button';
 import Followers from './Followers.js';
 
 
@@ -112,6 +115,7 @@ function Profile() {
     
     
     console.log(followers);
+    console.log(profileInfo);
     
    
     return (
@@ -128,8 +132,11 @@ function Profile() {
         <ListGroup>
             <ListGroup.Item variant="dark">age: {profileInfo != null ? profileInfo.age: ""}</ListGroup.Item>
             <ListGroup.Item variant="dark">bio: {profileInfo != null ? profileInfo.bio: ""}</ListGroup.Item>
-            <ListGroup.Item variant="dark">image: {userInfo != null ? userInfo.picture: ""}</ListGroup.Item>
+            <ListGroup.Item variant="dark">image: {profileInfo != null ? profileInfo.picture: ""}</ListGroup.Item>
         </ListGroup>
+        <Col xs={6} md={4}>
+          <Image src={profileInfo != null ? profileInfo.picture: ""} rounded />
+        </Col>
     </>
     )
 

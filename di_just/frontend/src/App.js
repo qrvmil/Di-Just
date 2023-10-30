@@ -9,6 +9,7 @@ import Test from "./Test.js";
 import Profile from "./Profile.js";
 import Header from './Header.js';
 import useToken from './useToken';
+import ProfileClose from './ProfileClose.js';
 
 
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
