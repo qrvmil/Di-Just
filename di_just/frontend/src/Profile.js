@@ -34,9 +34,18 @@ function getUserProfileId() {
     return axios.get(url1, {
         headers: {
         "Authorization" : "Token " + token}}).then(response => {return response.data});
-    
-
 }
+
+function getFollowerInfo(fid) {
+    const url = `http://127.0.0.1:8000/users/profile-info/${fid}/`;
+    
+    const data = axios.get(url).then(response => {return response.data});
+    console.log(data);
+    return data;
+    
+}
+
+
 
 
 function Profile() {
@@ -45,6 +54,8 @@ function Profile() {
     const [userId, setUserId] = useState(null);
     const [profileInfo, setProfileInfo] = useState(null);
     const [followers, setFollowers] = useState([]);
+    const [flag, setFlag] = useState(false);
+   
 
     useEffect(() => {
         
@@ -68,23 +79,28 @@ function Profile() {
     //console.log(profileInfo);
 
     useEffect(() => {
-        if (profileInfo === null) {
+        if (profileInfo === null || flag) {
             return;
         }
+        setFlag(true);
         console.log(2);
         console.log(profileInfo);
 
 
         const followersID = profileInfo.followed_by;
+        console.log(followersID);
 
         followersID.map(function(fid) {
             let follower = {};
             follower["id"] = fid;
-            follower["link"] = `http://localhost:3000/profile${fid}`;
-            const followerInfo = axios.get(`http://127.0.0.1:8000/users/profile-info/${fid}/`).then(response => {return response.data});
-            console.log(followerInfo);
-            follower["picture"] = followerInfo.picture;
-            follower["username"] = followerInfo.user.username;
+            follower["link"] = `http://localhost:3000/profile/${fid}`;
+            getFollowerInfo(fid).then((res) => {
+                follower["picture"] = res.picture;
+                follower["username"] = res.user.username;
+            });
+            
+            // follower["picture"] = followerInfo.picture;
+            // follower["username"] = followerInfo.user.username;
             setFollowers((prevFollowers) => [
                 ...prevFollowers,
                 follower,
@@ -95,7 +111,8 @@ function Profile() {
     }, [profileInfo])
     
     
-    //console.log(followers);
+    console.log(followers);
+    
    
     return (
     <>
@@ -107,7 +124,7 @@ function Profile() {
             <ListGroup.Item variant="dark">last name: {userInfo != null ? userInfo.last_name: ""}</ListGroup.Item>
         </ListGroup>
         <Alert variant={"info"} className="d-none d-lg-block">Profile information</Alert>
-        <Followers placement={"end"} name={"followers"} />
+        <Followers placement={"end"} name={"followers"} followers={followers}/>
         <ListGroup>
             <ListGroup.Item variant="dark">age: {profileInfo != null ? profileInfo.age: ""}</ListGroup.Item>
             <ListGroup.Item variant="dark">bio: {profileInfo != null ? profileInfo.bio: ""}</ListGroup.Item>

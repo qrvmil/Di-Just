@@ -54,6 +54,7 @@ function App() {
         <Route path="/restore/:uid/:token" element={<NewPassword />} />
         <Route path="/test" element={<Test />} />
         <Route path="/profile/" element={<Profile />} />
+		<Route path="/profile/:uid" element={<ProfileClose />} />
        
 
       </Routes>
