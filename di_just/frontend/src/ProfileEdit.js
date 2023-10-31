@@ -6,8 +6,7 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:8000';
 
-// TODO: add profile edit
-// TODO: add Image (picture) edit;
+
 // TODO: email verification if changed;
 // TODO: validate edited data;
 
@@ -25,7 +24,7 @@ const ProfileEdit = ({ props }) => {
 
     const [userInfo, setUserInfo] = useState(null);
     const [profileInfo, setProfileInfo] = useState(null);
-    const [flag, setFlag] = useState(false);
+   
 
 
     useEffect(() => {
@@ -54,7 +53,7 @@ const ProfileEdit = ({ props }) => {
 
 
 
-    const handleSubmit = (event) => {
+    const handleSubmit1 = (event) => {
         event.preventDefault();
         const formData = new FormData(event.target);
         const username = (formData.get('username') != '' ? formData.get('username') :userInfo.username);
@@ -82,8 +81,60 @@ const ProfileEdit = ({ props }) => {
         
     };
 
+    const handleSubmit2 = (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const bio = (formData.get('username') != '' ? formData.get('username') :profileInfo.username);
+        const age = (formData.get('email') != '' ? formData.get('email') :profileInfo.email);
+        const picture = (formData.get('picture').name != '' ? formData.get('picture') :profileInfo.last_name);
+        console.log(picture);
+        
+        // Делаем что-то с данными формы, например, отправляем на сервер
+
+
+        const tokenString = localStorage.getItem('token');
+        const userToken = JSON.parse(tokenString);
+        const token = userToken?.token;
+        axios.put(`http://127.0.0.1:8000/users/profile/update/${getUserId()}/`, {
+            bio: bio,
+            age: age,
+            }, {headers: {"Authorization" : "Token " + token}})
+            .then(res => {
+                console.log(res);
+                console.log(res.data);})
+
+
+        // console.log('done');
+        
+    };
+
+    const handleSubmit3 = (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const picture = (formData.get('picture').name != '' ? formData.get('picture') :profileInfo.picture);
+        console.log(picture);
+        
+        // Делаем что-то с данными формы, например, отправляем на сервер
+
+
+        const tokenString = localStorage.getItem('token');
+        const userToken = JSON.parse(tokenString);
+        const token = userToken?.token;
+        axios.put(`http://127.0.0.1:8000/users/profile/update/picture/${getUserId()}/`, {
+            picture: picture,
+            }, {headers: {"Authorization" : "Token " + token, "Content-Type": "multipart/form-data"}})
+            .then(res => {
+                console.log(res);
+                console.log(res.data);})
+
+
+        // console.log('done');
+        
+    };
+
     return (
-        <Form onSubmit={handleSubmit}>
+        <>
+        <Form onSubmit={handleSubmit1}>
         <Form.Group controlId="username">
             <Form.Label>Username</Form.Label>
             <Form.Control type="text" name="username" placeholder={userInfo ? userInfo.username: ""}/>
@@ -104,12 +155,35 @@ const ProfileEdit = ({ props }) => {
             <Form.Control type="text" name="lastName" placeholder={userInfo ? userInfo.last_name: ""} />
         </Form.Group>
 
-        
-
         <Button variant="primary" type="submit">
             Submit
         </Button>
         </Form>
+        <Form onSubmit={handleSubmit2}>
+            <Form.Group controlId="bio">
+                <Form.Label>Last Name</Form.Label>
+                <Form.Control type="text" name="bio" placeholder={profileInfo ? profileInfo.bio: ""} />
+            </Form.Group>
+
+            <Form.Group controlId="age">
+                <Form.Label>Last Name</Form.Label>
+                <Form.Control type="text" name="age" placeholder={profileInfo ? profileInfo.age: ""} />
+            </Form.Group>
+
+            <Button variant="primary" type="submit">
+                Submit
+            </Button>
+        </Form>
+        <Form onSubmit={handleSubmit3}>
+            <Form.Group controlId="formFile" className="mb-3">
+                <Form.Label>Profile picture</Form.Label>
+                <Form.Control type="file" name="picture"/>
+            </Form.Group>
+            <Button variant="primary" type="submit">
+                Submit
+            </Button>
+        </Form>
+    </>
     );
 };
 

@@ -115,8 +115,9 @@ class ProfilePictureUpdateSerializer(serializers.ModelSerializer):
         fields = ['picture', 'user']
 
     def update(self, instance, validated_data):
-        storage, path = instance.picture.storage, instance.picture.path
-        storage.delete(path)
+        if instance.picture != "":
+            storage, path = instance.picture.storage, instance.picture.path
+            storage.delete(path)
         instance.picture = validated_data["picture"]
         instance.save()
         return instance

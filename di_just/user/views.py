@@ -89,7 +89,6 @@ class LoginAPI(generics.GenericAPIView):
             return Response({"error": "your profile is not verified"})
 
 
-
 class UserUpdateAPI(generics.UpdateAPIView):
     permission_classes = [IsSameUser]
     queryset = User.objects.all()
@@ -194,7 +193,3 @@ class UnfollowUserAPI(APIView):
         request.user.profile.follows.remove(unfollow)
 
         return Response({f"You unfollowed {unfollow.user.username}"})
-
-
-
-
