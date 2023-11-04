@@ -161,12 +161,12 @@ const ProfileEdit = ({ props }) => {
         </Form>
         <Form onSubmit={handleSubmit2}>
             <Form.Group controlId="bio">
-                <Form.Label>Last Name</Form.Label>
+                <Form.Label>Bio</Form.Label>
                 <Form.Control type="text" name="bio" placeholder={profileInfo ? profileInfo.bio: ""} />
             </Form.Group>
 
             <Form.Group controlId="age">
-                <Form.Label>Last Name</Form.Label>
+                <Form.Label>Age</Form.Label>
                 <Form.Control type="text" name="age" placeholder={profileInfo ? profileInfo.age: ""} />
             </Form.Group>
 

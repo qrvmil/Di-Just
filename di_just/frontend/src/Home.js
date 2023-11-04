@@ -1,6 +1,9 @@
 import axios from 'axios';
 import { useState } from 'react';
+import Button from 'react-bootstrap/Button';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 const API_URL = 'http://localhost:8000';
+
 
 function getUsersProfiles() {
     const url = `${API_URL}/users/profiles/`;
@@ -9,6 +12,12 @@ function getUsersProfiles() {
 } 
 
 function Home() {
+
+    const navigate = useNavigate();
+
+    const clickType = () => {
+        navigate('/type');
+    }
 
     const [Username, setUsername] = useState();
 
@@ -20,6 +29,7 @@ function Home() {
 
     return (
     <>
+        <Button variant="info" onClick={clickType}>Create digest</Button>
         <p>Hi! {Username}</p>
     </>
     )

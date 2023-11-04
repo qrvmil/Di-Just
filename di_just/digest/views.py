@@ -41,6 +41,7 @@ class ImageDigestCreateAPI(generics.CreateAPIView):
     serializer_class = ImageDigestCreateSerializer
 
 
+
 class ImageDigestUpdateAPI(APIView):
     permission_classes = [IsOwner]
 
@@ -141,6 +142,8 @@ class LinkDigestCreateAPI(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = LinkDigest
     serializer_class = LinkDigestCreateSerializer
+
+
 
 
 class LinkDigestUpdateAPI(APIView):

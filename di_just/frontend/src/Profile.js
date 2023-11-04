@@ -14,7 +14,7 @@ import Followers from './Followers.js';
 
 const API_URL = 'http://localhost:8000';
 
-// TODO: user+profile update
+
 // TODO: follows lists + unfollow button;
 
 // axios.defaults.withCredentials = true;

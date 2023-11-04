@@ -11,6 +11,9 @@ import Header from './Header.js';
 import useToken from './useToken';
 import ProfileClose from './ProfileClose.js';
 import ProfileEdit from "./ProfileEdit.js";
+import DigestType from './DigestType.js';
+import CreateImageDigest from "./CreateImageDigest.js";
+import CreateLinkDigest from "./CreateLinkDigest.js";
 
 
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
@@ -56,8 +59,11 @@ function App() {
         <Route path="/restore/:uid/:token" element={<NewPassword />} />
         <Route path="/test" element={<Test />} />
         <Route path="/profile/" element={<Profile />} />
-		<Route path="/profile-edit/" element={<ProfileEdit />} />
-		<Route path="/profile/:uid" element={<ProfileClose />} />
+        <Route path="/profile-edit/" element={<ProfileEdit />} />
+        <Route path="/profile/:uid" element={<ProfileClose />} />
+        <Route path="/type" element={<DigestType />} />
+        <Route path="/create-img-digest" element={<CreateImageDigest/>}/>
+        <Route path="/create-link-digest" element={<CreateLinkDigest/>}/>
        
 
       </Routes>

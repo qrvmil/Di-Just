@@ -139,7 +139,7 @@ class LinkDigestCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LinkDigest
-        fields = ['owner', 'introduction', 'name', 'topic', 'conclusion', 'saves', 'public', 'created_timestamp',
+        fields = ['owner', 'introduction', 'name', 'topic', 'conclusion', 'public', 'created_timestamp',
                   'links', 'descriptions']
 
     def create(self, validated_data):
