@@ -14,6 +14,8 @@ import ProfileEdit from "./ProfileEdit.js";
 import DigestType from './DigestType.js';
 import CreateImageDigest from "./CreateImageDigest.js";
 import CreateLinkDigest from "./CreateLinkDigest.js";
+import CreatedDigests from "./CreatedDigests.js";
+import SavedDigests from "./SavedDigests.js";
 
 
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
@@ -64,6 +66,8 @@ function App() {
         <Route path="/type" element={<DigestType />} />
         <Route path="/create-img-digest" element={<CreateImageDigest/>}/>
         <Route path="/create-link-digest" element={<CreateLinkDigest/>}/>
+        <Route path="/created-digests" element={<CreatedDigests/>} />
+        <Route path="/saved-digests" element={<SavedDigests/>}/>
        
 
       </Routes>

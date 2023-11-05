@@ -3,6 +3,8 @@ import { Form, Button } from 'react-bootstrap';
 import { useState } from "react";
 import { useEffect } from 'react';
 import axios from 'axios';
+import {Routes, Route, useNavigate} from 'react-router-dom';
+
 
 const API_URL = 'http://localhost:8000';
 
@@ -24,6 +26,7 @@ const ProfileEdit = ({ props }) => {
 
     const [userInfo, setUserInfo] = useState(null);
     const [profileInfo, setProfileInfo] = useState(null);
+    const navigate = useNavigate();
    
 
 
@@ -78,16 +81,17 @@ const ProfileEdit = ({ props }) => {
 
 
         console.log('done');
+        navigate('/profile');
         
     };
 
     const handleSubmit2 = (event) => {
         event.preventDefault();
         const formData = new FormData(event.target);
-        const bio = (formData.get('username') != '' ? formData.get('username') :profileInfo.username);
-        const age = (formData.get('email') != '' ? formData.get('email') :profileInfo.email);
-        const picture = (formData.get('picture').name != '' ? formData.get('picture') :profileInfo.last_name);
-        console.log(picture);
+        const bio = (formData.get('bio') !== '' ? formData.get('bio') :profileInfo.bio);
+        const age = (formData.get('age') !== '' ? formData.get('age') :profileInfo.age);
+        // const picture = (formData.get('picture').name !== '' ? formData.get('picture') :profileInfo.last_name);
+        // console.log(picture);
         
         // Делаем что-то с данными формы, например, отправляем на сервер
 
@@ -105,6 +109,7 @@ const ProfileEdit = ({ props }) => {
 
 
         // console.log('done');
+        navigate('/profile');
         
     };
 
@@ -129,6 +134,8 @@ const ProfileEdit = ({ props }) => {
 
 
         // console.log('done');
+        navigate('/profile');
+
         
     };
 

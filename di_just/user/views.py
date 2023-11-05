@@ -40,11 +40,11 @@ class RegisterUserAPI(generics.CreateAPIView):
         user.set_password(user_serializer.validated_data['password'])
         user.save()
 
-        current_site = 'http://localhost:3000' # get_current_site(request)
+        current_site = 'http://localhost:3000'  # get_current_site(request)
         mail_subject = 'Activation link has been sent to your email id'
         message = render_to_string('acc_active_email.html', {
             'user': user,
-            'domain': current_site[7:], # current_site.domain,
+            'domain': current_site[7:],  # current_site.domain,
             'uid': user.pk,
             'token': account_activation_token.make_token(user),
         })
@@ -81,7 +81,7 @@ class LoginAPI(generics.GenericAPIView):
         if user.profile.is_verified:
 
             return Response({
-                'user': user.id, # UserSerializer(user).data,
+                'user': user.id,  # UserSerializer(user).data,
                 'token': AuthToken.objects.create(user)[1]
             })
 
@@ -102,22 +102,22 @@ class PasswordUpdateAPI(generics.UpdateAPIView):
 
 
 class ProfileRestoreEmailAPI(APIView):
-    permission_classes = [AllowAny] # [IsSameUser]
+    permission_classes = [AllowAny]  # [IsSameUser]
     queryset = User.objects.all()
     serializer_class = PasswordUpdateSerializer
 
     def put(self, request):
         email = request.data["email"]
         user = User.objects.get(email=email)
-        current_site = 'http://localhost:3000' # get_current_site(request)
+        current_site = 'http://localhost:3000'  # get_current_site(request)
         mail_subject = 'Please follow the link to reset the password for your account'
         message = render_to_string('pass_reset_email.html', {
             'user': user,
-            'domain': current_site[7:], # current_site.domain,
-            'uid': user.pk, # urlsafe_base64_encode(force_bytes(user.pk)),
+            'domain': current_site[7:],  # current_site.domain,
+            'uid': user.pk,  # urlsafe_base64_encode(force_bytes(user.pk)),
             'token': account_activation_token.make_token(user),
         })
-        to_email = email # user.email
+        to_email = email  # user.email
         send_mail(mail_subject, message, 'di-just-info@yandex.ru', [to_email], fail_silently=False)
 
         return Response({"email has been sent"})
@@ -156,6 +156,7 @@ class ProfileInfoAPI(generics.RetrieveDestroyAPIView):
     permission_classes = [IsOwner]
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
+
 
 class ProfileGetInfo(generics.RetrieveAPIView):
     permission_classes = [AllowAny]

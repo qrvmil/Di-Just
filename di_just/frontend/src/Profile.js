@@ -12,6 +12,7 @@ import {Routes, Route, useNavigate} from 'react-router-dom';
 import Followers from './Followers.js';
 
 
+
 const API_URL = 'http://localhost:8000';
 
 
@@ -64,6 +65,17 @@ function Profile() {
         // 👇️ navigate to /profile-edit
         navigate('/profile-edit');
     };
+
+    const handleClick1 = () => {
+        // navigate to /created-digests
+        navigate('/created-digests')
+    }
+
+    const handleClick2 = () => {
+        // navigate to /saved-digests
+        navigate('/saved-digests')
+
+    }
 
    
 
@@ -144,7 +156,10 @@ function Profile() {
         <Col xs={6} md={4}>
           <Image src={profileInfo != null ? profileInfo.picture: ""} rounded />
         </Col>
-        <Button variant="info" onClick={editProfile}>Edit</Button>
+        <Button variant="info" onClick={editProfile}>Edit profile</Button>
+        <Button variant="outline-info" onClick={handleClick1}>Created digests</Button>
+        <Button variant="outline-info" onClick={handleClick1}>Saved digests</Button>
+        
     </>
     )
 
