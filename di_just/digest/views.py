@@ -116,7 +116,7 @@ class ImageDigestRetrieveAPI(APIView):
             digest = ImageDigest.objects.get(pk=pk)
         except:
             return Response({"error": "invalid pk"})
-
+        print(request.user, digest.owner.user)
         if not digest.public and (request.user != digest.owner.user):
             return Response({"error": "this digest is private"})
 

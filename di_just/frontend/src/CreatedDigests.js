@@ -7,7 +7,7 @@ import Card from 'react-bootstrap/Card';
 const API_URL = 'http://localhost:8000';
 
 
-
+// 👇️ get ID from url
 function getUserId() {
 	const userStringId = localStorage.getItem('token')
 	const userId = JSON.parse(userStringId);
