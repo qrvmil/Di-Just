@@ -22,7 +22,7 @@ export default function DigestType() {
         <>
             <Alert variant={"info"} className="d-none d-lg-block">Please click on the preferable option</Alert>
             <Button variant="outline-info" onClick={handleClick1}>Image digest</Button>
-            <Button variant="outline-info" onClick={handleClick2}>link digest</Button>
+            <Button variant="outline-info" onClick={handleClick2}>Link digest</Button>
         </>
     )
 }

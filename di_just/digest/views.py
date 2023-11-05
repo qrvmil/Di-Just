@@ -371,6 +371,7 @@ class ImageDigestListAPI(APIView):
 
         elif "owner" in data.keys():
             owner = data["owner"]
+            # NB! Передается username пользователя!
             img_digests = ImageDigest.objects.filter(owner__user__username=owner, public=True)
 
         elif "time" in data.keys():

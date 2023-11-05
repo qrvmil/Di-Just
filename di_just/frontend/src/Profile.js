@@ -158,7 +158,7 @@ function Profile() {
         </Col>
         <Button variant="info" onClick={editProfile}>Edit profile</Button>
         <Button variant="outline-info" onClick={handleClick1}>Created digests</Button>
-        <Button variant="outline-info" onClick={handleClick1}>Saved digests</Button>
+        <Button variant="outline-info" onClick={handleClick2}>Saved digests</Button>
         
     </>
     )
