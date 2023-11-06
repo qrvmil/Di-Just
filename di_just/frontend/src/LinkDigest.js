@@ -5,6 +5,7 @@ import Image from 'react-bootstrap/Image';
 import Col from 'react-bootstrap/Col';
 import { Button } from 'react-bootstrap';
 import {Routes, Route, useNavigate} from 'react-router-dom';
+import Comments from './Comments';
 
 
 
@@ -20,11 +21,17 @@ export default function LinkDigest() {
     
     const tokenString = localStorage.getItem('token');
     const userToken = JSON.parse(tokenString);
+    const [comments, setCommets] = useState(null);
     const token = userToken?.token;
     const navigate = useNavigate();
 
     const handleEditClick = (id) => {
         navigate(`/link-edit/${id}`);
+    }
+
+    function getComments() {
+        axios.get(`digest/comments/${digestId}/`, {params: {type: "link"}}).then(res => setCommets(res.data))
+
     }
 
     useEffect(() => {
@@ -61,6 +68,8 @@ export default function LinkDigest() {
         </ul>
 
         <p>{digest !== null ? digest["general info"]["conclusion"] : ''}</p>
+
+        <Comments placement={"end"} name={"comments"} comments={comments} type={"link"}/>
 
 
         {digest !== null && digest["general info"]["owner"] === user ? <Button variant="outline-info" onClick={() => handleEditClick(digestId)}>Edit digest</Button>: ''}

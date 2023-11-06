@@ -5,6 +5,8 @@ import Image from 'react-bootstrap/Image';
 import Col from 'react-bootstrap/Col';
 import { Button } from 'react-bootstrap';
 import {Routes, Route, useNavigate} from 'react-router-dom';
+import Comments from './Comments';
+
 
 
 
@@ -14,6 +16,7 @@ const API_URL = 'http://localhost:8000';
 export default function ImgDigest() {
 
     const [digest, setDigest] = useState(null);
+    const [comments, setCommets] = useState(null);
     const params = useParams();
     const digestId = params.id;
     const navigate = useNavigate();
@@ -23,17 +26,23 @@ export default function ImgDigest() {
     }
 
     
+
+    
     const tokenString = localStorage.getItem('token');
     const userToken = JSON.parse(tokenString);
     const token = userToken?.token;
     const user = userToken?.user;
+
+    useEffect(() => {
+        axios.get(`http://127.0.0.1:8000/digest/comments/?pk=${digestId}&type=img`).then(res => setCommets(res.data));
+    }, [])
 
     
 
     useEffect(() => {
         const url1 = `${API_URL}/img-digest/get/${digestId}/`;
         axios.get(url1, {headers: {"Authorization" : "Token " + token}}).then(response => {setDigest(response.data)});
-        
+
     }, [])
 
     let topics = digest !== null ? digest["general info"]["topic"]: '';
@@ -65,7 +74,7 @@ export default function ImgDigest() {
             })}
         </ul>
 
-        
+        <Comments placement={"end"} name={"comments"} comments={comments !== null ? comments: []} type={"image"} digest={digestId}/>
 
         {digest !== null && digest["general info"]["owner"] === user ? <Button variant="outline-info" onClick={() => handleEditClick(digestId)}>Edit digest</Button>: ''}
 

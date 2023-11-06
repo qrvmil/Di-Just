@@ -48,6 +48,7 @@ class ImageDigestUpdateAPI(APIView):
     # TODO make subscription
     def put(self, request, pk):
         print('pk = ', pk)
+        print('pk = ', pk)
         data = request.data
         topics = []
         if "topic" in data.keys():
@@ -260,7 +261,7 @@ class DigestCommentsRetrieveAPI(APIView):
     def get(self, request):
         data = request.query_params
         paginator = CustomPagination()
-        if data["digest-type"] == "img-digest":
+        if data["type"] == "img":
             comments = ImageDigest.objects.get(pk=int(data["pk"])).comments.all()
         else:
             comments = LinkDigest.ojects.get(pk=int(data["pk"])).comments.all()
