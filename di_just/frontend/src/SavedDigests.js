@@ -4,6 +4,7 @@ import {Routes, Route, useNavigate} from 'react-router-dom';
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
+import './Fit/Posts.css';
 const API_URL = 'http://localhost:8000';
 
 
@@ -19,7 +20,7 @@ function SavedDigests() {
 
     const [savedImgDigests, setSavedImgDigests] = useState([]);
     const [savedLinkDigests, setSavedLinkDigests] = useState([]);
-    const [digestType, setDigestType] = useState(true); // true === image dagest, false === link digest :)
+    const [digestType, setDigestType] = useState(true); // true === image digest, false === link digest :)
     const navigate = useNavigate();
 
     const handleClick = () => {
@@ -72,10 +73,10 @@ function SavedDigests() {
     // TODO: add digest pages to every digest
 
     return (
-    <>
+    <div>
         <Alert variant={"info"} className="d-none d-lg-block">Saved digests:</Alert>
         <Button variant="outline-info" onClick={handleClick}>Change for {digestType ? "link": "image"} digests</Button>
-        
+        <div className='wrapper'>
         {current_info.map((element) => 
                 <div>
                     <Card>
@@ -91,8 +92,8 @@ function SavedDigests() {
 
                 </div>
         )}
-       
-    </>
+       </div>
+    </div>
     )
 
 }

@@ -17,6 +17,7 @@ urlpatterns = [
     path('digest/comment/delete/<int:pk>/', CommentDeleteAPI.as_view(), name='comment-delete'),
     path('digest/comments/', DigestCommentsRetrieveAPI.as_view(), name='digest-comments'),
     path('digest/save/', DigestSaveAPI.as_view(), name='save-digest'),
+    path('digest/unsave/', DigestUnsaveAPI.as_view(), name='save-digest'),
     # path('digest/by-topic/', DigestByTopicOrAPI.as_view(), name='digest-by-topic'),
 
     path('link-digest/create/', LinkDigestCreateAPI.as_view(), name='create-link-digest'),

@@ -17,10 +17,11 @@ function Reset() {
      })
       .then(res => {
         console.log(res);
-
+        
       })
     setEmailSent(false);
     console.log(data);
+    localStorage.clear();
 
   };
 
@@ -30,11 +31,11 @@ function Reset() {
 
     <div>
     {emailSent ? (
-    <div>
-    <h2>Восстановление пароля</h2>
+    <div style={{maxWidth: '600px', margin: 'auto'}}>
+    <h2 style={{color: "white"}}>Восстановление пароля</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div>
-          <label>Адрес электронной почты</label>
+          <label style={{color: "white"}}>Адрес электронной почты</label>
           <input type="email" {...register("email", { required: true })} />
         </div>
         <button type="submit">Восстановить пароль</button>

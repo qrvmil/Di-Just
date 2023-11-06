@@ -5,6 +5,8 @@ import { ListGroup } from 'react-bootstrap';
 import Alert from 'react-bootstrap/Alert';
 import Col from 'react-bootstrap/Col';
 import Image from 'react-bootstrap/Image';
+import './styles/ProfileClose.css';
+import './styles/buttonStyle.css'
 const API_URL = 'http://localhost:8000';
 
 
@@ -45,16 +47,17 @@ function ProfileClose() {
     useEffect(() => {
 
         const following = userInfo !== null ? userInfo.follows: [];
+        
         console.log(following);
         console.log(userInfo);
         const profile_user_id = profile !== null ? profile.user.id: 0;
         console.log(profile_user_id);
     
-        if ((following !== []) & (profile_user_id in following)) {
-            setIsFollower(false);
+        if ((following !== []) & (following.includes(profile_user_id))) {
+            setIsFollower(true);
     }
 
-    },)
+    }, [])
 
     
 
@@ -88,19 +91,22 @@ function ProfileClose() {
 
     return (
     <>
-        <Alert variant={"info"} className="d-none d-lg-block">Profile information</Alert>
-        <ListGroup>
-            
-            <ListGroup.Item variant="dark">username: {profile != null ? profile.user.username: ""}</ListGroup.Item>
-            <ListGroup.Item variant="dark">bio: {profile != null ? profile.bio: ""}</ListGroup.Item>
-            <ListGroup.Item variant="dark">age: {profile != null ? profile.age: ""}</ListGroup.Item>
-        </ListGroup>
-        <Col xs={6} md={4}>
-          <Image src={profile != null ? profile.picture: ""} rounded />
-          
-        </Col>
-        {console.log(isFollower)}
-        {!isFollower ? <button onClick={() => followUser(profile.id)}>Follow user</button>: <button onClick={() => unfollowUser(profile.id)}>Unfollow user</button>}
+       
+        <div className="user-profile-c">
+      <div className="user-photo-c">
+        <img src={profile != null ? profile.picture: ""} alt="image" />
+      </div>
+      <div className="user-info-c">
+        <h2>{profile != null ? profile.user.username: ""}</h2>
+        
+          <div className="info-block-c">
+            <p><strong>age:</strong> {profile != null ? profile.age: ""}</p>
+            <p><strong>bio:</strong> {profile != null ? profile.bio: ""}</p>
+          </div>
+          {!isFollower ? <button onClick={() => followUser(profile.id)} className='logout-button'>Follow user</button>: <button onClick={() => unfollowUser(profile.id)} className='logout-button'>Unfollow user</button>}
+
+      </div>
+    </div>
     </>
     )
 

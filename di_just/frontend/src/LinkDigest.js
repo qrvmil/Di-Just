@@ -6,33 +6,78 @@ import Col from 'react-bootstrap/Col';
 import { Button } from 'react-bootstrap';
 import {Routes, Route, useNavigate} from 'react-router-dom';
 import Comments from './Comments';
-
+import './styles/LinkDigest.css';
+import './Fit/Posts.css';
+import './styles/buttonStyle.css';
 
 
 const API_URL = 'http://localhost:8000';
 
+const linkStyle = {
+    color: '#2c70f5',
+    textDecoration: 'none',
+    background: '#101b3b',
+    padding: '5px 10px',
+    borderRadius: '5px',
+  };
 
 export default function LinkDigest() {
 
     const [digest, setDigest] = useState(null);
+    const [comments, setCommets] = useState(null);
+    const [saved, setSaved] = useState(false);
+    const [wasDeleted, setWasDeleted] = useState(false);
     const params = useParams();
     const digestId = params.id;
+    const navigate = useNavigate();
 
+    
     
     const tokenString = localStorage.getItem('token');
     const userToken = JSON.parse(tokenString);
-    const [comments, setCommets] = useState(null);
     const token = userToken?.token;
-    const navigate = useNavigate();
+    const user = userToken?.user;
+    const bot_link = `https://t.me/dijust_bot?start=link_${digestId}`;
 
     const handleEditClick = (id) => {
         navigate(`/link-edit/${id}`);
     }
 
-    function getComments() {
-        axios.get(`digest/comments/${digestId}/`, {params: {type: "link"}}).then(res => setCommets(res.data))
-
+    const deleteDigest = (id) => {
+        setWasDeleted(true)
+        axios.delete(`http://127.0.0.1:8000/link-digest/delete/${id}/`, {headers: {"Authorization": "Token " + token}})
     }
+
+    const handleSave = () => {
+        if (!saved) {
+            axios.post("http://127.0.0.1:8000/digest/save/", {
+                "pk": digestId,
+                "digest-type": "link-digest"
+
+            }, {
+                headers: {
+                    "Authorization": "Token " + token
+                }
+            })
+            setSaved(true)
+        }
+        else {
+            axios.post("http://127.0.0.1:8000/digest/unsave/", {
+                "pk": digestId,
+                "digest-type": "link-digest"
+
+            }, {
+                headers: {
+                    "Authorization": "Token " + token
+                }
+            })
+            setSaved(false)
+        }
+    }
+
+    useEffect(() => {
+        axios.get(`http://127.0.0.1:8000/digest/comments/?pk=${digestId}&type=link`).then(res => setCommets(res.data));
+    }, [])
 
     useEffect(() => {
         const url1 = `${API_URL}/link-digest/get/${digestId}/`;
@@ -42,40 +87,59 @@ export default function LinkDigest() {
 
     let topics = digest !== null ? digest["general info"]["topic"]: '';
     let links = digest !== null ? digest["digest links"]: [];
-    const user = userToken?.user;
+
+    useEffect(() => {
+        if (digest !== null) {
+            console.log(digest["general info"]["saves"]);
+            console.log(user);
+            if (digest["general info"]["saves"].includes(user)) {
+                console.log(user);
+                setSaved(true);
+            }
+        }
+    }, [digest])
+
+
+    if (wasDeleted) {
+        return (<div>Digest was successfully deleted</div>)
+    }
+   
    
     return(
     <>
-        <p>Image digest {digestId}</p>
+        <div className='digest-info-id'>
         <p>{digest !== null ? digest["general info"]["name"] : ''}   |   {digest != null ? digest["general info"]["created_timestamp"].slice(0, 10): ''}</p>
         <p>{digest !== null ? digest["general info"]["introduction"] : ''}</p>
-        
-        <p>Topics:</p>
-        <ul>
+        </div>
+        <p style={{color: "white"}}>Topics:</p>
+        <ul style={{color: "white"}}>
             {topics !== '' && topics.map(function(elem) {
                 return <li>{elem}</li>
             })}
         </ul>
-        <p>Links:</p>
+        <p style={{color: "white"}}>Links:</p>
         <ul>
             {links !== [] && links.map(function(elem) {
                 return( 
-                <li>
-                    <a href={elem.link}>{elem.link}</a>
+                <div className='link-description-container'>
+                    <a href={elem.link}>tap</a>
                     <p>{elem.description}</p>
-                </li>)
+                </div>)
             })}
         </ul>
 
         <p>{digest !== null ? digest["general info"]["conclusion"] : ''}</p>
 
-        <Comments placement={"end"} name={"comments"} comments={comments} type={"link"}/>
+        
+
+        <Comments placement={"end"} name={"comments"} comments={comments !== null ? comments: []} type={"link"} digest={digestId}/><button onClick={() => handleSave()}>{saved ? "Unsave": "Save"}</button>
 
 
-        {digest !== null && digest["general info"]["owner"] === user ? <Button variant="outline-info" onClick={() => handleEditClick(digestId)}>Edit digest</Button>: ''}
-
-
-
+        {digest !== null && digest["general info"]["owner"] === user ? <>
+        <Button variant="outline-info" onClick={() => handleEditClick(digestId)} className='logout-button'>Edit digest</Button>
+        <button onClick={() => deleteDigest(digestId)} className='logout-button'>Delete</button>
+        </>: ''} 
+        <a href={bot_link} style={linkStyle} >Remind me in telegram-bot</a>
 
 
 

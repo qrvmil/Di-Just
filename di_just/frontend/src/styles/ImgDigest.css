@@ -1,0 +1,47 @@
+.image-container-id {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border: 3px solid lightblue;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0px 0px 20px rgba(198, 238, 238, 0.1);
+    width: 1000px;
+    margin: auto;
+  }
+  
+  .image-id {
+    width: 400px;
+    height: 400px;
+    object-fit: cover;
+  }
+  
+  .description-id {
+    margin-left: 40px;
+    flex-grow: 1;
+    color: azure;
+  }
+
+
+  .digest-info-id {
+    display: flex;
+    flex-direction: column;
+    border: 5px solid #90d3e7;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0px 0px 10px azure;
+    width: 500px;
+    margin: auto;
+  }
+  
+  .digest-info-id p {
+    margin-bottom: 10px;
+    color: white;
+  }
+  
+  .digest-info-id ul {
+    list-style-type: none;
+    padding: 0;
+    color: azure;
+  }

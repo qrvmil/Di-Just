@@ -1,7 +1,9 @@
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Image from 'react-bootstrap/Image';
+import Select from 'react-select';
 import { useState, useRef } from "react";
+import { BrowserRouter, Routes, Route, Link, redirect, useNavigate} from 'react-router-dom';
 import axios from 'axios';
 
 const API_URL = 'http://localhost:8000';
@@ -13,6 +15,38 @@ function getUserId() {
 }
 
 // TODO: отображание картинокч
+
+const topics_dict = {
+    "Cinema": 13,
+	"Music": 12,
+	"Technologies": 11,
+	"Memes": 10,
+	"Animals": 9,
+	"Travelling": 8,
+	"Food": 7,
+	"Education": 6,
+	"News": 5,
+	"Math": 4,
+	"Computer Science" : 3,
+	"Sport": 2,
+	"Art": 1
+}
+
+const topics_names = [
+    { value: 'Cinmea', label: 'Cinema' },
+    { value: 'Music', label: 'Music' },
+    { value: 'Animals', label: 'Animals' },
+    { value: 'Technologies', label: 'Technologies' },
+    { value: 'Memes', label: 'Memes' },
+    { value: 'Travelling', label: 'Travelling' },
+    { value: 'Food', label: 'Food' },
+    { value: 'Education', label: 'Education' },
+    { value: 'News', label: 'News' },
+    { value: 'Math', label: 'Math' },
+    { value: 'Computer Science', label: 'Computer Science' },
+    { value: 'Sport', label: 'Sport' },
+    { value: 'Art', label: 'Art' },
+]
 
  
 export default function CreateImageDigest () {
@@ -26,6 +60,8 @@ export default function CreateImageDigest () {
     const [name, setName] = useState('');
     const [introduction, setIntroduction] = useState('');
     const [conclusion, setConclusion] = useState('');
+    const [selectedOptions, setSelectedOptions] = useState([]);
+    const navigate = useNavigate();
 
 
     const handleImageChange = (event, index) => {
@@ -33,6 +69,11 @@ export default function CreateImageDigest () {
         data[index] = event.target.files[0];
         setFormImage(data);
     }
+
+    const handleSelectChange = (selectedValues) => {
+        setSelectedOptions(selectedValues);
+    };
+
     const handleDescChange = (event, index) => {
         let data = [...formDesc];
         data[index] = event.target.value;
@@ -63,6 +104,9 @@ export default function CreateImageDigest () {
         for (var key of formDataReq.entries()) {
             console.log(key);
         }
+        for (let i = 0; i < selectedOptions.length; i++) {
+            formDataReq.append('topic', topics_dict[selectedOptions[i].label]);
+        }
              
         let pictures = [];
         let descriptions = [];
@@ -80,6 +124,10 @@ export default function CreateImageDigest () {
             formDataReq.append(`descriptions`, item);
         });
 
+        selectedOptions.forEach((item) => {
+            formDataReq.append(`topics`, item);
+        });
+
 
         const tokenString = localStorage.getItem('token');
         const userToken = JSON.parse(tokenString);
@@ -89,10 +137,10 @@ export default function CreateImageDigest () {
             .then(res => {
                 console.log(res);
                 console.log(res.data);},
-    )
-
+            )
+        navigate('/profile')
        
-    }
+        }
 
     const addFields = () => {
         
@@ -123,19 +171,26 @@ export default function CreateImageDigest () {
 
     return (
         <>
-            <Form onSubmit={submit}>
+            <Form onSubmit={submit} style={{ maxWidth: '600px', margin: 'auto'}}>
 
             
             <input name='name' type='text' placeholder='name' onChange={event => handleName(event)}></input>
             <input name='introduction' type='text' placeholder='introduction' onChange={event => handleIntroduction(event)}></input>
+            <p>Topics:</p>
+            <Select
+                value={selectedOptions}
+                onChange={handleSelectChange}
+                options={topics_names}
+                isMulti
+            />
             <div>
                 {formImage.map((form, index) => {
                     return (<div key={index}>
                         <Image src={formImage[index] !== null ? 'http://127.0.0.1:8000/' + formImage[index].name: ''} rounded />
-                        <p>{formImage[index] !== null ? 'http://127.0.0.1:8000/' + formImage[index].name: ''}</p>
+                        
                         <input name='picture' type='file' placeholder='picture' onChange={event => handleImageChange(event, index)}/>
                         <input name='description' placeholder='description' onChange={event => handleDescChange(event, index)}/>
-                        <Button variant="primary" type="submit" onClick={() => removeFields(index)}>
+                        <Button variant="primary" onClick={() => removeFields(index)}>
                         delete
                         </Button>
                         </div>) 
@@ -155,6 +210,7 @@ export default function CreateImageDigest () {
                 Submit
                 </Button>
             </Form>
+
             <Button variant="primary" type="submit" onClick={addFields}>
             Add more...
             </Button>

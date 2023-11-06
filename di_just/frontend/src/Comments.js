@@ -20,6 +20,8 @@ export default function Comments({ name, comments, type, digest, ...props }) {
     const handleShow = () => setShow(true);
     const [add, setAdd] = useState(false);
     const [comment, setComment] = useState('');
+    const [newComments, setNewComment] = useState([]);
+    
     
     
     const navigate = useNavigate();
@@ -39,26 +41,49 @@ export default function Comments({ name, comments, type, digest, ...props }) {
             "Authorization" : "Token " + token}}).then(response => {return response.data});
     }
 
+    useEffect(() => {
+      console.log(comments);
+      setNewComment(comments.slice());
+    }, [comments]);
+
+
     useEffect (() => {
         comments.map(elem => {
             getUserProfileId(elem.user).then(val => {
                 setUsers([...users, val])
             })
+          
         })
     }, [])
     //console.log(users);
 
     function addComment() {
+      if (type == "image") {
+        axios.post("http://127.0.0.1:8000/digest/comment/create/", {
+          user: getUserId(),
+          text: comment,
+          img_digest: digest
+          }, {
+          headers: {
+          "Authorization" : "Token " + token}}).then(response => {return response.data});
+
+      setAdd(false);
+      setNewComment([{user: getUserId(), text: comment, img_digest: digest}, ...newComments])
+      setComment("");
+      }
+      else {
         axios.post("http://127.0.0.1:8000/digest/comment/create/", {
             user: getUserId(),
             text: comment,
-            img_digest: digest
+            link_digest: digest
         }, {
             headers: {
             "Authorization" : "Token " + token}}).then(response => {return response.data});
 
         setAdd(false);
+        setNewComment([{user: getUserId(), text: comment, img_digest: digest}, ...newComments])
         setComment("");
+      }
     }
 
     
@@ -75,14 +100,14 @@ export default function Comments({ name, comments, type, digest, ...props }) {
             <Offcanvas.Title>Comments</Offcanvas.Title>
           </Offcanvas.Header>
           <Offcanvas.Body>
-            <ul>{comments.map((comment, ind) => 
+            <ul>{ newComments !== null ? newComments.map((comment, ind) => 
                 <li>
                   <Card.Body>
                     <Card.Title>{comment.text}</Card.Title>
                     <button onClick={() => goToProfile(comment.user)}>Go to profile</button>
                   </Card.Body>
                 </li>
-                )}
+                ): ''}
             </ul>
 
             <button onClick={() => {setAdd(true)}}>add comment</button>

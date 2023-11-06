@@ -1,0 +1,13 @@
+.custom-form {
+    max-width: 500px;
+    margin: auto;
+  }
+
+.forms-container-ed {
+    display: flex;
+    justify-content: space-between;
+}
+
+.custom-form .form-label {
+    color: white;
+  }

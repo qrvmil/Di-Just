@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useEffect } from 'react';
 import axios from 'axios';
 import {Routes, Route, useNavigate} from 'react-router-dom';
+import './styles/ProfileEdit.css';
 
 
 const API_URL = 'http://localhost:8000';
@@ -141,7 +142,8 @@ const ProfileEdit = ({ props }) => {
 
     return (
         <>
-        <Form onSubmit={handleSubmit1}>
+        <div className='forms-container-ed'>
+        <Form onSubmit={handleSubmit1} className='custom-form'>
         <Form.Group controlId="username">
             <Form.Label>Username</Form.Label>
             <Form.Control type="text" name="username" placeholder={userInfo ? userInfo.username: ""}/>
@@ -165,8 +167,9 @@ const ProfileEdit = ({ props }) => {
         <Button variant="primary" type="submit">
             Submit
         </Button>
+
         </Form>
-        <Form onSubmit={handleSubmit2}>
+        <Form onSubmit={handleSubmit2} className='custom-form'>
             <Form.Group controlId="bio">
                 <Form.Label>Bio</Form.Label>
                 <Form.Control type="text" name="bio" placeholder={profileInfo ? profileInfo.bio: ""} />
@@ -174,14 +177,15 @@ const ProfileEdit = ({ props }) => {
 
             <Form.Group controlId="age">
                 <Form.Label>Age</Form.Label>
-                <Form.Control type="text" name="age" placeholder={profileInfo ? profileInfo.age: ""} />
+                <Form.Control type="number" name="age" placeholder={profileInfo ? profileInfo.age: ""} />
             </Form.Group>
 
             <Button variant="primary" type="submit">
                 Submit
             </Button>
         </Form>
-        <Form onSubmit={handleSubmit3}>
+        
+        <Form onSubmit={handleSubmit3} className='custom-form'>
             <Form.Group controlId="formFile" className="mb-3">
                 <Form.Label>Profile picture</Form.Label>
                 <Form.Control type="file" name="picture"/>
@@ -190,6 +194,7 @@ const ProfileEdit = ({ props }) => {
                 Submit
             </Button>
         </Form>
+        </div>
     </>
     );
 };

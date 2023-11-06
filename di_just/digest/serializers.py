@@ -118,7 +118,7 @@ class ImageDigestListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ImageDigest
-        fields = ['owner', 'introduction', 'name', 'topic', 'conclusion', 'saves', 'public', 'created_timestamp',
+        fields = ['id', 'owner', 'introduction', 'name', 'topic', 'conclusion', 'saves', 'public', 'created_timestamp',
                   'images']
 
 
@@ -193,7 +193,7 @@ class LinkDigestListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LinkDigest
-        fields = ['owner', 'introduction', 'name', 'topic', 'conclusion', 'saves', 'public', 'created_timestamp',
+        fields = ['id', 'owner', 'introduction', 'name', 'topic', 'conclusion', 'saves', 'public', 'created_timestamp',
                   'links']
 
 

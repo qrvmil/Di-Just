@@ -11,6 +11,7 @@ import Button from 'react-bootstrap/Button';
 import {Routes, Route, useNavigate} from 'react-router-dom';
 import Followers from './Followers.js';
 import Follows from './Follows.js';
+import './styles/UserProfile.css';
 
 
 
@@ -158,30 +159,38 @@ function Profile() {
     
    
     return (
-    <>
-        <Alert variant={"info"} className="d-none d-lg-block">Personal information</Alert>
-        <ListGroup>
-            <ListGroup.Item variant="dark">username: {userInfo != null ? userInfo.username: ""}</ListGroup.Item>
-            <ListGroup.Item variant="dark">email: {userInfo != null ? userInfo.email: ""}</ListGroup.Item>
-            <ListGroup.Item variant="dark">first name: {userInfo != null ? userInfo.first_name: ""}</ListGroup.Item>
-            <ListGroup.Item variant="dark">last name: {userInfo != null ? userInfo.last_name: ""}</ListGroup.Item>
-        </ListGroup>
-        <Alert variant={"info"} className="d-none d-lg-block">Profile information</Alert>
-        <Followers placement={"end"} name={"followers"} followers={followers}/>
-        <Follows placement={"end"} name={"follows"} follows={follows}/>
-        <ListGroup>
-            <ListGroup.Item variant="dark">age: {profileInfo != null ? profileInfo.age: ""}</ListGroup.Item>
-            <ListGroup.Item variant="dark">bio: {profileInfo != null ? profileInfo.bio: ""}</ListGroup.Item>
-            <ListGroup.Item variant="dark">image: {profileInfo != null ? profileInfo.picture: ""}</ListGroup.Item>
-        </ListGroup>
-        <Col xs={6} md={4}>
-          <Image src={profileInfo != null ? profileInfo.picture: ""} rounded />
-        </Col>
-        <Button variant="info" onClick={editProfile}>Edit profile</Button>
-        <Button variant="outline-info" onClick={handleClick1}>Created digests</Button>
-        <Button variant="outline-info" onClick={handleClick2}>Saved digests</Button>
+    
+    <div className="profile-page">
+
+    <div className="user-profile">
+      <h2>Personal information</h2>
+      <div className="user-details">
+        <p><strong>username:</strong> {userInfo != null ? userInfo.username: ""}</p>
+        <p><strong>first name:</strong> {userInfo != null ? userInfo.first_name: ""}</p>
+        <p><strong>last name:</strong> {userInfo != null ? userInfo.last_name: ""} </p>
+        <p><strong>email:</strong> {userInfo != null ? userInfo.email: ""}</p>
+      </div>
+      <h2>Profile information</h2>
+      <div className="user-details">
+        <p><strong>age:</strong> {profileInfo != null ? profileInfo.age: ""}</p>
+        <p><strong>bio:</strong> {profileInfo != null ? profileInfo.bio: ""}</p>
+      </div>
+      <div className="user-photo">
+        <img src={profileInfo != null ? profileInfo.picture: ""} alt="user image" />
+      </div>
+      <p><Followers placement={"end"} name={"followers"} followers={followers}/> <Follows placement={"end"} name={"follows"} follows={follows}/></p>
+      <Button variant="info" onClick={editProfile}>Edit profile</Button>
+      
+    </div>
         
-    </>
+    <Button variant="outline-info" onClick={handleClick1} className='user-profile'>Created digests</Button>
+      <Button variant="outline-info" onClick={handleClick2} className='user-profile'>Saved digests</Button>
+        
+
+
+    
+    </div>
+    
     )
 
 }

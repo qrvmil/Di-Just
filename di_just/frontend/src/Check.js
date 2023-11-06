@@ -16,7 +16,7 @@ function Check() {
 
     return (
     <>
-        <p>Email is verified!</p>
+        <p style={{color: "white"}}>Email is verified!</p>
     </>
     )
 

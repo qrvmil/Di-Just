@@ -113,7 +113,7 @@ export default function EditLinkDigest() {
 
     return (
         <>
-            <Form onSubmit={submit}>
+            <Form onSubmit={submit} style={{maxWidth: '600px', margin: 'auto'}}>
 
             
             <input name='name' type='text' placeholder={digest !== null ? digest["general info"]["name"]: ' '} onChange={event => handleName(event)}></input>

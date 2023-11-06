@@ -4,6 +4,7 @@ import {Routes, Route, useNavigate} from 'react-router-dom';
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
+import './Fit/Posts.css';
 const API_URL = 'http://localhost:8000';
 
 
@@ -77,7 +78,7 @@ function CreatedDigests() {
     <>
         <Alert variant={"info"} className="d-none d-lg-block">Created digests:</Alert>
         <Button variant="outline-info" onClick={handleClick}>Change for {digestType ? "link": "image"} digests</Button>
-        
+        <div className='wrapper'>
         {current_info.map((element) => 
                 <div>
                     <Card>
@@ -94,7 +95,7 @@ function CreatedDigests() {
                 </div>
         )}
         
-       
+       </div>
     </>
     )
 

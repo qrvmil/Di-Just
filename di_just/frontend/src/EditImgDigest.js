@@ -172,7 +172,7 @@ export default function EditImgDigest() {
 
     return (
         <>
-            <Form onSubmit={submit}>
+            <Form onSubmit={submit} style={{maxWidth: '600px', margin: 'auto'}}>
 
             
             <input name='name' type='text' placeholder={digest !== null ? digest["general info"]["name"]: ' '} onChange={event => handleName(event)}></input>
@@ -181,7 +181,7 @@ export default function EditImgDigest() {
                 {digest !== null ? digest["digest images"].map((form, index) => {
                     return (<div key={index}>
                         <Image src={'http://127.0.0.1:8000/' + form["picture"]} rounded />
-                        <p>{'http://127.0.0.1:8000/' + form["picture"]}</p>
+                        
                         <input name='picture' type='file' placeholder='picture' onChange={event => handleImageChange(event, index, form["id"])}/>
                         <input name='description' placeholder={form["description"]} onChange={event => handleDescChange(event, index)}/>
                         </div>) 

@@ -13,12 +13,9 @@ function NewPassword() {
         axios.put("http://127.0.0.1:8000" + pathname, {password: data.password})
           .then(res => {
             console.log(res);
-            console.log(res.data);
           }).then(res => {
-        console.log(res);
-        console.log(res.data);
       })
-        console.log(data);
+       
         setFormSubmitted(true);
 
   };

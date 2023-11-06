@@ -3,6 +3,7 @@ import Form from 'react-bootstrap/Form';
 import Image from 'react-bootstrap/Image';
 import { useState, useRef } from "react";
 import axios from 'axios';
+import { BrowserRouter, Routes, Route, Link, redirect, useNavigate} from 'react-router-dom';
 
 const API_URL = 'http://localhost:8000';
 
@@ -24,6 +25,7 @@ export default function CreateLinkDigest () {
     const [name, setName] = useState('');
     const [introduction, setIntroduction] = useState('');
     const [conclusion, setConclusion] = useState('');
+    const navigate = useNavigate();
 
 
     const handleLinkChange = (event, index) => {
@@ -82,9 +84,9 @@ export default function CreateLinkDigest () {
             .then(res => {
                 console.log(res);
                 console.log(res.data);},
-    )
+        )
 
-       
+       navigate('/profile')
     }
 
     const addFields = () => {
@@ -115,7 +117,7 @@ export default function CreateLinkDigest () {
 
     return (
         <>
-            <Form onSubmit={submit}>
+            <Form onSubmit={submit} style={{ maxWidth: '600px', margin: 'auto'}}>
 
             
             <input name='name' type='text' placeholder='name' onChange={event => handleName(event)}></input>
@@ -124,9 +126,9 @@ export default function CreateLinkDigest () {
                 {formLink.map((form, index) => {
                     return (<div key={index}>
                         <Image src={formLink[index] !== null ? formLink[index]: ''} rounded />
-                        <input name='picture' type='text' placeholder='link' onChange={event => handleLinkChange(event, index)}/>
+                        <input name='link' type='text' placeholder='link' onChange={event => handleLinkChange(event, index)}/>
                         <input name='description' placeholder='description' onChange={event => handleDescChange(event, index)}/>
-                        <Button variant="primary" type="submit" onClick={() => removeFields(index)}>
+                        <Button variant="primary" onClick={() => removeFields(index)}>
                         delete
                         </Button>
                         </div>) 

@@ -119,7 +119,7 @@ class ImageDigestRetrieveAPI(APIView):
             digest = ImageDigest.objects.get(pk=pk)
         except:
             return Response({"error": "invalid pk"})
-        print(request.user, digest.owner.user)
+        # print(request.user, digest.owner.user)
         if not digest.public and (request.user != digest.owner.user):
             return Response({"error": "this digest is private"})
 
@@ -264,7 +264,7 @@ class DigestCommentsRetrieveAPI(APIView):
         if data["type"] == "img":
             comments = ImageDigest.objects.get(pk=int(data["pk"])).comments.all()
         else:
-            comments = LinkDigest.ojects.get(pk=int(data["pk"])).comments.all()
+            comments = LinkDigest.objects.get(pk=int(data["pk"])).comments.all()
         result_page = paginator.paginate_queryset(comments, request)
         comments = CommentListSerializer(data=result_page, many=True)
         comments.is_valid()
@@ -326,6 +326,22 @@ class DigestSaveAPI(APIView):
         return Response({"successfully saved"})
 
 
+class DigestUnsaveAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        pk = request.data["pk"]
+        digest_type = request.data["digest-type"]
+        if digest_type == 'img-digest':
+            digest = ImageDigest.objects.get(pk=pk)
+        else:
+            digest = LinkDigest.objects.get(pk=pk)
+
+        digest.saves.remove(request.user.profile)
+
+        return Response({"successfully unsaved"})
+
+
 class SavedImageDigestsAPI(APIView):
     permission_classes = [IsOwner]
 
@@ -361,10 +377,25 @@ class SavedLinkDigestsAPI(APIView):
 class ImageDigestListAPI(APIView):
 
     def get(self, request):
-        data = request.data
+        data1 = request.query_params.getlist('topics[]', '') # request.GET.dict() # request.data
+        data2 = request.GET.get('owner', '')
+        data3 = request.GET.get('time', '')
+
+        if data1:
+            data = {'topics': data1}
+        elif data2:
+            data = {'owner': data2}
+        elif data3:
+            data = {'time': data3}
+        else:
+            return Response({"failed"})
+
+
         paginator = CustomPagination()
-        if "topics" in data.keys():
+        if "topics" in data.keys() and data['topics'] != []:
             topics = tuple(data["topics"])
+            if len(topics) == 1:
+                topics = f'({topics[0]})'
 
             with connection.cursor() as cursor:
                 cursor.execute(
@@ -394,10 +425,23 @@ class ImageDigestListAPI(APIView):
 class LinkDigestListAPI(APIView):
 
     def get(self, request):
-        data = request.data
+        data1 = request.query_params.getlist('topics[]', '')  # request.GET.dict() # request.data
+        data2 = request.GET.get('owner', '')
+        data3 = request.GET.get('time', '')
+
+        if data1:
+            data = {'topics': data1}
+        elif data2:
+            data = {'owner': data2}
+        elif data3:
+            data = {'time': data3}
+        else:
+            return Response({"failed"})
         paginator = CustomPagination()
-        if "topics" in data.keys():
+        if "topics" in data.keys() and data['topics'] != []:
             topics = tuple(data["topics"])
+            if len(topics) == 1:
+                topics = f'({topics[0]})'
 
             with connection.cursor() as cursor:
                 cursor.execute(
@@ -407,7 +451,7 @@ class LinkDigestListAPI(APIView):
 
         elif "owner" in data.keys():
             owner = data["owner"]
-            link_digests = LinkDigest.objects.filter(owner=owner, public=True)
+            link_digests = LinkDigest.objects.filter(owner__user__username=owner, public=True)
 
         elif "time" in data.keys():
             if data["time"] == "new":

@@ -1,11 +1,19 @@
 import React from 'react';
-import './Login.css';
+
 import PropTypes from 'prop-types';
 import axios from 'axios';
+import Header from './Header.js';
 import { useState } from "react";
+import Register from './Register';
+import { Routes, Route, useNavigate } from 'react-router-dom';
+
+import './styles/LoginPage.css';
+import './styles/buttonStyle.css';
 
 
 async function loginUser(data) {
+
+  
 
 
     return axios.post("http://127.0.0.1:8000/users/login/", {
@@ -19,7 +27,12 @@ async function loginUser(data) {
 export default function Login({ setToken }) {
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
+  const navigate = useNavigate();
 
+
+
+
+  
   const handleSubmit = async e => {
     e.preventDefault();
     const token = await loginUser({
@@ -27,27 +40,39 @@ export default function Login({ setToken }) {
       password
     });
     setToken(token);
-    console.log(token)
+    console.log(token);
+    navigate('/home');
+  }
+
+  const handlePassword = () => {
+    navigate('/reset')
   }
 
 
+
   return(
-    <div className="login-wrapper">
-      <h1>LogIn</h1>
-      <form onSubmit={handleSubmit}>
+    <>
+    <div className='login-page'>
+      
+      <form onSubmit={handleSubmit} className='login-form'>
+      <h2 className="login-title">Login</h2>
         <label>
           <p>Username</p>
-          <input type="text" onChange={e => setUserName(e.target.value)}/>
+          <input type="text" onChange={e => setUserName(e.target.value)} />
         </label>
         <label>
           <p>Password</p>
-          <input type="password" onChange={e => setPassword(e.target.value)}/>
+          <input type="password" onChange={e => setPassword(e.target.value)} />
         </label>
         <div>
-          <button type="submit">Submit</button>
+          <button type="submit" >Submit</button>
         </div>
       </form>
     </div>
+
+    <button onClick={() => handlePassword()} className=''>Forgot password</button>
+  
+    </>
   )
 }
 

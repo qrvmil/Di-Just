@@ -1,0 +1,64 @@
+.user-profile-c {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%;
+    margin: auto;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #dbf0f6;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(168, 227, 236, 0.1);
+  }
+  
+  .user-photo-c {
+    order: 2;
+  }
+  
+  .user-photo img-c {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .user-info-c {
+    order: 1;
+    width: 70%;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  
+  .user-info h2 {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 10px;
+    text-align: left;
+  }
+  
+  .info-block-c {
+    width: 100%;
+    border: 1px solid #ddd;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 10px;
+  }
+  
+  .info-block h3-c {
+    font-size: 24px;
+    color: #666;
+    margin: 10px 0;
+    text-decoration: underline;
+    text-align: left;
+  }
+  
+  .info-block p-c {
+    font-size: 20px;
+    color: #333;
+    line-height: 1.5;
+    margin: 10px 0;
+    text-align: left;
+  }

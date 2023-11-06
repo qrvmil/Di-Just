@@ -85,6 +85,12 @@ CORS_ALLOW_METHODS = [
 ]
 CORS_ALLOW_HEADERS = ["*"]
 
+CORS_EXPOSE_HEADERS = [
+    "next",
+    "previous",
+    "Authorization"
+]
+
 # CORS_ALLOWED_ORIGINS = [
 #     'http://localhost:3000',
 # ]
@@ -182,6 +188,6 @@ EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
-EMAIL_HOST_USER = ""
-EMAIL_HOST_PASSWORD = ""
+EMAIL_HOST_USER = "di-just-info@yandex.ru"
+EMAIL_HOST_PASSWORD = "wsavyockfkgetbcw"
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

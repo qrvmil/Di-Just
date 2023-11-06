@@ -5,7 +5,7 @@ import Check from "./Check.js";
 import Reset from "./Reset.js";
 import NewPassword from "./NewPassword";
 import Login from "./Login.js";
-import Test from "./Test.js";
+import Fit from "./Fit/Fit.js";
 import Profile from "./Profile.js";
 import Header from './Header.js';
 import useToken from './useToken';
@@ -22,6 +22,7 @@ import EditImgDigest from "./EditImgDigest.js";
 import EditLinkDigest from "./EditLinkDigest.js";
 
 
+
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 
 
@@ -33,7 +34,7 @@ function setToken(userToken) {
 function getToken() {
     const tokenString = localStorage.getItem('token');
     const userToken = JSON.parse(tokenString);
-    return userToken?.token
+    return userToken?.token;
 }
 
 
@@ -42,28 +43,31 @@ function getToken() {
 function App() {
 
     const { token, setToken } = useToken();
+    
+  
 
 
-    if(!token) {
-        return <Login setToken={setToken} />
-    }
+    // if(!token) {
+    //     return <Login setToken={setToken} />
+    // }
 
 	console.log(getToken());
 
     return (
-    <>
+    <div>
 
-    <Header/>
+    
 
     <BrowserRouter>
+    <Header/>
       <Routes>
         <Route path="/register" element={<Register />} />
-        <Route path="/home" element={<Home />} />
+        <Route path="/test" element={<Home />} />
         <Route path="/activate/:uid/:token" element={<Check />} />
         <Route path="/reset" element={<Reset />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<Login setToken={setToken}/>} />
         <Route path="/restore/:uid/:token" element={<NewPassword />} />
-        <Route path="/test" element={<Test />} />
+        <Route path="/home" element={<Fit />} />
         <Route path="/profile/" element={<Profile />} />
         <Route path="/profile-edit/" element={<ProfileEdit />} />
         <Route path="/profile/:uid" element={<ProfileClose />} />
@@ -80,24 +84,9 @@ function App() {
 
       </Routes>
 
-      <li>
-        <Link to="/register">Register</Link>
-      </li>
-      <li>
-        <Link to="/home">Home</Link>
-      </li>
-      <li>
-        <Link to="/reset">Reset password</Link>
-      </li>
-      <li>
-        <Link to="/login">Login</Link>
-      </li>
-	  <li>
-	  	<Link to="/profile/">Profile</Link>
-	  </li>
 
     </BrowserRouter>
-    </>
+    </div>
   );
 
 
