@@ -1,12 +1,20 @@
 import { useState } from 'react';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
+import axios from 'axios';
+import {Routes, Route, useNavigate} from 'react-router-dom';
 
-export default function Follows({ name, ...props }) {
+export default function Follows({ name, follows, ...props }) {
     const [show, setShow] = useState(false);
   
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+    
+    const navigate = useNavigate();
+    const goToProfile = (id) => {
+        navigate(`/profile/${id}`)
+    }
   
     return (
       <>
@@ -18,8 +26,17 @@ export default function Follows({ name, ...props }) {
             <Offcanvas.Title>Follows</Offcanvas.Title>
           </Offcanvas.Header>
           <Offcanvas.Body>
-            Some text as placeholder. In real life you can have the elements you
-            have chosen. Like, text, images, lists, etc.
+            <ul>{follows.map(person => 
+                <li>
+                  <Card.Body>
+                    <Card.Title>{person.username}</Card.Title>
+                    <button onClick={() => goToProfile(person.id)}>Go to profile</button>
+                  </Card.Body>
+                  </li>
+                )}
+            </ul>
+            
+            
           </Offcanvas.Body>
         </Offcanvas>
       </>

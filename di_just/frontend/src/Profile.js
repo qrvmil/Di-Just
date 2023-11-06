@@ -10,6 +10,7 @@ import Image from 'react-bootstrap/Image';
 import Button from 'react-bootstrap/Button';
 import {Routes, Route, useNavigate} from 'react-router-dom';
 import Followers from './Followers.js';
+import Follows from './Follows.js';
 
 
 
@@ -58,6 +59,7 @@ function Profile() {
     const [userId, setUserId] = useState(null);
     const [profileInfo, setProfileInfo] = useState(null);
     const [followers, setFollowers] = useState([]);
+    const [follows, setFollows] = useState([]);
     const [flag, setFlag] = useState(false);
     const navigate = useNavigate();
 
@@ -110,7 +112,25 @@ function Profile() {
 
 
         const followersID = profileInfo.followed_by;
-        console.log(followersID);
+        const followsID = profileInfo.follows;
+
+        followsID.map(function(fid) {
+            let follow = {};
+            follow["id"] = fid;
+            follow["link"] = `http://localhost:3000/profile/${fid}`;
+            getFollowerInfo(fid).then((res) => {
+                follow["picture"] = res.picture;
+                follow["username"] = res.user.username;
+            });
+            
+            // follower["picture"] = followerInfo.picture;
+            // follower["username"] = followerInfo.user.username;
+            setFollows((prevFollowers) => [
+                ...prevFollowers,
+                follow,
+            ]);
+            
+        })
 
         followersID.map(function(fid) {
             let follower = {};
@@ -148,6 +168,7 @@ function Profile() {
         </ListGroup>
         <Alert variant={"info"} className="d-none d-lg-block">Profile information</Alert>
         <Followers placement={"end"} name={"followers"} followers={followers}/>
+        <Follows placement={"end"} name={"follows"} follows={follows}/>
         <ListGroup>
             <ListGroup.Item variant="dark">age: {profileInfo != null ? profileInfo.age: ""}</ListGroup.Item>
             <ListGroup.Item variant="dark">bio: {profileInfo != null ? profileInfo.bio: ""}</ListGroup.Item>
