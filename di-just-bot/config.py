@@ -1,0 +1,2 @@
+TOKEN = "6715383152:AAFotBS_-a0wcy2WCLzwjMUvMYaumSyTOvc"
+FRONT_URL = "http://127.0.0.1:3000/"
