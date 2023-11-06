@@ -47,6 +47,7 @@ class ImageDigestUpdateAPI(APIView):
 
     # TODO make subscription
     def put(self, request, pk):
+        print('pk = ', pk)
         data = request.data
         topics = []
         if "topic" in data.keys():
@@ -66,7 +67,7 @@ class ImageDigestUpdateAPI(APIView):
                 except:
                     return Response({"error": "invalid image pk"})
 
-                if instance.digest.owner != request.user.profile:  # IsOwner check
+                if instance.digest.owner.id != request.user.id:  # IsOwner check
                     return Response({"Allowed only for owners"})
 
                 if elem["type"] == "picture":
@@ -87,10 +88,11 @@ class ImageDigestUpdateAPI(APIView):
 
         try:
             digest = ImageDigest.objects.get(pk=pk)
+
         except:
             return Response({"error": "invalid digest pk"})
-
-        if digest.owner != request.user.profile:  # IsOwner check
+        print('-----', digest.owner.id, request.user.id)
+        if digest.owner.id != request.user.id:  # IsOwner check
             return Response({"Allowed only for owners"})
 
         digest.name = data.get("name", digest.name)

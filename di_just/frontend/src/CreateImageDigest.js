@@ -12,6 +12,8 @@ function getUserId() {
 	return userId.user;
 }
 
+// TODO: отображание картинокч
+
  
 export default function CreateImageDigest () {
 
@@ -68,8 +70,8 @@ export default function CreateImageDigest () {
             //pictures.push(elem.picture);
             //descriptions.push(elem.description);
         //})
-        console.log(formImage);
-        console.log(formDesc);
+        
+        
         formImage.forEach((item) => {
             formDataReq.append(`pictures`, item);
           });
@@ -109,13 +111,14 @@ export default function CreateImageDigest () {
         let data1 = [...formImage];
         data1.splice(index, 1);
         setFormImage(data1);
-
+        
         let data2 = [...formDesc];
         data2.splice(index, 1);
         setFormDesc(data2);
 
     }
     
+   
 
 
     return (
@@ -128,7 +131,8 @@ export default function CreateImageDigest () {
             <div>
                 {formImage.map((form, index) => {
                     return (<div key={index}>
-                        <Image src={formImage[index] !== null ? formImage[index]: ''} rounded />
+                        <Image src={formImage[index] !== null ? 'http://127.0.0.1:8000/' + formImage[index].name: ''} rounded />
+                        <p>{formImage[index] !== null ? 'http://127.0.0.1:8000/' + formImage[index].name: ''}</p>
                         <input name='picture' type='file' placeholder='picture' onChange={event => handleImageChange(event, index)}/>
                         <input name='description' placeholder='description' onChange={event => handleDescChange(event, index)}/>
                         <Button variant="primary" type="submit" onClick={() => removeFields(index)}>

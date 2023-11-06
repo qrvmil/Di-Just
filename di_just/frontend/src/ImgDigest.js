@@ -3,6 +3,9 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Image from 'react-bootstrap/Image';
 import Col from 'react-bootstrap/Col';
+import { Button } from 'react-bootstrap';
+import {Routes, Route, useNavigate} from 'react-router-dom';
+
 
 
 const API_URL = 'http://localhost:8000';
@@ -13,11 +16,19 @@ export default function ImgDigest() {
     const [digest, setDigest] = useState(null);
     const params = useParams();
     const digestId = params.id;
+    const navigate = useNavigate();
+
+    const handleEditClick = (id) => {
+        navigate(`/img-edit/${id}`);
+    }
 
     
     const tokenString = localStorage.getItem('token');
     const userToken = JSON.parse(tokenString);
     const token = userToken?.token;
+    const user = userToken?.user;
+
+    
 
     useEffect(() => {
         const url1 = `${API_URL}/img-digest/get/${digestId}/`;
@@ -27,6 +38,8 @@ export default function ImgDigest() {
 
     let topics = digest !== null ? digest["general info"]["topic"]: '';
     let images = digest !== null ? digest["digest images"]: [];
+    
+
    
     return(
     <>
@@ -52,6 +65,9 @@ export default function ImgDigest() {
             })}
         </ul>
 
+        
+
+        {digest !== null && digest["general info"]["owner"] === user ? <Button variant="outline-info" onClick={() => handleEditClick(digestId)}>Edit digest</Button>: ''}
 
 
 

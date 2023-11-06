@@ -26,6 +26,8 @@ function CreatedDigests() {
         setDigestType(!digestType);
     }
 
+   
+
     const goToImageDigest = (id) => {
         navigate(`/img-digest/${id}/`);
 
@@ -91,6 +93,7 @@ function CreatedDigests() {
 
                 </div>
         )}
+        
        
     </>
     )

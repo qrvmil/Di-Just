@@ -3,6 +3,9 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Image from 'react-bootstrap/Image';
 import Col from 'react-bootstrap/Col';
+import { Button } from 'react-bootstrap';
+import {Routes, Route, useNavigate} from 'react-router-dom';
+
 
 
 const API_URL = 'http://localhost:8000';
@@ -18,6 +21,11 @@ export default function LinkDigest() {
     const tokenString = localStorage.getItem('token');
     const userToken = JSON.parse(tokenString);
     const token = userToken?.token;
+    const navigate = useNavigate();
+
+    const handleEditClick = (id) => {
+        navigate(`/link-edit/${id}`);
+    }
 
     useEffect(() => {
         const url1 = `${API_URL}/link-digest/get/${digestId}/`;
@@ -27,6 +35,7 @@ export default function LinkDigest() {
 
     let topics = digest !== null ? digest["general info"]["topic"]: '';
     let links = digest !== null ? digest["digest links"]: [];
+    const user = userToken?.user;
    
     return(
     <>
@@ -50,6 +59,11 @@ export default function LinkDigest() {
                 </li>)
             })}
         </ul>
+
+        <p>{digest !== null ? digest["general info"]["conclusion"] : ''}</p>
+
+
+        {digest !== null && digest["general info"]["owner"] === user ? <Button variant="outline-info" onClick={() => handleEditClick(digestId)}>Edit digest</Button>: ''}
 
 
 
