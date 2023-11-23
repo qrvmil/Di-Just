@@ -26,11 +26,14 @@ class RegisterUserAPI(generics.CreateAPIView):
     permission_classes = [AllowAny]
     serializer_class = RegisterSerializer
 
+    # регистрвция нового пользователя
+    # request -- данные с клиента
     def post(self, request, *args, **kwargs):
         user_serializer = self.get_serializer(data=request.data)
+        # сериализация и валидация данных
         user_serializer.is_valid(raise_exception=True)
         # user = user_serializer.save()
-
+        # создание пользователя
         user = User.objects.create(
             username=user_serializer.validated_data['username'],
             email=user_serializer.validated_data['email'],
@@ -40,6 +43,7 @@ class RegisterUserAPI(generics.CreateAPIView):
         user.set_password(user_serializer.validated_data['password'])
         user.save()
 
+        # отправка письма со ссылкой для верификации аккаунта
         current_site = 'http://localhost:3000'  # get_current_site(request)
         mail_subject = 'Activation link has been sent to your email id'
         message = render_to_string('acc_active_email.html', {
@@ -54,7 +58,7 @@ class RegisterUserAPI(generics.CreateAPIView):
 
 
 class ActivateAPI(APIView):
-
+    # данная функция ловит ссылку валидаци, и в случае успеха активирует аккаунт
     def put(self, request, uid, token):
         try:
             # uid = force_str(urlsafe_base64_decode(uidb64))
@@ -71,6 +75,9 @@ class ActivateAPI(APIView):
 
 class LoginAPI(generics.GenericAPIView):
     serializer_class = LoginSerializer
+
+    # функция для входа пользователя в систему
+    # request -- данные с сервера
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -106,6 +113,8 @@ class ProfileRestoreEmailAPI(APIView):
     queryset = User.objects.all()
     serializer_class = PasswordUpdateSerializer
 
+    # данная функция отвечает за отправку письма со ссылкой для восстановления пароля
+
     def put(self, request):
         email = request.data["email"]
         user = User.objects.get(email=email)
@@ -124,6 +133,8 @@ class ProfileRestoreEmailAPI(APIView):
 
 
 class ProfileRestoreAPI(APIView):
+
+    # данная функция восстанавливает аккаунт пользователя и присваивает ему новый пароль
 
     def put(self, request, uid, token):
         try:
@@ -179,6 +190,7 @@ class ProfileListAPI(generics.ListAPIView):
 class FollowUserAPI(APIView):
     permission_classes = [IsAuthenticated]
 
+    # функция обрабатывает подписку на определенного пользователя
     def put(self, request, pk):
         follow = Profile.objects.get(pk=pk)
         request.user.profile.follows.add(follow)
@@ -188,6 +200,8 @@ class FollowUserAPI(APIView):
 
 class UnfollowUserAPI(APIView):
     permission_classes = [IsAuthenticated]
+
+    # функция обрабатывает отписку от определенного пользователя
 
     def put(self, request, pk):
         unfollow = Profile.objects.get(pk=pk)

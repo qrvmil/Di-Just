@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-# Create your models here.
+# в данном файле представлены модели для работы с базой данных
 
 class Topics(models.Model):
     AVAILABLE = [
@@ -61,6 +61,7 @@ class DigestImages(models.Model):
     picture = models.ImageField(upload_to="digest_images", blank=True)
     description = models.TextField()
 
+    # данная функция отвечает за удаление картинки дайджеста на сервере, при удалении самого дайджеста
     def delete(self, using=None, keep_parents=False):
         storage, path = self.picture.storage, self.picture.path
         super(DigestImages, self).delete()

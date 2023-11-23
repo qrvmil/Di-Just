@@ -24,23 +24,12 @@ class RegisterSerializer(serializers.ModelSerializer):
             'last_name': {'required': True}
         }
 
-    # def create(self, validated_data):
-    #     user = User.objects.create(
-    #         username=validated_data['username'],
-    #         email=validated_data['email'],
-    #         first_name=validated_data['first_name'],
-    #         last_name=validated_data['last_name']
-    #     )
-    #     user.set_password(validated_data['password'])
-    #     user.save()
-    #     return user
-
 
 # login user
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField()
-
+    # попытка залогинить юзера и ошибка в случае неверно указанных данных
     def validate(self, data):
         user = authenticate(**data)
         if not user:
@@ -65,6 +54,8 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             'username': {'required': False},
         }
 
+    # обновление данных о личной информации пользователя
+    # validated_data -- данные, прошедшие валидацию
     def update(self, instance, validated_data):
         instance.username = validated_data.get("username", instance.username)
         instance.email = validated_data.get("email", instance.email)
@@ -83,6 +74,7 @@ class PasswordUpdateSerializer(serializers.ModelSerializer):
         model = User
         fields = ['password']
 
+    # обновление пароля пользователя
     def update(self, instance, validated_data):
         instance.set_password(validated_data["password"])
         instance.save()
@@ -114,6 +106,7 @@ class ProfilePictureUpdateSerializer(serializers.ModelSerializer):
         model = Profile
         fields = ['picture', 'user']
 
+    # обновление картинки пользователя, в тм числе загрузка новой картинки на сервер
     def update(self, instance, validated_data):
         if instance.picture != "":
             storage, path = instance.picture.storage, instance.picture.path

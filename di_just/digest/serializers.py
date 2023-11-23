@@ -3,18 +3,24 @@ from digest.models import ImageDigest, LinkDigest, Topics, DigestLinks, DigestIm
 from user.models import Profile
 
 
+# в данном файле представлены сериализаторы для моделей дайджеста
+
+
+# сериализатор топиков (тегов)
 class TopicSerializer(serializers.ModelSerializer):
     class Meta:
         model = Topics
         fields = ["topic_name"]
 
 
+# сериализатор создания комментариев
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comments
         fields = ['user', 'text', 'created_timestamp', 'link_digest', 'img_digest']
 
 
+# сериализатор для списка комментариев
 class CommentListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comments
@@ -31,6 +37,9 @@ class DigestImageUpdateSerializer(serializers.ModelSerializer):
             'description': {'required': False},
         }
 
+    # данная функция отвечает за обновление дайджеста картинками
+    # в качестве аргументов принимает объект дайджеста, который нужно обновить и
+    # validated_data -- информмвцию, на которую следуюет заменить текущую
     def update(self, instance, validated_data):
         if 'picture' in validated_data and instance.picture != validated_data["picture"]:
             storage, path = instance.picture.storage, instance.picture.path
@@ -48,6 +57,7 @@ class DigestImageCRDSerializer(serializers.ModelSerializer):
         fields = ['id', 'digest', 'picture', 'description']
 
 
+# сериализатор для создания дайджеста картинками
 class ImageDigestCreateSerializer(serializers.ModelSerializer):
     pictures = serializers.ListField(
         child=serializers.ImageField(allow_empty_file=True), write_only=True, required=False
@@ -70,15 +80,20 @@ class ImageDigestCreateSerializer(serializers.ModelSerializer):
         }
 
     # в api всегда должны передаваться оба параметра pictures и descriptions, причем одинакового размера
+    # данная функция отвечает за создание дайджеста картинками
+    # validated_data -- данные из сериализатора
     def create(self, validated_data):
         topics = []
         if "topic" in validated_data.keys():
+            # достаем из данных, прошедших сериализацию, теги
             topics = validated_data.pop("topic")
 
+        # достаем из данных, прошедших сериализацию, ссылки и описания к ним
         if "pictures" in validated_data.keys() and "descriptions" in validated_data.keys():
             pictures = validated_data.pop("pictures")
             descriptions = validated_data.pop("descriptions")
 
+            # создание дайджеста
             digest = ImageDigest.objects.create(**validated_data)
             user = self.context['request'].user.profile
             digest.owner = user
@@ -142,16 +157,21 @@ class LinkDigestCreateSerializer(serializers.ModelSerializer):
         fields = ['owner', 'introduction', 'name', 'topic', 'conclusion', 'public', 'created_timestamp',
                   'links', 'descriptions']
 
+    # данная функция отвечает за создание дайджеста ссылками
+    # validated_data -- данные из сериализатора
     def create(self, validated_data):
 
         topics = []
         if "topic" in validated_data.keys():
+            # достаем из данных, прошедших сериализацию, теги
             topics = validated_data.pop("topic")
 
+        # достаем из данных, прошедших сериализацию, ссылки и описания к ним
         if "links" in validated_data.keys() and "descriptions" in validated_data.keys():
             links = validated_data.pop("links")
             descriptions = validated_data.pop("descriptions")
 
+            # создаем новый дайджест
             digest = LinkDigest.objects.create(**validated_data)
             user = self.context['request'].user.profile
             digest.owner = user
@@ -163,8 +183,8 @@ class LinkDigestCreateSerializer(serializers.ModelSerializer):
             digest.owner = user
 
         for topic in topics:
+            # каждый тег добавляем отдельно в дайджест
             digest.topic.add(topic)
-
 
         digest.save()
 
@@ -183,6 +203,7 @@ class LinkDigestRetrieveDeleteSerializer(serializers.ModelSerializer):
         fields = ['owner', 'introduction', 'name', 'topic', 'conclusion', 'saves', 'public', 'created_timestamp']
 
 
+# сериализатор для списка дайджестов сслыками
 class LinkDigestListSerializer(serializers.ModelSerializer):
     topic = serializers.SlugRelatedField(
         many=True,
@@ -197,6 +218,7 @@ class LinkDigestListSerializer(serializers.ModelSerializer):
                   'links']
 
 
+# сериализатор на получение картиночного дайджеста определнного пользователя
 class UserImageDigestRetrieveSerializer(serializers.ModelSerializer):
     images = DigestImageCRDSerializer(many=True)
 
@@ -206,6 +228,7 @@ class UserImageDigestRetrieveSerializer(serializers.ModelSerializer):
                   'images']
 
 
+# сериализатор на получение ссылочного дайджеста определнного пользователя
 class UserLinkDigestRetrieveSerializer(serializers.ModelSerializer):
     links = DigestLinksSerializer(many=True)
 
