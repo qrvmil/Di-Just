@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Cookies from 'js-cookie';
 
 export default function useToken() {
     const getToken = () => {
@@ -9,6 +10,9 @@ export default function useToken() {
     const [token, setToken] = useState(getToken());
     const saveToken = userToken => {
         localStorage.setItem('token', JSON.stringify(userToken));
+        console.log(JSON.stringify(userToken)["token"])
+        const token = JSON.stringify(userToken);
+        Cookies.set('token', JSON.parse(token).token);
         setToken(userToken.token);
     };
     return {

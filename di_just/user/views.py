@@ -140,11 +140,12 @@ class ProfileRestoreAPI(APIView):
         try:
             # uid = force_str(urlsafe_base64_decode(uidb64))
             user = User.objects.get(pk=uid)
-        except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
             user = None
         if user is not None and account_activation_token.check_token(user, token):
             password = request.data["password"]
             user.set_password(password)
+            print(password)
             user.save()
             return HttpResponse('OK')
         else:

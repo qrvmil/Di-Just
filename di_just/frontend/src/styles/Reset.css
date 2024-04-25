@@ -1,4 +1,4 @@
-.login-page {
+.reset-page {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -6,7 +6,7 @@
     background-color: #101b3b;
   }
   
-  .login-form {
+  .reset-form {
     display: flex;
     flex-direction: column;
     max-width: 350px; /* Увеличиваем максимальную ширину формы */
@@ -20,7 +20,7 @@
     box-sizing: border-box;
   }
   
-  .login-form input {
+  .reset-form input {
     margin-bottom: 10px;
     padding: 10px;
     border: 1px solid white;
@@ -29,7 +29,7 @@
     color: white;
   }
   
-  .login-form button {
+  .reset-form button {
     padding: 10px;
     border: none;
     border-radius: 5px;

@@ -1,10 +1,13 @@
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { useState } from "react";
+import './styles/Reset.css';
+import './styles/buttonStyle.css';
 
 function Reset() {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const [emailSent, setEmailSent] = useState(true);
+  const [error, setError] = useState(false);
 
   const onSubmit = (data) => {
 
@@ -18,6 +21,9 @@ function Reset() {
       .then(res => {
         console.log(res);
         
+      }).catch(function (error) {
+        alert("No user with such email");
+        setError(true);
       })
     setEmailSent(false);
     console.log(data);
@@ -29,22 +35,23 @@ function Reset() {
 
   return (
 
-    <div>
+    <div class='reset-page'>
     {emailSent ? (
-    <div style={{maxWidth: '600px', margin: 'auto'}}>
-    <h2 style={{color: "white"}}>Восстановление пароля</h2>
-      <form onSubmit={handleSubmit(onSubmit)}>
+   
+    
+      <form onSubmit={handleSubmit(onSubmit)} className='login-form'>
+      <h2 className="reset-title">Reset your password</h2>
         <div>
-          <label style={{color: "white"}}>Адрес электронной почты</label>
+          <label style={{color: "white"}}>Email address:</label>
           <input type="email" {...register("email", { required: true })} />
         </div>
         <button type="submit">Восстановить пароль</button>
       </form>
-    </div>
-    ): (
-    <div>
-    <p>password-reset link has been sent to your email</p>
-    </div>
+    
+    ): ( error === false? 
+    (<div>
+    <p style={{color: "white"}}>password-reset link has been sent to your email</p>
+    </div>) : <h5 style={{color: "white"}}>Sorry, we can't send email to you. Try again and make sure email is correct.</h5>
     )}
 
   </div>

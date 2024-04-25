@@ -58,6 +58,11 @@ class ImageDigestUpdateAPI(APIView):
         if "topic" in data.keys():
             topics = data.pop("topic")
 
+        try:
+            digest = ImageDigest.objects.get(pk=pk)
+        except:
+            return Response({"error": "invalid digest pk"})
+
         # получаение всех обновлений
         if "updates" in data.keys():
             updates = json.loads(data["updates"])["updates"]
@@ -68,37 +73,38 @@ class ImageDigestUpdateAPI(APIView):
                 pictures = []
 
             for elem in updates:
-                try:
-                    instance = DigestImages.objects.get(pk=elem["pk"])
-                except:
-                    return Response({"error": "invalid image pk"})
-
-                if instance.digest.owner.id != request.user.id:  # IsOwner check
-                    return Response({"Allowed only for owners"})
-
-                if elem["type"] == "picture":
-                    storage, path = instance.picture.storage, instance.picture.path
-                    storage.delete(path)
-
-                    try:
-                        instance.picture = pictures[elem["picture"]]
-                    # обработка ошибок, если в запросе не хватает массива с картинками или некорректный
-                    # индекс в массиве на обновлние картинок
-                    except KeyError:
-                        return Response({"error": "no [picture] field in updates"})
-                    except IndexError:
-                        return Response({"error": "invalid index for picture in picture array"})
-                    instance.save()
-
+                if elem['pk'] < 0:
+                    img = DigestImages.objects.create(digest=digest, picture=pictures[elem["picture"]],
+                                                      description="No description")
                 else:
-                    instance.description = elem['description']
-                    instance.save()
+                    instance = DigestImages.objects.get(pk=elem["pk"])
 
-        try:
-            digest = ImageDigest.objects.get(pk=pk)
+                    if instance.digest.owner.id != request.user.id:  # IsOwner check
+                        return Response({"Allowed only for owners"})
 
-        except:
-            return Response({"error": "invalid digest pk"})
+                    if elem["type"] == "picture":
+                        storage, path = instance.picture.storage, instance.picture.path
+                        storage.delete(path)
+
+                        try:
+                            instance.picture = pictures[elem["picture"]]
+                        # обработка ошибок, если в запросе не хватает массива с картинками или некорректный
+                        # индекс в массиве на обновлние картинок
+                        except KeyError:
+                            return Response({"error": "no [picture] field in updates"})
+                        except IndexError:
+                            return Response({"error": "invalid index for picture in picture array"})
+                        instance.save()
+
+                    else:
+                        instance.description = elem['description']
+                        instance.save()
+
+        # try:
+        #     digest = ImageDigest.objects.get(pk=pk)
+        #
+        # except:
+        #     return Response({"error": "invalid digest pk"})
         print('-----', digest.owner.id, request.user.id)
         if digest.owner.id != request.user.id:  # IsOwner check
             return Response({"Allowed only for owners"})
@@ -161,6 +167,8 @@ class LinkDigestUpdateAPI(APIView):
     def put(self, request, pk):
         data = request.data
 
+        digest = LinkDigest.objects.get(pk=pk)
+
         topics = []
         # проврка на наличие обновленных тегов
         if "topic" in data.keys():
@@ -169,20 +177,17 @@ class LinkDigestUpdateAPI(APIView):
         if "updates" in request.data:
             updates = json.loads(data["updates"])["updates"]
             for update in updates:
-                try:
+
+                if update["pk"] < 0:
+                    new_link = DigestLinks.objects.create(digest=digest, link=update["link"],
+                                                          description="No description")
+                else:
                     link = DigestLinks.objects.get(pk=update["pk"])
-                except:
-                    return Response({"error": "Invalid link pk"})
 
-                link.link = update.get("link", link.link)
-                link.description = update.get("description", link.description)
+                    link.link = update.get("link", link.link)
+                    link.description = update.get("description", link.description)
 
-                link.save()
-
-        try:
-            digest = LinkDigest.objects.get(pk=pk)
-        except:
-            return Response({"error": "invalid digest pk"})
+                    link.save()
 
         if digest.owner != request.user.profile:  # IsOwner check
             return Response({"Allowed only for owners"})
@@ -471,7 +476,7 @@ class LinkDigestListAPI(APIView):
             topics = tuple(data["topics"])
             if len(topics) == 1:
                 topics = f'({topics[0]})'
-            #
+
             with connection.cursor() as cursor:
                 cursor.execute(
                     f"SELECT DISTINCT linkdigest_id FROM digest_linkdigest_topic WHERE topics_id IN {topics}")

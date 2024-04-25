@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Cookies from 'js-cookie';
 import Register from "./Register.js";
 import Home from "./Home.js";
 import Check from "./Check.js";
@@ -20,15 +21,23 @@ import ImgDigest from "./ImgDigest.js";
 import LinkDigest from "./LinkDigest.js";
 import EditImgDigest from "./EditImgDigest.js";
 import EditLinkDigest from "./EditLinkDigest.js";
+import Start from './Start.js';
+import Tastemaker from "./Tastemaker.js"
 
 
 
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+
+import { BrowserRouter, Routes, Route, Link, Router } from 'react-router-dom';
 
 
 
 function setToken(userToken) {
     localStorage.setItem('token', JSON.stringify(userToken));
+    Cookies.set('test', 'hello&mi')
+    Cookies.set('token', JSON.stringify(userToken));
+    const test = Cookies.get("token");
+    console.log('-------')
+    console.log(test);
 }
 
 function getToken() {
@@ -61,6 +70,7 @@ function App() {
     <BrowserRouter>
     <Header/>
       <Routes>
+        <Route path="/" element={<Start />}/>
         <Route path="/register" element={<Register />} />
         <Route path="/test" element={<Home />} />
         <Route path="/activate/:uid/:token" element={<Check />} />
@@ -80,12 +90,15 @@ function App() {
         <Route path="/link-digest/:id/" element={<LinkDigest/>} />
         <Route path="/img-edit/:id" element={<EditImgDigest/>}/>
         <Route path="/link-edit/:id" element={<EditLinkDigest/>}/>
+        <Route path="/test2/" element={<Tastemaker/>}/>
        
 
       </Routes>
 
 
     </BrowserRouter>
+
+    
     </div>
   );
 

@@ -2,6 +2,8 @@ import axios from 'axios';
 import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import { Routes, Route, useNavigate } from 'react-router-dom';
+import useToken from './useToken';
+
 const API_URL = 'http://localhost:8000';
 
 
@@ -12,6 +14,7 @@ function getUsersProfiles() {
 } 
 
 function Home() {
+    
 
     const navigate = useNavigate();
 

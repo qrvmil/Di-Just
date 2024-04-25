@@ -41,7 +41,7 @@
   
   .info-block-c {
     width: 100%;
-    border: 1px solid #ddd;
+    border: 1px solid #2a525a;
     padding: 10px;
     box-sizing: border-box;
     border-radius: 10px;
@@ -62,3 +62,5 @@
     margin: 10px 0;
     text-align: left;
   }
+
+  

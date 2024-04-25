@@ -80,7 +80,7 @@ function SavedDigests() {
         {current_info.map((element) => 
                 <div>
                     <Card>
-                        <Card.Header>{element.owner}  |   {element.created_timestamp.slice(0, 10)}</Card.Header>
+                        <Card.Header>{element.created_timestamp.slice(0, 10)}</Card.Header>
                         <Card.Body>
                             <Card.Title>{element.name}</Card.Title>
                             <Card.Text>

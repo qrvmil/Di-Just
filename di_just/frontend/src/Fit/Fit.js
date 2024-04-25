@@ -4,6 +4,12 @@ import Select from 'react-select';
 import { useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
+import ListGroup from 'react-bootstrap/ListGroup';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+
+
 
 const API_URL = 'http://localhost:8000';
 const topics_dict = {
@@ -107,34 +113,58 @@ export default function Fit() {
     return (
     <>
     
-    <Button variant="info" onClick={clickType}>Create digest</Button>
     <h2 style={{color: "white"}}>List of digests</h2>
-    <button onClick={changeDigest}>Change for {digestType == "img" ? "link": "image"} digest</button>
+    <Button variant="outline-info" onClick={changeDigest}>Change for {digestType == "img" ? "link": "image"} digest</Button>
     
+    
+    <Container>
+    <Row>
+    <Col xs={4}>
     <p style={{color: "white"}}>Sort by:</p>
-    <div >
-    <div>
-        <input type="text" value={inputValue} onChange={handleChange} /> <button onClick={handleClick2}>go</button>
-        <p style={{color: "white"}}>Owner name: {inputValue}</p>
-    </div>
+
     
-    <div>
-        <p style={{color: "white"}}>Topics:</p> <button onClick={() => handleClick1()}>go</button> 
-        <Select
-        value={selectedOptions}
-        onChange={handleSelectChange}
-        options={topics_names}
-        isMulti
-        /> 
-        
-        
-    </div>
+    <ListGroup>
+        <ListGroup.Item variant="info">
+            <div>
+                <div className="fw-bold">Name</div>
+                <input type="text" value={inputValue} onChange={handleChange} />
+                <Button variant="outline-dark" onClick={handleClick2}>go</Button>
+            </div>
+        </ListGroup.Item>
     
+        <ListGroup.Item variant="info">
+        <div>
+            <div className="fw-bold">Topics:</div>
+            <Select
+            value={selectedOptions}
+            onChange={handleSelectChange}
+            options={topics_names}
+            isMulti
+            /> 
+            <Button variant="outline-dark" onClick={() => handleClick1()}>go</Button>
+        </div>
+        </ListGroup.Item>
+    
+    <ListGroup.Item variant="info">
     <div>
-        <p style={{color: "white"}}>Time</p> <button onClick={() => handleClick3()}>Old</button> <button onClick={() => handleClick4()}>New</button>
+        <div className="fw-bold">Time:</div>
+        <Button variant="outline-dark" onClick={() => handleClick3()}>Old</Button> <Button variant="outline-dark" onClick={() => handleClick4()}>New</Button>
     </div>
+    </ListGroup.Item>
+    </ListGroup>
+    </Col>
+
+    
+
+    <Col md="8">
     {currentChoice !== null ? <Posts digestType = {digestType} type = {currentChoice["type"]} content = {currentChoice["content"]}/>: ' '}
-    </div>
+    </Col>
+    </Row>
+    </Container>
+
+    <Button variant="outline-info" onClick={clickType}>Create digest</Button>
+    
+
     </>
     )
     

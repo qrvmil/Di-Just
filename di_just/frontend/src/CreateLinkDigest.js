@@ -3,9 +3,45 @@ import Form from 'react-bootstrap/Form';
 import Image from 'react-bootstrap/Image';
 import { useState, useRef } from "react";
 import axios from 'axios';
+import Select from 'react-select';
+import './styles/EditImg.css';
+import './styles/buttonStyle.css';
 import { BrowserRouter, Routes, Route, Link, redirect, useNavigate} from 'react-router-dom';
 
 const API_URL = 'http://localhost:8000';
+
+const topics_dict = {
+    "Cinema": 13,
+	"Music": 12,
+	"Technologies": 11,
+	"Memes": 10,
+	"Animals": 9,
+	"Travelling": 8,
+	"Food": 7,
+	"Education": 6,
+	"News": 5,
+	"Math": 4,
+	"Computer Science" : 3,
+	"Sport": 2,
+	"Art": 1
+}
+
+const topics_names = [
+    { value: 'Cinmea', label: 'Cinema' },
+    { value: 'Music', label: 'Music' },
+    { value: 'Animals', label: 'Animals' },
+    { value: 'Technologies', label: 'Technologies' },
+    { value: 'Memes', label: 'Memes' },
+    { value: 'Travelling', label: 'Travelling' },
+    { value: 'Food', label: 'Food' },
+    { value: 'Education', label: 'Education' },
+    { value: 'News', label: 'News' },
+    { value: 'Math', label: 'Math' },
+    { value: 'Computer Science', label: 'Computer Science' },
+    { value: 'Sport', label: 'Sport' },
+    { value: 'Art', label: 'Art' },
+]
+
 
 function getUserId() {
 	const userStringId = localStorage.getItem('token')
@@ -25,6 +61,8 @@ export default function CreateLinkDigest () {
     const [name, setName] = useState('');
     const [introduction, setIntroduction] = useState('');
     const [conclusion, setConclusion] = useState('');
+    const [isChecked, setIsChecked] = useState(false);
+    const [selectedOptions, setSelectedOptions] = useState([]);
     const navigate = useNavigate();
 
 
@@ -33,11 +71,20 @@ export default function CreateLinkDigest () {
         data[index] = event.target.value;
         setFormLink(data);
     }
+
+    const handleCheckboxChange = (event) => {
+        setIsChecked(event.target.checked);
+    };
+
     const handleDescChange = (event, index) => {
         let data = [...formDesc];
         data[index] = event.target.value;
         setFormDesc(data);
     }
+
+    const handleSelectChange = (selectedValues) => {
+        setSelectedOptions(selectedValues);
+    };
 
     const handleName = (event) => {
         setName(event.target.value);
@@ -59,6 +106,7 @@ export default function CreateLinkDigest () {
         formDataReq.append('name', name);
         formDataReq.append('introduction', introduction);
         formDataReq.append('conclusion', conclusion);
+        formDataReq.append('public', isChecked);
         console.log(name, introduction, conclusion);
         for (var key of formDataReq.entries()) {
             console.log(key);
@@ -73,6 +121,14 @@ export default function CreateLinkDigest () {
 
         formDesc.forEach((item) => {
             formDataReq.append(`descriptions`, item);
+        });
+
+        for (let i = 0; i < selectedOptions.length; i++) {
+            formDataReq.append('topic', topics_dict[selectedOptions[i].label]);
+        }
+
+        selectedOptions.forEach((item) => {
+            formDataReq.append(`topics`, item);
         });
 
 
@@ -117,11 +173,18 @@ export default function CreateLinkDigest () {
 
     return (
         <>
-            <Form onSubmit={submit} style={{ maxWidth: '600px', margin: 'auto'}}>
+            <Form onSubmit={submit} style={{ maxWidth: '600px', margin: 'auto'}} className="edit-img-form">
 
             
             <input name='name' type='text' placeholder='name' onChange={event => handleName(event)}></input>
             <input name='introduction' type='text' placeholder='introduction' onChange={event => handleIntroduction(event)}></input>
+            <p style={{color: "white"}}>Topics:</p>
+            <Select
+                value={selectedOptions}
+                onChange={handleSelectChange}
+                options={topics_names}
+                isMulti
+            />
             <div>
                 {formLink.map((form, index) => {
                     return (<div key={index}>
@@ -140,9 +203,12 @@ export default function CreateLinkDigest () {
             <input name='conclusion' type='text' placeholder='conclusion' onChange={event => handleConclusion(event)}></input>
 
 
-                <Form.Group className="mb-3" controlId="public">
-                    <Form.Check type="checkbox" label="Private digest" />
-                </Form.Group>
+            <input
+                type="checkbox"
+                checked={isChecked}
+                onChange={handleCheckboxChange}
+            />
+            <label style={{color: "white"}}>Public</label>
 
                 <Button variant="primary" type="submit">
                 Submit

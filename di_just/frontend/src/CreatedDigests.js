@@ -50,6 +50,8 @@ function CreatedDigests() {
         current_info = [...createdLinkDigests]
     }
 
+    
+
 
     useEffect(() => {
         
@@ -82,11 +84,12 @@ function CreatedDigests() {
         {current_info.map((element) => 
                 <div>
                     <Card>
-                        <Card.Header>{element.owner}  |   {element.created_timestamp.slice(0, 10)}</Card.Header>
+                        <Card.Header> <h5>{element.name}</h5> {element.created_timestamp.slice(0, 10)}</Card.Header>
                         <Card.Body>
-                            <Card.Title>{element.name}</Card.Title>
-                            <Card.Text>
+                            <Card.Title></Card.Title>
+                            <Card.Text style={{fontStyle: 'italic'}}>
                             {element.introduction}
+                            {console.log(element)}
                             </Card.Text>
                             <Button variant="primary" onClick={() => digestType ? goToImageDigest(element.id): goToLinkDigest(element.id)}>Dive to digest</Button>
                         </Card.Body>

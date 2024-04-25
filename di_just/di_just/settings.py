@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'digest',
     'user',
     'knox',
-    'corsheaders'
+    'corsheaders',
 ]
 
 MIDDLEWARE = [

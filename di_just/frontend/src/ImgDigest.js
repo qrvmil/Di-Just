@@ -4,12 +4,13 @@ import axios from 'axios';
 import Image from 'react-bootstrap/Image';
 import Col from 'react-bootstrap/Col';
 import { Button } from 'react-bootstrap';
+import { Alert } from 'bootstrap';
 import {Routes, Route, useNavigate} from 'react-router-dom';
 import Comments from './Comments';
 import './styles/ImgDigest.css';
 import './Fit/Posts.css';
 import './styles/buttonStyle.css';
-
+import Badge from 'react-bootstrap/Badge';
 
 
 
@@ -115,17 +116,18 @@ export default function ImgDigest() {
     return(
     <>
         <div className='digest-info-id'>
-        <p>{digest !== null ? digest["general info"]["name"] : ''}   |   {digest != null ? digest["general info"]["created_timestamp"].slice(0, 10): ''}</p>
-        <p>{digest !== null ? digest["general info"]["introduction"] : ''}</p>
+        <h5 style={{color: 'white'}}>{digest !== null ? digest["general info"]["name"] : ''}   |   {digest != null ? digest["general info"]["created_timestamp"].slice(0, 10): ''}</h5>
+        <p>Introduction: {digest !== null ? digest["general info"]["introduction"] : ''}</p>
         
         <p>Topics:</p>
         <ul>
+         
             {topics !== '' && topics.map(function(elem) {
-                return <li>{elem}</li>
+                return <Badge bg="light" text="dark"><li>{elem}</li></Badge>
             })}
         </ul>
         </div>
-        <p style={{color: "white"}}>Images:</p>
+        
         <div className='wrapper'>
         <ul>
             {images !== [] && images.map(function(elem) {
@@ -139,13 +141,20 @@ export default function ImgDigest() {
         </ul>
         </div>
 
-        <Comments placement={"end"} name={"comments"} comments={comments !== null ? comments: []} type={"image"} digest={digestId}/> <button onClick={() => handleSave()} className='logout-button'>{saved ? "Unsave": "Save"}</button>
+       
+       <p style={{color: "white"}}>Conclusion:</p>
+        <p style={{color: "white"}}>{digest !== null ? digest["general info"]["conclusion"] : ''}</p>
+          
+        
+
+        <Comments placement={"end"} name={"comments"} comments={comments !== null ? comments: []} type={"image"} digest={digestId}/>
+        <button onClick={() => handleSave()} className='logout-button'>{saved ? "Unsave": "Save"}</button>
 
         {digest !== null && digest["general info"]["owner"] === user ? <>
-        <Button variant="outline-info" onClick={() => handleEditClick(digestId)} className='logout-button'>Edit digest</Button>
+        <button className='logout-button' onClick={() => handleEditClick(digestId)} className='logout-button'>Edit digest</button>
         <button onClick={() => deleteDigest(digestId)} className='logout-button'>Delete</button>
         </>: ''} 
-        <a href={bot_link} style={linkStyle} >Remind me in telegram-bot</a>
+        <button className='logout-button'><a href={bot_link} style={linkStyle}>Remind me in telegram-bot</a></button>
 
 
 

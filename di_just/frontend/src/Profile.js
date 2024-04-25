@@ -12,6 +12,7 @@ import {Routes, Route, useNavigate} from 'react-router-dom';
 import Followers from './Followers.js';
 import Follows from './Follows.js';
 import './styles/UserProfile.css';
+import './styles/buttonStyle.css';
 
 
 
@@ -156,6 +157,7 @@ function Profile() {
     
     console.log(followers);
     console.log(profileInfo);
+    console.log(userInfo)
     
    
     return (
@@ -182,12 +184,17 @@ function Profile() {
       <Button variant="info" onClick={editProfile}>Edit profile</Button>
       
     </div>
+
+    
+    
         
     <Button variant="outline-info" onClick={handleClick1} className='user-profile'>Created digests</Button>
       <Button variant="outline-info" onClick={handleClick2} className='user-profile'>Saved digests</Button>
         
-
-
+    <Alert variant='info' className='user-profile'>
+        <p>user id: {userInfo != null ? userInfo.id: ""}</p>
+        user token: {JSON.parse(localStorage.getItem('token'))["token"]}
+    </Alert>
     
     </div>
     

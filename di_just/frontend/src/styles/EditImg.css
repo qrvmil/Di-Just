@@ -1,0 +1,10 @@
+
+.edit-img-form input {
+    margin-bottom: 20px;
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid white;
+    border-radius: 5px;
+    background-color: transparent;
+    color: white;
+  }

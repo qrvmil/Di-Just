@@ -9,6 +9,7 @@ import Comments from './Comments';
 import './styles/LinkDigest.css';
 import './Fit/Posts.css';
 import './styles/buttonStyle.css';
+import Badge from 'react-bootstrap/Badge';
 
 
 const API_URL = 'http://localhost:8000';
@@ -109,12 +110,13 @@ export default function LinkDigest() {
     <>
         <div className='digest-info-id'>
         <p>{digest !== null ? digest["general info"]["name"] : ''}   |   {digest != null ? digest["general info"]["created_timestamp"].slice(0, 10): ''}</p>
+        <p>Introduction:</p>
         <p>{digest !== null ? digest["general info"]["introduction"] : ''}</p>
         </div>
         <p style={{color: "white"}}>Topics:</p>
         <ul style={{color: "white"}}>
             {topics !== '' && topics.map(function(elem) {
-                return <li>{elem}</li>
+                return <Badge bg="light" text="dark"><li>{elem}</li></Badge>
             })}
         </ul>
         <p style={{color: "white"}}>Links:</p>
@@ -123,23 +125,24 @@ export default function LinkDigest() {
                 return( 
                 <div className='link-description-container'>
                     <a href={elem.link}>tap</a>
-                    <p>{elem.description}</p>
+                    <p style={{color: "white"}}>{elem.description}</p>
                 </div>)
             })}
         </ul>
-
-        <p>{digest !== null ? digest["general info"]["conclusion"] : ''}</p>
+        <p style={{color: "white"}}>Conclusion:</p>
+        <p style={{color: "white"}}>{digest !== null ? digest["general info"]["conclusion"] : ''}</p>
 
         
 
-        <Comments placement={"end"} name={"comments"} comments={comments !== null ? comments: []} type={"link"} digest={digestId}/><button onClick={() => handleSave()}>{saved ? "Unsave": "Save"}</button>
+        <Comments placement={"end"} name={"comments"} comments={comments !== null ? comments: []} type={"link"} digest={digestId}/>
+        <button onClick={() => handleSave()} className='logout-button'>{saved ? "Unsave": "Save"}</button>
 
-
+        
         {digest !== null && digest["general info"]["owner"] === user ? <>
-        <Button variant="outline-info" onClick={() => handleEditClick(digestId)} className='logout-button'>Edit digest</Button>
+        <button variant="outline-info" onClick={() => handleEditClick(digestId)} className='logout-button'>Edit digest</button>
         <button onClick={() => deleteDigest(digestId)} className='logout-button'>Delete</button>
         </>: ''} 
-        <a href={bot_link} style={linkStyle} >Remind me in telegram-bot</a>
+        <button className='logout-button'><a href={bot_link} style={linkStyle} >Remind me in telegram-bot</a></button>
 
 
 

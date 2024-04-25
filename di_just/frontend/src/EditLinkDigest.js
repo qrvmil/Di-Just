@@ -3,6 +3,8 @@ import Form from 'react-bootstrap/Form';
 import Image from 'react-bootstrap/Image';
 import { useState, useRef, useEffect } from "react";
 import axios from 'axios';
+import './styles/EditImg.css';
+import './styles/buttonStyle.css';
 import { useParams } from 'react-router-dom';
 import {Routes, Route, useNavigate} from 'react-router-dom';
 
@@ -22,6 +24,7 @@ export default function EditLinkDigest() {
     const [formDesc, setFormDesc] = useState([
         ''
     ]);
+    const [isChecked, setIsCkecked] = useState(0);
     const [name, setName] = useState('');
     const [introduction, setIntroduction] = useState('');
     const [conclusion, setConclusion] = useState('');
@@ -61,6 +64,10 @@ export default function EditLinkDigest() {
         digest["general info"]["introduction"] = event.target.value;
     }
 
+    const handleCheckboxChange = () => {
+        setIsCkecked(!isChecked);
+      };
+
     const handleConclusion = (event) => {
         digest["general info"]["conclusion"] = event.target.value;
     }
@@ -93,6 +100,10 @@ export default function EditLinkDigest() {
         formData.append('name', digest["general info"]["name"]);
         formData.append('introduction', digest["general info"]["introduction"]);
         formData.append('conclusion', digest["general info"]["conclusion"]);
+        if (isChecked) {
+            console.log(digest["general info"]["public"])
+            formData.append('public', digest["general info"]["public"] === true ? "False": "True");
+        }
 
         const tokenString = localStorage.getItem('token');
         const userToken = JSON.parse(tokenString);
@@ -112,8 +123,8 @@ export default function EditLinkDigest() {
 
 
     return (
-        <>
-            <Form onSubmit={submit} style={{maxWidth: '600px', margin: 'auto'}}>
+        <div className='edit-img-form'>
+            <Form onSubmit={submit} style={{maxWidth: '600px', margin: 'auto'}} className="edit-img-form">
 
             
             <input name='name' type='text' placeholder={digest !== null ? digest["general info"]["name"]: ' '} onChange={event => handleName(event)}></input>
@@ -132,18 +143,24 @@ export default function EditLinkDigest() {
 
             <input name='conclusion' type='text' placeholder='conclusion' onChange={event => handleConclusion(event)}></input>
 
-
-                <Form.Group className="mb-3" controlId="public">
-                    <Form.Check type="checkbox" label="Private digest" />
-                </Form.Group>
+            <Form.Check // prettier-ignore
+                    style={{color: "white"}}
+                    type="switch"
+                    id="custom-switch"
+                    label={digest !== null ? (digest["general info"]["public"] == true ? 'Change for privat': 'Change for public'): ''}
+                    onChange={handleCheckboxChange}
+            />
+                
 
                 <Button variant="primary" type="submit">
                 Submit
                 </Button>
+
+                
             </Form>
             
             
 
-        </>
+        </div>
     )
 }

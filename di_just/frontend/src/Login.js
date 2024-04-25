@@ -5,7 +5,7 @@ import axios from 'axios';
 import Header from './Header.js';
 import { useState } from "react";
 import Register from './Register';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate, redirect } from 'react-router-dom';
 
 import './styles/LoginPage.css';
 import './styles/buttonStyle.css';
@@ -20,7 +20,9 @@ async function loginUser(data) {
     username: data.username,
     password: data.password,
      })
-      .then(res => res.data)
+      .then(res => res.data).catch(function (error) {
+        console.log(error);
+      })
 }
 
 
@@ -38,10 +40,15 @@ export default function Login({ setToken }) {
     const token = await loginUser({
       username,
       password
-    });
-    setToken(token);
-    console.log(token);
-    navigate('/home');
+    })
+    if (token !== undefined) {
+      setToken(token);
+      console.log(token);
+      navigate('/home');
+    }
+    else {
+      alert("wrong password or username")
+    }
   }
 
   const handlePassword = () => {
@@ -70,7 +77,9 @@ export default function Login({ setToken }) {
       </form>
     </div>
 
-    <button onClick={() => handlePassword()} className=''>Forgot password</button>
+    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '10%', marginTop: '5%'}}>
+      <button onClick={() => handlePassword()} className='logout-button'>Forgot password</button>
+    </div>
   
     </>
   )

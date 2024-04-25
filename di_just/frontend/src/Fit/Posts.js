@@ -2,6 +2,7 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import Card from './Card';
 import './Posts.css';
+import Button from 'react-bootstrap/Button';
 const API_URL = 'http://localhost:8000';
 
 
@@ -107,7 +108,7 @@ export default function Posts({ digestType, type, content}) {
     <div className="wrapper">
     {(fit != null) && fit.map(digest => <Card digestType={digestType} info={digest} />)}
     </div>
-    {(previous != "None") &&  <button onClick={handlePreviousPage}>Previos</button>} {(next != "None") && <button onClick={handleNextPage}>Next</button>}
+    {(previous != "None") &&  <Button variant="outline-info" onClick={handlePreviousPage}>Previos</Button>} {(next != "None") && <Button variant="outline-info" onClick={handleNextPage}>Next</Button>}
     </>}
     
     </>

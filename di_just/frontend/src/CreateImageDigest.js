@@ -6,6 +6,9 @@ import { useState, useRef } from "react";
 import { BrowserRouter, Routes, Route, Link, redirect, useNavigate} from 'react-router-dom';
 import axios from 'axios';
 
+import './styles/EditImg.css';
+import './styles/buttonStyle.css';
+
 const API_URL = 'http://localhost:8000';
 
 function getUserId() {
@@ -61,6 +64,7 @@ export default function CreateImageDigest () {
     const [introduction, setIntroduction] = useState('');
     const [conclusion, setConclusion] = useState('');
     const [selectedOptions, setSelectedOptions] = useState([]);
+    const [isChecked, setIsChecked] = useState(false);
     const navigate = useNavigate();
 
 
@@ -69,6 +73,10 @@ export default function CreateImageDigest () {
         data[index] = event.target.files[0];
         setFormImage(data);
     }
+
+    const handleCheckboxChange = (event) => {
+        setIsChecked(event.target.checked);
+      };
 
     const handleSelectChange = (selectedValues) => {
         setSelectedOptions(selectedValues);
@@ -100,6 +108,7 @@ export default function CreateImageDigest () {
         formDataReq.append('name', name);
         formDataReq.append('introduction', introduction);
         formDataReq.append('conclusion', conclusion);
+        formDataReq.append('public', isChecked);
         console.log(name, introduction, conclusion);
         for (var key of formDataReq.entries()) {
             console.log(key);
@@ -171,12 +180,12 @@ export default function CreateImageDigest () {
 
     return (
         <>
-            <Form onSubmit={submit} style={{ maxWidth: '600px', margin: 'auto'}}>
+            <Form onSubmit={submit} style={{ maxWidth: '600px', margin: 'auto'}} className="edit-img-form">
 
             
-            <input name='name' type='text' placeholder='name' onChange={event => handleName(event)}></input>
+            <input name='name' type='text' placeholder='name' onChange={event => handleName(event)} ></input>
             <input name='introduction' type='text' placeholder='introduction' onChange={event => handleIntroduction(event)}></input>
-            <p>Topics:</p>
+            <p style={{color: "white"}}>Topics:</p>
             <Select
                 value={selectedOptions}
                 onChange={handleSelectChange}
@@ -197,14 +206,21 @@ export default function CreateImageDigest () {
                 })}
 
             </div>
+
+            
+            
             
 
             <input name='conclusion' type='text' placeholder='conclusion' onChange={event => handleConclusion(event)}></input>
 
-
-                <Form.Group className="mb-3" controlId="public">
-                    <Form.Check type="checkbox" label="Private digest" />
-                </Form.Group>
+            
+            <input
+                type="checkbox"
+                checked={isChecked}
+                onChange={handleCheckboxChange}
+            />
+            
+            <label style={{color: "white"}}>Public</label>
 
                 <Button variant="primary" type="submit">
                 Submit
@@ -214,6 +230,7 @@ export default function CreateImageDigest () {
             <Button variant="primary" type="submit" onClick={addFields}>
             Add more...
             </Button>
+
             
 
         </>

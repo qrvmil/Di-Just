@@ -2,7 +2,12 @@ import { useState, useEffect } from "react";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Image from 'react-bootstrap/Image';
+import './styles/checkBox.css';
 import { useRef } from "react";
+
+import './styles/EditImg.css';
+import './styles/buttonStyle.css';
+
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import {Routes, Route, useNavigate} from 'react-router-dom';
@@ -10,24 +15,18 @@ import {Routes, Route, useNavigate} from 'react-router-dom';
 
 const API_URL = 'http://localhost:8000';
 
-function getUserId() {
-	const userStringId = localStorage.getItem('token')
-	const userId = JSON.parse(userStringId);
-	return userId.user;
-}
-
-
-
-
-
 
 export default function EditImgDigest() {
+
+
+
     // call your hook here
     const navigate = useNavigate();
     const [formImage, setFormImage] = useState([
         null
     ]);
     const [digest, setDigest] = useState(null);
+    const [isChecked, setIsCkecked] = useState(0);
     const [change, setChange] = useState(true);
     const [formDesc, setFormDesc] = useState([
         ''
@@ -48,6 +47,7 @@ export default function EditImgDigest() {
         const url1 = `${API_URL}/img-digest/get/${digestId}/`;
         axios.get(url1, {headers: {"Authorization" : "Token " + token}}).then(response => {
             setDigest(response.data);
+            
             
         });
 
@@ -93,7 +93,7 @@ export default function EditImgDigest() {
 
         
 
-
+        
         axios.put(`http://127.0.0.1:8000/img-digest/update/${digestId}/`, formData, {headers: {"Authorization" : "Token " + token}})
             .then(res => {
                 console.log(res);
@@ -118,13 +118,17 @@ export default function EditImgDigest() {
         digest["general info"]["name"] = event.target.value;
     }
 
+    const handleCheckboxChange = () => {
+        setIsCkecked(!isChecked);
+      };
+
 
     const handleIntroduction = (event) => {
         digest["general info"]["introduction"] = event.target.value;
     }
 
     const handleConclusion = (event) => {
-        digest["digest images"]["conclusion"] = event.target.value;
+        digest["general info"]["conclusion"] = event.target.value;
     }
 
     const submit = (e) => {
@@ -151,6 +155,11 @@ export default function EditImgDigest() {
         formData.append('name', digest["general info"]["name"]);
         formData.append('introduction', digest["general info"]["introduction"]);
         formData.append('conclusion', digest["general info"]["conclusion"]);
+        if (isChecked) {
+            console.log(digest["general info"]["public"])
+            formData.append('public', digest["general info"]["public"] === true ? "False": "True");
+        }
+        
 
 
 
@@ -172,7 +181,7 @@ export default function EditImgDigest() {
 
     return (
         <>
-            <Form onSubmit={submit} style={{maxWidth: '600px', margin: 'auto'}}>
+            <Form onSubmit={submit} style={{maxWidth: '600px', margin: 'auto'}} className="edit-img-form">
 
             
             <input name='name' type='text' placeholder={digest !== null ? digest["general info"]["name"]: ' '} onChange={event => handleName(event)}></input>
@@ -193,14 +202,24 @@ export default function EditImgDigest() {
             <input name='conclusion' type='text' placeholder={digest !== null ? digest["general info"]["conclusion"]: ' '} onChange={event => handleConclusion(event)}></input>
 
 
-                <Form.Group className="mb-3" controlId="public">
-                    <Form.Check type="checkbox" label="Private digest" />
-                </Form.Group>
+            <Form.Check // prettier-ignore
+            style={{color: "white"}}
+            type="switch"
+            id="custom-switch"
+            label={digest !== null ? (digest["general info"]["public"] == true ? 'Change for privat': 'Change for public'): ''}
+            onChange={handleCheckboxChange}
+            />
+            
 
-                <Button variant="primary" type="submit">
+            <Button variant="primary" type="submit">
                 Submit
-                </Button>
+            </Button>
             </Form>
+
+            
+            
+            
+            
             
             
 

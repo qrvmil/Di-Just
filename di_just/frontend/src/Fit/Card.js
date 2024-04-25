@@ -1,4 +1,5 @@
 import './Card.css';
+import Button from 'react-bootstrap/Button';
 import { useNavigate } from 'react-router-dom';
 
 export default function Card ({ digestType, info }) {
@@ -13,7 +14,7 @@ export default function Card ({ digestType, info }) {
         }
         else {
             console.log('clicked');
-            navigate(`/-digest/${id}/`);
+            navigate(`/link-digest/${id}/`);
         }
         
 
@@ -25,10 +26,11 @@ export default function Card ({ digestType, info }) {
 
     return (
     <div className="card">
-        <p>{info["name"] !== '' ? info["name"]: 'No name'}  ||  {info["created_timestamp"].slice(0, 10)}</p>
+        <h5>{info["name"] !== '' ? info["name"]: 'No name'}</h5>
+        <p>{info["created_timestamp"].slice(0, 10)}</p>
         <div>Introduction: {info["introduction"]}</div>
         <div>Topics: {info["topic"].join(', ')}</div>
-        <button onClick={() => handleClick(info["id"])}>dive into digest</button>
+        <Button variant="outline-info" onClick={() => handleClick(info["id"])}>dive into digest</Button>
     </div>
     )
 
